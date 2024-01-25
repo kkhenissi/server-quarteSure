@@ -1,5 +1,8 @@
 package com.fdc.quartesure.quartesurebackend.serviceImpl;
 
+import com.fdc.quartesure.quartesurebackend.JWT.CustomerUsersDetailsService;
+import com.fdc.quartesure.quartesurebackend.JWT.JwtFilter;
+import com.fdc.quartesure.quartesurebackend.JWT.JwtUtil;
 import com.fdc.quartesure.quartesurebackend.POJO.User;
 import com.fdc.quartesure.quartesurebackend.constants.QuarteSureConstants;
 import com.fdc.quartesure.quartesurebackend.dao.UserDao;
@@ -10,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.querydsl.QuerydslUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -20,6 +26,12 @@ import java.util.Objects;
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserDao userDao;
+    @Autowired
+    AuthenticationManager authenticationManager;
+    @Autowired
+    CustomerUsersDetailsService customerUsersDetailsService;
+    @Autowired
+    JwtUtil jwtUtil;
     @Override
     public ResponseEntity<String> signup(Map<String, String> requestMap) {
         try {
@@ -43,6 +55,30 @@ public class UserServiceImpl implements UserService {
         }
         return QuarteSureUtils.getResponseEntity(QuarteSureConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @Override
+    public ResponseEntity<String> login(Map<String, String> requestMap) {
+        log.info("inside login");
+        try {
+            Authentication auth = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(requestMap.get("email"),requestMap.get("password")));
+            if(auth.isAuthenticated()) {
+                if(customerUsersDetailsService.getUserDetails().getStatus().equalsIgnoreCase("true")) {
+                    return new ResponseEntity<String>("{\"token\":\""+jwtUtil.generateTocken(
+                            customerUsersDetailsService.getUserDetails().getEmail(),
+                            customerUsersDetailsService.getUserDetails().getRole())+"\"}", HttpStatus.OK);
+
+                }else {
+                    return new ResponseEntity<String>("{\"message\":\""+"Wait for admin approval."+"\"}",HttpStatus.BAD_REQUEST);
+                }
+            }
+        }catch (Exception ex) {
+            log.error("{}",ex);
+        }
+        return new ResponseEntity<String>("{\"message\":\""+"Bad Credentials."+"\"}",HttpStatus.BAD_REQUEST);
+    }
+
+    // arrivé jusquau 1:18:18
 
     private boolean validateSignUpMap(Map<String,String> requestMap) {
         return requestMap.containsKey("name") && requestMap.containsKey("contactNumber") && requestMap.containsKey("email") && requestMap.containsKey("password");
