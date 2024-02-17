@@ -18,19 +18,20 @@ public class CustomerUsersDetailsService implements UserDetailsService {
     @Autowired
     UserDao userDao;
 
-    private com.fdc.quartesure.quartesurebackend.POJO.User userDetails;
+    private com.fdc.quartesure.quartesurebackend.POJO.User userDetail;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.info("Inside loadUserByUsername{} ",username);
-        userDetails = userDao.findByEmailId(username);
-        if(!Objects.isNull(userDetails))
-            return new User(userDetails.getEmail(), userDetails.getPassword(), new ArrayList<>());
+        userDetail = userDao.findByEmailId(username);
+        log.info("userDetail==>{} ",userDetail);
+        if(!Objects.isNull(userDetail))
+            return new User(userDetail.getEmail(), userDetail.getPassword(), new ArrayList<>());
         else
             throw new UsernameNotFoundException("User not found.");
     }
-    public com.fdc.quartesure.quartesurebackend.POJO.User getUserDetails() {
+    public com.fdc.quartesure.quartesurebackend.POJO.User getUserDetail() {
 
-        com.fdc.quartesure.quartesurebackend.POJO.User user = userDetails;
-        return user;
+      //  com.fdc.quartesure.quartesurebackend.POJO.User user = userDetail;
+        return userDetail;
     }
 }

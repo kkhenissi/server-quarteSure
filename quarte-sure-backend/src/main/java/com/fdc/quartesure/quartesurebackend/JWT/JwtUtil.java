@@ -3,6 +3,8 @@ package com.fdc.quartesure.quartesurebackend.JWT;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -10,23 +12,26 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
-
+@Slf4j
 @Service
 public class JwtUtil {
 
-    private String secret = "khenissimooimeme";
+    private  final String  secret = "khenissimooimeme";
 
     public String extractUserName(String token) {
         return extractClaims(token,Claims::getSubject);
     }
 
     public Date extractExpiration(String token) {
+        log.info("inside extractExpiration {}",token);
+        log.info("inside extractExpiration {}",extractClaims(token,Claims::getExpiration));
         return  extractClaims(token,Claims::getExpiration);
     }
 
 
     public <T> T extractClaims(String token, Function<Claims,T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
+        log.info("inside extractClaims {}",claims);
         return claimsResolver.apply(claims);
     }
 
@@ -37,6 +42,7 @@ public class JwtUtil {
     }
 
     private Boolean isTokenExpired(String token) {
+
         return extractExpiration(token).before(new Date());
     }
 
@@ -50,7 +56,8 @@ public class JwtUtil {
         return  Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
-                .setIssuedAt(new Date(System.currentTimeMillis() +1000 * 60 * 60 * 10))
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 10000 * 60 * 60 * 10))
                 .signWith(SignatureAlgorithm.HS256,secret).compact();
     }
 

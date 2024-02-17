@@ -26,7 +26,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(customerUsersDetailsService);
     }
-
+    @Bean
     public PasswordEncoder passwordEncoder() {
          return NoOpPasswordEncoder.getInstance();
     }
@@ -42,7 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/user/login","/user/signup","/user/fogotPassword","/h2-console")
+                .antMatchers("/user/login","/user/signup","/user/forgotPassword","/h2/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated().and().exceptionHandling()
@@ -51,5 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        http.csrf().disable();
+        http.headers().frameOptions().disable();
     }
 }

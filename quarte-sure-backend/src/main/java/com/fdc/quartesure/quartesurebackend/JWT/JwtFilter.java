@@ -1,6 +1,7 @@
 package com.fdc.quartesure.quartesurebackend.JWT;
 
 import io.jsonwebtoken.Claims;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
@@ -15,6 +16,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+@Slf4j
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
@@ -42,6 +44,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 token = authorizationHeader.substring(7);
                 userName = jwtUtil.extractUserName(token);
                 claims = jwtUtil.extractAllClaims(token);
+                log.info("What is in claims here==>{}",claims);
 
             }
             if(userName != null && SecurityContextHolder.getContext().getAuthentication()==null) {
@@ -61,10 +64,12 @@ public class JwtFilter extends OncePerRequestFilter {
 
     }
     public  boolean isAdmin() {
+        log.info("inside isAdmin {}",claims.get("role"));
         return "admin".equalsIgnoreCase((String) claims.get("role"));
     }
 
     public  boolean isUser() {
+
         return "user".equalsIgnoreCase((String) claims.get("role"));
     }
 
