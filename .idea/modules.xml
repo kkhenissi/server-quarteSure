@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/quarte-sure-backend/quarte-sure-backend.iml" filepath="$PROJECT_DIR$/quarte-sure-backend/quarte-sure-backend.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/quarteSureBack-end.iml" filepath="$PROJECT_DIR$/.idea/quarteSureBack-end.iml" />
     </modules>
   </component>

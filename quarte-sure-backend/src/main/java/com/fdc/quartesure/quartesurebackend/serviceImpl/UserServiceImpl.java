@@ -163,5 +163,27 @@ public class UserServiceImpl implements UserService {
        return QuarteSureUtils.getResponseEntity("true",HttpStatus.OK);
     }
 
+    @Override
+    public ResponseEntity<String> changePassword(Map<String, String> requestMap) {
+        try {
+           User userObj = userDao.findByEmail(jwtFilter.getCurrentUser());
+           log.info("Inside changePassword {}",userObj);
+           if(!userObj.equals(null)) {
+               if(userObj.getPassword().equals(requestMap.get("oldPassword"))) {
+                   userObj.setPassword(requestMap.get("newPassword"));
+                   userDao.save(userObj);
+                   return QuarteSureUtils.getResponseEntity("Password Updated Successfully.",HttpStatus.OK);
+
+               }
+               return QuarteSureUtils.getResponseEntity("Incorrect Old Password", HttpStatus.BAD_GATEWAY);
+
+           }
+           return QuarteSureUtils.getResponseEntity(QuarteSureConstants.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
+        }catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return QuarteSureUtils.getResponseEntity(QuarteSureConstants.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 
 }
