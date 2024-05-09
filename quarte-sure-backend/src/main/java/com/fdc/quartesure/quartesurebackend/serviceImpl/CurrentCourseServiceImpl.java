@@ -3,6 +3,7 @@ package com.fdc.quartesure.quartesurebackend.serviceImpl;
 import com.fdc.quartesure.quartesurebackend.POJO.CurrentCourse;
 import com.fdc.quartesure.quartesurebackend.POJO.Participant;
 import com.fdc.quartesure.quartesurebackend.service.CurrentCourseService;
+import com.fdc.quartesure.quartesurebackend.utils.QuarteSureUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -25,16 +26,6 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
     @Override
     public ResponseEntity<String> getCourse(Map<String, String> requestMap) {
 
-
-//        Date aujourdhui = new Date();
-//        String currentUrl="";
-//        currentUrl = "https://online.turfinfo.api.pmu.fr/rest/client/61/programme/"+aujourdhui+"/"+refCourse.getReunion()+"/"+refCourse.getCourse()+"/performances-detaillees/pretty";
-//
-//        System.out.println("*****************************************************");
-//        System.out.println(refCourse.getClass());
-//        System.out.println(aujourdhui);
-//        System.out.println(currentUrl);
-//        System.out.println("*****************************************************");
         try {
             log.info("Inside signup {}",requestMap);
             if(validateRefCourse(requestMap)) {
@@ -82,7 +73,7 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
 
                     log.info("What is in translateCurrentCourse {}",gson.toJson(translateCurrentCourse));
 
-                    return new ResponseEntity<>(gson.toJson(translateCurrentCourse.toString()) ,HttpStatus.OK);
+                    return new ResponseEntity<>(gson.toJson(translateCurrentCourse) ,HttpStatus.OK);
                 }
             }
 
@@ -90,9 +81,7 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
         }catch(Exception ex) {
             ex.printStackTrace();
         }
-        return null;
-                // QuarteSureUtils.getResponseEntity("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
-
+            return  QuarteSureUtils.getResponseEntity("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     private boolean validateRefCourse(Map<String,String> requestMap) {
