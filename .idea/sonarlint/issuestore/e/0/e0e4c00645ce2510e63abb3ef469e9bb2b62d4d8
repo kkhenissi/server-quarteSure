@@ -1,8 +1,23 @@
 
-b	java:S112/"FDefine and throw a dedicated exception instead of using a generic one.(ªÑ›µ8®æÒğõ1
-{	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(¾ÑÇÿÿÿÿÿ8±æÒğõ1
+b	java:S1124"FDefine and throw a dedicated exception instead of using a generic one.(ªÑ›µ8©”Õùõ1
+{	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(¾ÑÇÿÿÿÿÿ8«”Õùõ1
+^
+java:S1854B"<Remove this useless assignment to local variable "listType".( à¹ªüÿÿÿÿ8µ”Õùõ1
+`
+java:S1854E">Remove this useless assignment to local variable "jsonAllure".(”»ÈĞıÿÿÿÿ8µ”Õùõ1
+U
+java:S1854L"8Remove this useless assignment to local variable "gson".(şëŒ8¥“äùõ1
+]	java:S125*"<This block of commented-out lines of code should be removed.(æÔ—Ùøÿÿÿÿ8¹”Õùõ1
 T
-java:S18749"2Remove this use of "JsonParser"; it is deprecated.(õö¾şÿÿÿÿÿ8ÄæÒğõ1
+java:S1874>"2Remove this use of "JsonParser"; it is deprecated.(õö¾şÿÿÿÿÿ8½”Õùõ1
 O
-java:S18749"-Remove this use of "parse"; it is deprecated.(õö¾şÿÿÿÿÿ8ÄæÒğõ1
-F	java:S106B"+Replace this use of System.out by a logger.(¡”³)8ÊæÒğõ1
+java:S1874>"-Remove this use of "parse"; it is deprecated.(õö¾şÿÿÿÿÿ8½”Õùõ1
+O
+java:S1481B"-Remove this unused "listType" local variable.( à¹ªüÿÿÿÿ8¾”Õùõ1
+]	java:S125D"<This block of commented-out lines of code should be removed.(Ú Ÿúÿÿÿÿ8°âíùõ1
+Q
+java:S1481E"/Remove this unused "jsonAllure" local variable.(”»ÈĞıÿÿÿÿ8Ã”Õùõ1
+W	java:S125G"<This block of commented-out lines of code should be removed.(Ÿ·ÈJ8Ã”Õùõ1
+F
+java:S1481L")Remove this unused "gson" local variable.(şëŒ8¶“äùõ1
+]	java:S125O"<This block of commented-out lines of code should be removed.(ßÛÍúÿÿÿÿ8Ã”Õùõ1
