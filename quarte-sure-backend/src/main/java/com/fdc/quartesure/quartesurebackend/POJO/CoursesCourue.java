@@ -17,5 +17,6 @@ public class CoursesCourue {
     private String distance;  // 2000,
     private String nbParticipants;  // 9,
     private String tempsDuPremier;  // 11976,
-    private HParticipant[] hParticipants;
+    private String etatTerrain;
+    private HParticipant[] participants;
 }

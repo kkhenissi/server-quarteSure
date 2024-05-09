@@ -5,6 +5,7 @@ import com.fdc.quartesure.quartesurebackend.rest.CurrentCourseRest;
 import com.fdc.quartesure.quartesurebackend.service.CurrentCourseService;
 import com.fdc.quartesure.quartesurebackend.service.UserService;
 import com.fdc.quartesure.quartesurebackend.utils.QuarteSureUtils;
+import com.fdc.quartesure.quartesurebackend.wrapper.RefCourseWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,11 +17,10 @@ public class CurrentCourseRestImpl implements CurrentCourseRest {
 
     @Autowired
     CurrentCourseService currentCourseService;
+
+
     @Override
     public ResponseEntity<CurrentCourse> getCourse(Map<String, String> requestMap) {
-
-
-
         try {
             currentCourseService.getCourse(requestMap);
 
@@ -28,7 +28,6 @@ public class CurrentCourseRestImpl implements CurrentCourseRest {
             ex.printStackTrace();
         }
         return null;
-                //QuarteSureUtils.getResponseEntity("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
-
+        //QuarteSureUtils.getResponseEntity("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

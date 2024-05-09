@@ -1,0 +1,10 @@
+
+b	java:S1128"FDefine and throw a dedicated exception instead of using a generic one.(ªÑ›µ8Ò¬¨îõ1
+{	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(¾ÑÇÿÿÿÿÿ8Õ¬¨îõ1
+]	java:S125"<This block of commented-out lines of code should be removed.(‰ğ˜üÿÿÿÿ8á¬¨îõ1
+T
+java:S1874B"2Remove this use of "JsonParser"; it is deprecated.(õö¾şÿÿÿÿÿ8é¬¨îõ1
+O
+java:S1874B"-Remove this use of "parse"; it is deprecated.(õö¾şÿÿÿÿÿ8ê¬¨îõ1
+F	java:S106K"+Replace this use of System.out by a logger.(¡”³)8ñ¬¨îõ1
+X	java:S125^"<This block of commented-out lines of code should be removed.(«Ğ§ä8ó¬¨îõ1

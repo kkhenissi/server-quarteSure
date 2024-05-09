@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class InfosParticipant {
 
 
-    private String nom;
+    private String       nom;
     private String       numPmu; //: 1,
     private String        age;  // 6,
     private String        sexe; // "FEMELLES",

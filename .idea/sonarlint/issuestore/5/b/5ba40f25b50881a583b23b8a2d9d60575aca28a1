@@ -1,0 +1,29 @@
+
+t
+java:S2293J"YReplace the type specification in this constructor call with the diamond operator ("<>").(øñ¤¢ùÿÿÿÿ
+o
+java:S2293O"YReplace the type specification in this constructor call with the diamond operator ("<>").(¦–øè
+t
+java:S2293U"YReplace the type specification in this constructor call with the diamond operator ("<>").(Ş¯Æäüÿÿÿÿ
+^
+java:S1192E"IDefine a constant instead of duplicating this literal "password" 3 times.(“ºùK
+a
+java:S1192-"FDefine a constant instead of duplicating this literal "email" 4 times.(“£ŒÃùÿÿÿÿ
+b
+java:S1192l"GDefine a constant instead of duplicating this literal "status" 3 times.(Šğ¥òøÿÿÿÿ
+t	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(¾ÑÇÿÿÿÿÿ
+_
+java:S6813"BRemove this field injection and use constructor injection instead.(êæÄŞ8ŸÛ©”õ1
+_
+java:S6813"BRemove this field injection and use constructor injection instead.(êæÄŞ8¡Û©”õ1
+_
+java:S6813 "BRemove this field injection and use constructor injection instead.(êæÄŞ8¢Û©”õ1
+_
+java:S6813""BRemove this field injection and use constructor injection instead.(êæÄŞ8¤Û©”õ1
+_
+java:S6813$"BRemove this field injection and use constructor injection instead.(êæÄŞ8¦Û©”õ1
+_
+java:S6813&"BRemove this field injection and use constructor injection instead.(êæÄŞ8¨Û©”õ1
+V	java:S1256"<This block of commented-out lines of code should be removed.(‰‘ŠÀüÿÿÿÿ
+–
+java:S2159«"zRemove this call to "equals"; comparisons against null always return false; consider using '== null' to check for nullity.(úèÑ úÿÿÿÿ
