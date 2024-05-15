@@ -22,7 +22,7 @@
 #            run: mvn -B test pom.xml
 
           - name: Build the application
-            run: mvn -B package https://github.com/kkhenissi/server-quarteSure/blob/943b122a40197dc0f9f861c564bc2cd9f84293ef/quarte-sure-backend/pom.xml
+            run: mvn -B package quarte-sure-backend/pom.xml
 
 
 
