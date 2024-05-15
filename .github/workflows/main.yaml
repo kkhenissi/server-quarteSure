@@ -18,11 +18,11 @@
               distribution: 'corretto'
               java-version: 17
 
-          - name: Unit Tests
-            run: mvn -B test pom.xml
+#          - name: Unit Tests
+#            run: mvn -B test pom.xml
 
           - name: Build the application
             run: |
               mvn clean
-              mvn -B package pom.xml
+              mvn -B package --file pom.xml
 
