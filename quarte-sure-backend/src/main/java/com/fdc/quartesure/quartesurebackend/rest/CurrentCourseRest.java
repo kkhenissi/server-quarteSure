@@ -14,6 +14,11 @@ public interface CurrentCourseRest {
 
       @PostMapping(path = "/participants")
       public ResponseEntity<String> getCourse(@RequestBody(required = true) Map<String, String> requestMap);
-    }
+
+
+    @PostMapping(path = "/performances")
+    public ResponseEntity<String> getPerformances(@RequestBody(required = true) Map<String, String> requestMap);
+
+}
 
 

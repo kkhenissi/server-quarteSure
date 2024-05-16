@@ -29,4 +29,15 @@ public class CurrentCourseRestImpl implements CurrentCourseRest {
         }
         return QuarteSureUtils.getResponseEntity("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @Override
+    public ResponseEntity<String> getPerformances(Map<String, String> requestMap) {
+        try {
+            return  currentCourseService.getPerfomances(requestMap);
+
+        }catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return QuarteSureUtils.getResponseEntity("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
