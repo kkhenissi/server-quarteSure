@@ -24,5 +24,5 @@
           - name: Build the application
             run: |
               mvn clean
-              mvn -B package --file ../quarte-sure-backend/pom.xml
+              mvn -B package --file pom.xml
 
