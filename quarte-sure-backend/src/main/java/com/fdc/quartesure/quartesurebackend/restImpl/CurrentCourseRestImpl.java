@@ -20,14 +20,13 @@ public class CurrentCourseRestImpl implements CurrentCourseRest {
 
 
     @Override
-    public ResponseEntity<CurrentCourse> getCourse(Map<String, String> requestMap) {
+    public ResponseEntity<String> getCourse(Map<String, String> requestMap) {
         try {
-            currentCourseService.getCourse(requestMap);
+           return  currentCourseService.getCourse(requestMap);
 
         }catch (Exception ex) {
             ex.printStackTrace();
         }
-        return null;
-        //QuarteSureUtils.getResponseEntity("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+        return QuarteSureUtils.getResponseEntity("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

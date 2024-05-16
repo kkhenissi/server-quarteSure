@@ -12,9 +12,9 @@
 	<artifactId>quarte-sure-backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>quarte-sure-backend</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Is the winner server  </description>
 	<properties>
-		<java.version>11</java.version>
+		<java.version>17</java.version>
 	</properties>
 	<dependencies>
 		<dependency>

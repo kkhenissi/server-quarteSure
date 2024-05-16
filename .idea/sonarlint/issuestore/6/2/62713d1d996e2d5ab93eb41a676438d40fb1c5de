@@ -1,5 +1,0 @@
-
-t	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(§æ”Ðúÿÿÿÿ
-_
-java:S6813"BRemove this field injection and use constructor injection instead.(êæÄÞ8îÅª”õ1
-X	java:S125"<This block of commented-out lines of code should be removed.(«Ð§ä8²Îà”õ1

@@ -1,8 +1,10 @@
 package com.fdc.quartesure.quartesurebackend.serviceImpl;
 
 import com.fdc.quartesure.quartesurebackend.POJO.CurrentCourse;
+import com.fdc.quartesure.quartesurebackend.POJO.InfosParticipant;
 import com.fdc.quartesure.quartesurebackend.POJO.Participant;
 import com.fdc.quartesure.quartesurebackend.service.CurrentCourseService;
+import com.fdc.quartesure.quartesurebackend.utils.QuarteSureUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -25,25 +27,19 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
     @Override
     public ResponseEntity<String> getCourse(Map<String, String> requestMap) {
 
-
-//        Date aujourdhui = new Date();
-//        String currentUrl="";
-//        currentUrl = "https://online.turfinfo.api.pmu.fr/rest/client/61/programme/"+aujourdhui+"/"+refCourse.getReunion()+"/"+refCourse.getCourse()+"/performances-detaillees/pretty";
-//
-//        System.out.println("*****************************************************");
-//        System.out.println(refCourse.getClass());
-//        System.out.println(aujourdhui);
-//        System.out.println(currentUrl);
-//        System.out.println("*****************************************************");
         try {
             log.info("Inside signup {}",requestMap);
             if(validateRefCourse(requestMap)) {
                 String aujourdhui = new SimpleDateFormat("ddMMyyyy").format(new Date());
                 String currentUrl="";
-                currentUrl = "https://online.turfinfo.api.pmu.fr/rest/client/61/programme/"+aujourdhui+"/"+requestMap.get("R")+"/"+requestMap.get("C")+"/performances-detaillees/pretty";
+                currentUrl = "https://online.turfinfo.api.pmu.fr/rest/client/1/programme/"+aujourdhui+"/"+requestMap.get("R")+"/"+requestMap.get("C")+"/participants?specialisation=INTERNET";
                 URL url = new URL(currentUrl);
                 log.info("CurrentUrl {}",currentUrl);
+                // https://online.turfinfo.api.pmu.fr/rest/client/1/programme/09052024/R1/C7/participants?specialisation=INTERNET
+                //   this.urlParticipants="/"+dateCourse.toISOString().split('-')[2].substring(0,2)+dateCourse.toISOString().split('-')[1]+dateCourse.toISOString().split('-')[0]+"/"+this.refCourse.R+"/"+this.refCourse.C+"/participants?specialisation=INTERNET"
                 // "https://online.turfinfo.api.pmu.fr/rest/client/61/programme/09022024/R7/C5/performances-detaillees/pretty"
+
+                // "https://online.turfinfo.api.pmu.fr/rest/client/61/programme/"+aujourdhui+"/"+requestMap.get("R")+"/"+requestMap.get("C")+"/performances-detaillees/pretty";
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 conn.connect();
@@ -65,24 +61,24 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
 
                     JsonObject dataObject = new JsonParser().parse((informationRetrived.toString())).getAsJsonObject();
 
-                    JsonElement bruteParticipants = dataObject.get("participants");
+                    JsonElement bruteParticipants = dataObject;
                     log.info("bruteParticipants {}",bruteParticipants);
                     Type listType = new TypeToken<List<Participant>>() {}.getType();
                     Type allureType = new TypeToken<String>() {}.getType();
-                    List<Participant> jsonParticipants = new Gson().fromJson(bruteParticipants, listType);
+                   // List<InfosParticipant> jsonParticipants = (List<InfosParticipant>) bruteParticipants;
                     String jsonAllure = new Gson().fromJson(dataObject.get("allure"),allureType);
 
-                    System.out.println(jsonParticipants);
-                    CurrentCourse translateCurrentCourse = new CurrentCourse();
-
-                    translateCurrentCourse.setParticipants((ArrayList<Participant>) jsonParticipants);
-                    translateCurrentCourse.setAllure(jsonAllure);
+//                    System.out.println(jsonParticipants);
+//                    CurrentCourse translateCurrentCourse = new CurrentCourse();
+//
+//                    translateCurrentCourse.setParticipants((ArrayList<Participant>) jsonParticipants);
+//                    translateCurrentCourse.setAllure(jsonAllure);
                     Gson gson = new Gson();
 
 
-                    log.info("What is in translateCurrentCourse {}",gson.toJson(translateCurrentCourse));
+               //     log.info("What is in translateCurrentCourse {}",gson.toJson(translateCurrentCourse));
 
-                    return new ResponseEntity<>(gson.toJson(translateCurrentCourse.toString()) ,HttpStatus.OK);
+                    return new ResponseEntity<>(bruteParticipants.toString() ,HttpStatus.OK);
                 }
             }
 
@@ -90,9 +86,7 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
         }catch(Exception ex) {
             ex.printStackTrace();
         }
-        return null;
-                // QuarteSureUtils.getResponseEntity("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
-
+            return  QuarteSureUtils.getResponseEntity("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     private boolean validateRefCourse(Map<String,String> requestMap) {
