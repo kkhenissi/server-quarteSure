@@ -3,11 +3,15 @@ package com.fdc.quartesure.quartesurebackend.POJO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DernierRapportDirect {
+@ToString
+public class DernierRapportDirect implements Serializable {
 
     private  String typePari;  // "E_SIMPLE_GAGNANT",
     private  String rapport;  // 6.6,

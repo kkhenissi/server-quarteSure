@@ -3,11 +3,15 @@ package com.fdc.quartesure.quartesurebackend.POJO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CoursesCourue {
+@ToString
+public class CoursesCourue implements Serializable {
     private String date;  // 1703199600000,
     private String timezoneOffset;  // 3600000,
     private String hippodrome;  // "SAN ISIDRO",

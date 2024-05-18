@@ -3,11 +3,15 @@ package com.fdc.quartesure.quartesurebackend.POJO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class GainPatricipant {
+@ToString
+public class GainPatricipant implements Serializable {
 
            private String gainsCarriere; // 3820700,
            private String gainsVictoires;  // 2704400,

@@ -3,15 +3,19 @@ package com.fdc.quartesure.quartesurebackend.POJO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class InfosParticipant {
+@ToString
+public class InfosParticipant implements Serializable {
 
 
-    private String       nom;
-    private String       numPmu; //: 1,
+    private String        nom;
+    private String        numPmu; //: 1,
     private String        age;  // 6,
     private String        sexe; // "FEMELLES",
     private String        race; // "PUR-SANG",
