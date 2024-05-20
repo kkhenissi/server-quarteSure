@@ -2,7 +2,7 @@ package com.fdc.quartesure.quartesurebackend.serviceImpl;
 
 import com.fdc.quartesure.quartesurebackend.POJO.Course;
 import com.fdc.quartesure.quartesurebackend.POJO.CurrentCourse;
-import com.fdc.quartesure.quartesurebackend.POJO.InfosParticipant;
+
 import com.fdc.quartesure.quartesurebackend.POJO.Participant;
 import com.fdc.quartesure.quartesurebackend.dao.CourseDao;
 import com.fdc.quartesure.quartesurebackend.dao.UserDao;
@@ -77,10 +77,10 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
 
                         JsonElement bruteParticipants = dataObject;
                         log.info("bruteParticipants {}",bruteParticipants);
-                        Type listType = new TypeToken<List<Participant>>() {}.getType();
-                        Type allureType = new TypeToken<String>() {}.getType();
+                     //   Type listType = new TypeToken<List<Participant>>() {}.getType();
+                     //   Type allureType = new TypeToken<String>() {}.getType();
                         // List<InfosParticipant> jsonParticipants = (List<InfosParticipant>) bruteParticipants;
-                        String jsonAllure = new Gson().fromJson(dataObject.get("allure"),allureType);
+                     //   String jsonAllure = new Gson().fromJson(dataObject.get("allure"),allureType);
 
 //                    System.out.println(jsonParticipants);
 //                    CurrentCourse translateCurrentCourse = new CurrentCourse();
@@ -92,18 +92,20 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
 
                         //     log.info("What is in translateCurrentCourse {}",gson.toJson(translateCurrentCourse));
                            // before return extracted course save it in local database
-                           Course courseToSave = new Course();
-                           courseToSave.setCourseId(getCourseFromBrute(bruteParticipants).getCourseId());
-                           ArrayList<InfosParticipant> participantsll = getCourseFromBrute(bruteParticipants).getParticipants();
+                         //  Course courseToSave = new Course();
+                           Course courseToSave = gson.fromJson(bruteParticipants, Course.class);
+                        log.info("courseToSave {}",courseToSave);
+                         //  courseToSave.setCourseId(getCourseFromBrute(bruteParticipants).getCourseId());
+                       //    ArrayList<InfosParticipant> participantsll = getCourseFromBrute(bruteParticipants).getParticipants();
 
-                           String element = gson.toJson(
-                                   participantsll,
-                                new TypeToken<ArrayList<InfosParticipant>>() {}.getType());
+//                           String element = gson.toJson(
+//                                   participantsll,
+//                                new TypeToken<ArrayList<InfosParticipant>>() {}.getType());
 
 
-                           log.info("element {}",element);
+                      //     log.info("element {}",element);
                        // new ArrayList<String>(Arrays.asList(s.split(",")));
-                           courseToSave.setParticipants(new ArrayList<InfosParticipant>());
+                         //  courseToSave.setParticipants(null);
                            this.courseDao.save(courseToSave);
                         return new ResponseEntity<>(bruteParticipants.toString() ,HttpStatus.OK);
                     }
@@ -129,6 +131,7 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
                 String currentUrl="";
                 currentUrl = "https://online.turfinfo.api.pmu.fr/rest/client/61/programme/"+toDay+"/"+requestMap.get("R")+"/"+requestMap.get("C")+"/performances-detaillees/pretty";
                 URL url = new URL(currentUrl);
+                log.info("toDay {}",toDay);
                 log.info("CurrentUrl {}",currentUrl);
                 // https://online.turfinfo.api.pmu.fr/rest/client/1/programme/09052024/R1/C7/participants?specialisation=INTERNET
                 //   this.urlParticipants="/"+dateCourse.toISOString().split('-')[2].substring(0,2)+dateCourse.toISOString().split('-')[1]+dateCourse.toISOString().split('-')[0]+"/"+this.refCourse.R+"/"+this.refCourse.C+"/participants?specialisation=INTERNET"
@@ -194,16 +197,16 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
         Gson gson = new Gson();
       //  Arrays<Participant> localParticipants  = gson.fromJson(EntityUtils.toString(response.getEntity()), DataResponse.class);
         Course course = new Course();
-        Type listType = new TypeToken<List<InfosParticipant>>() {}.getType();
-        course.setCourseId("R1C4-15022024");
+     //   Type listType = new TypeToken<List<InfosParticipant>>() {}.getType();
+        // course.setCourseId("R1C4-15022024");
         log.info("prueParticipant inside getCourseFromBrute {}",bruteParticipants);
         String[] splitedString = bruteParticipants.toString().split("(?<=],)",2);
         log.info("splitedString[1] {}",splitedString[0].substring(16));
         String segondSplitedString = splitedString[0].substring(16).replaceFirst(".$", "");
         //log.info("segondSplitedString {}",segondSplitedString);
-        ArrayList<InfosParticipant> locatParticipants = gson.fromJson(segondSplitedString, listType);
-        log.info("locatParticipants {}",locatParticipants);
-        course.setParticipants(locatParticipants);
+      //  ArrayList<InfosParticipant> locatParticipants = gson.fromJson(segondSplitedString, listType);
+      //  log.info("locatParticipants {}",locatParticipants);
+       // course.setParticipants(locatParticipants);
         log.info("course {}",course);
 
 

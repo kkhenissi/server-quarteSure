@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-public interface CourseDao extends JpaRepository<Course, String> {
+public interface CourseDao extends JpaRepository<Course, Integer> {
 
-    Optional<Course> findById(String courseId);
+  //  Optional<Course> findById(String courseId);
 }
