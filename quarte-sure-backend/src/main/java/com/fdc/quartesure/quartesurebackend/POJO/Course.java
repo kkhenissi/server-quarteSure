@@ -13,15 +13,14 @@ import java.util.ArrayList;
 @DynamicUpdate
 @DynamicInsert
 @Table(name = "course")
-@Embeddable
-@ToString
+
 public class Course implements Serializable  {
     public static final Long serialVersionUid = 12456L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+  //  @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "course_id")
-    private Integer courseId; // "R1C4-25042024"
+    private String courseId; // "R1C4-25042024"
     @Column(name = "listOfParticipant", length = 10000)
     private ArrayList<InfosParticipant> participants;
     private ArrayList<Ecurie> ecuries;

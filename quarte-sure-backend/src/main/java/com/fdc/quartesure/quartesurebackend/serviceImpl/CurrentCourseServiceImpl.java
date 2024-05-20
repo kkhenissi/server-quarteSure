@@ -41,8 +41,12 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
             if(validateRefCourse(requestMap)) {
                 // look data from local database
                 String toDay = new SimpleDateFormat("ddMMyyyy").format(new Date());
-                if(1==2) { // if selected course is allway in local databasecouse
+                log.info("What is in return course ==> {}", new ResponseEntity<>(courseDao.findByCourseId((requestMap.get("R")+requestMap.get("C")+"-"+toDay)),HttpStatus.OK));
+                ResponseEntity<String> courseToReurn =  null;
+                        //new ResponseEntity<>(courseDao.findByCourseId((requestMap.get("R")+requestMap.get("C")+"-"+toDay)),HttpStatus.OK);
+                if(1 == 2) { // if selected course is allway in local databasecouse
                     // TOODO extract data from local database and return it
+                    return null;
 
                 } else {
                     String currentUrl="";
@@ -95,7 +99,7 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
                          //  Course courseToSave = new Course();
                            Course courseToSave = gson.fromJson(bruteParticipants, Course.class);
                         log.info("courseToSave {}",courseToSave);
-                         //  courseToSave.setCourseId(getCourseFromBrute(bruteParticipants).getCourseId());
+                           courseToSave.setCourseId(requestMap.get("R")+requestMap.get("C")+"-"+toDay);
                        //    ArrayList<InfosParticipant> participantsll = getCourseFromBrute(bruteParticipants).getParticipants();
 
 //                           String element = gson.toJson(
@@ -120,6 +124,11 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
             ex.printStackTrace();
         }
             return  QuarteSureUtils.getResponseEntity("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @Override
+    public ResponseEntity<String> getCourseByCoursseId(Map<String, String> requestMap) {
+        return null;
     }
 
     @Override
