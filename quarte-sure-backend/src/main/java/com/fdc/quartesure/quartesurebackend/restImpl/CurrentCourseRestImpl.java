@@ -32,6 +32,7 @@ public class CurrentCourseRestImpl implements CurrentCourseRest {
 
     @Override
     public ResponseEntity<String> getPerformances(Map<String, String> requestMap) {
+        System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
         try {
             return  currentCourseService.getPerfomances(requestMap);
 

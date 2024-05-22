@@ -3,8 +3,10 @@ package com.fdc.quartesure.quartesurebackend.serviceImpl;
 import com.fdc.quartesure.quartesurebackend.POJO.Course;
 import com.fdc.quartesure.quartesurebackend.POJO.CurrentCourse;
 
+import com.fdc.quartesure.quartesurebackend.POJO.InfosParticipant;
 import com.fdc.quartesure.quartesurebackend.POJO.Participant;
 import com.fdc.quartesure.quartesurebackend.dao.CourseDao;
+import com.fdc.quartesure.quartesurebackend.dao.InfosParticipantDao;
 import com.fdc.quartesure.quartesurebackend.dao.UserDao;
 import com.fdc.quartesure.quartesurebackend.service.CurrentCourseService;
 import com.fdc.quartesure.quartesurebackend.utils.QuarteSureUtils;
@@ -26,6 +28,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -33,6 +36,8 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
 
     @Autowired
     private CourseDao courseDao;
+    @Autowired
+    private InfosParticipantDao infosParticipantDao;
     @Override
     public ResponseEntity<String> getCourse(Map<String, String> requestMap) {
 
@@ -81,9 +86,9 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
 
                         JsonElement bruteParticipants = dataObject;
                         log.info("bruteParticipants {}",bruteParticipants);
-                     //   Type listType = new TypeToken<List<Participant>>() {}.getType();
+
                      //   Type allureType = new TypeToken<String>() {}.getType();
-                        // List<InfosParticipant> jsonParticipants = (List<InfosParticipant>) bruteParticipants;
+                     //    List<InfosParticipant> jsonParticipants = (List<InfosParticipant>) bruteParticipants;
                      //   String jsonAllure = new Gson().fromJson(dataObject.get("allure"),allureType);
 
 //                    System.out.println(jsonParticipants);
@@ -92,14 +97,28 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
 //                    translateCurrentCourse.setParticipants((ArrayList<.>) jsonParticipants);
 //                    translateCurrentCourse.setAllure(jsonAllure);
                         Gson gson = new Gson();
+                        Type listType = new TypeToken<List<Participant>>() {}.getType();
 
 
                         //     log.info("What is in translateCurrentCourse {}",gson.toJson(translateCurrentCourse));
                            // before return extracted course save it in local database
                          //  Course courseToSave = new Course();
+
+//                        Set<String> childrenNames = father.getChildren().stream()
+//                                .map(Children::getChildrenName)
+//                                .collect(Collectors.toSet()); // create new set of children names
+//                        childrenNames.forEach(System.out::println); // print names of the children
+
+
                            Course courseToSave = gson.fromJson(bruteParticipants, Course.class);
-                        log.info("courseToSave {}",courseToSave);
-                           courseToSave.setCourseId(requestMap.get("R")+requestMap.get("C")+"-"+toDay);
+                          List<InfosParticipant> infosParticipant = courseToSave.getParticipants().stream()
+                                   .collect(Collectors.toList());
+                          log.info("What is in infosParticipant {}",infosParticipant);
+
+                    //    courseToSave.setCached(true);
+                    //    InfosParticipant infosParticipantToSave = gson.fromJson(bruteParticipants, listType);
+                    //    log.info("infosParticipantToSave {}",infosParticipantToSave);
+                      // **** //     courseToSave.setCourseId(requestMap.get("R")+requestMap.get("C")+"-"+toDay);
                        //    ArrayList<InfosParticipant> participantsll = getCourseFromBrute(bruteParticipants).getParticipants();
 
 //                           String element = gson.toJson(
@@ -110,6 +129,18 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
                       //     log.info("element {}",element);
                        // new ArrayList<String>(Arrays.asList(s.split(",")));
                          //  courseToSave.setParticipants(null);
+                        Course c = new Course();
+                        c.setCourseId(requestMap.get("R")+requestMap.get("C")+"-"+toDay);
+                        infosParticipant.forEach(infoParticipant -> {
+
+
+                            infoParticipant.setCourse(c);
+                            log.info("What is in c {}",c.toString());
+                        //    this.infosParticipantDao.save(infoParticipant);
+                            log.info("******************************************************************************");
+                        });
+                      //
+                        courseToSave.setParticipants((List<InfosParticipant>) infosParticipant);
                            this.courseDao.save(courseToSave);
                         return new ResponseEntity<>(bruteParticipants.toString() ,HttpStatus.OK);
                     }
@@ -168,7 +199,7 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
 
                     JsonObject dataObject = new JsonParser().parse((informationRetrived.toString())).getAsJsonObject();
 
-                    JsonElement bruteParticipants = dataObject.getAsJsonArray();
+                    JsonElement bruteParticipants = dataObject;
                     log.info("bruteParticipants {}",bruteParticipants);
 
                     Type listType = new TypeToken<List<Participant>>() {}.getType();
