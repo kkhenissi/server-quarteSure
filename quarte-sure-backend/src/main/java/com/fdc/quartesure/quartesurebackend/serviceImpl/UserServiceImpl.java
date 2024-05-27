@@ -133,7 +133,7 @@ public class UserServiceImpl implements UserService {
     // arrivé jusquau 1:18:18
 
     private boolean validateSignUpMap(Map<String,String> requestMap) {
-        return requestMap.containsKey("name") && requestMap.containsKey("contactNumber") && requestMap.containsKey("email") && requestMap.containsKey("password");
+        return requestMap.containsKey("firstName") && requestMap.containsKey("lastName") && requestMap.containsKey("phoneNumber") && requestMap.containsKey("email") && requestMap.containsKey("password");
 
     }
 
