@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 @NamedQuery(name = "User.findByEmailId",query = "select u from User u where u.email =:email")
 
-@NamedQuery(name = "User.getAllUser", query = "select new com.fdc.quartesure.quartesurebackend.wrapper.UserWrapper(u.id,u.name,u.email,u.contactNumber,u.status) from User u where u.role='user'")
+@NamedQuery(name = "User.getAllUser", query = "select new com.fdc.quartesure.quartesurebackend.wrapper.UserWrapper(u.id,u.name,u.email,u.phoneNumber,u.status) from User u where u.role='user'")
 
 @NamedQuery(name = "User.updateStatus", query = "update User u set u.status =: status where u.id =: id")
 
@@ -29,8 +29,8 @@ public class User implements Serializable {
     private Integer id;
     @Column(name = "name")
     private String name;
-    @Column(name = "contactNumber")
-    private String contactNumber;
+    @Column(name = "phoneNumber")
+    private String phoneNumber;
     @Column(name = "email")
     private String email;
     @Column(name = "password")
