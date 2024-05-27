@@ -11,7 +11,7 @@ public class UserWrapper {
 
     private Integer id;
 
-    private String name;
+    private String firstName;
 
     private String email;
 
