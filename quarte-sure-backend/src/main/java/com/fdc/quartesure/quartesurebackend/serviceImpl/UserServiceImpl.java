@@ -23,10 +23,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
+import javax.transaction.Transactional;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -185,6 +187,25 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
+    @Transactional
+    public ResponseEntity<String> confirm(String token) throws MessagingException {
+
+        Token savedToken =tokenDao.findByToken(token)
+                // todo exception has to be defined
+                .orElseThrow(()-> new RuntimeException("Invalid token"));
+        if(LocalDateTime.now().isAfter(savedToken.getExpiresAt())) {
+            sendValidationEmail(savedToken.getUser());
+            throw  new RuntimeException("Activation token has expired, a new token has been sent to the same email address");
+        }
+        var user = userDao.findById(savedToken.getUser().getUser_id())
+                .orElseThrow(()-> new UsernameNotFoundException("User not found"));
+        user.setStatus("true");
+        userDao.save(user);
+        savedToken.setValidatedAt(LocalDateTime.now());
+        tokenDao.save(savedToken);
+        return null;
+    }
 
 
     // arrivé jusquau 1:18:18
