@@ -1,0 +1,30 @@
+    services:
+      postgres:
+        container_name: postgre-sql-winner
+        image: postgres
+        environment:
+          POSTGRES_USER: username
+          POSTGRES_PASSWORD: password
+          PGDATA: /var/lib/postgresql/data
+          POSTGRES_DB: winner_db
+        volumes:
+          - db-data:/var/lib/postgres/data
+        ports:
+          - 5432:5432
+        networks:
+          - spring-winner
+        restart: unless-stopped
+      mail-dev:
+        container_name: mail-dev-winner
+        image: maildev/maildev
+        ports:
+          - 1080:1080
+          - 1025:1025
+
+
+    networks:
+      spring-winner:
+        driver: bridge
+
+    volumes:
+      db-data:

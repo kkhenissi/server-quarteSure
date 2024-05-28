@@ -1,8 +1,10 @@
 package com.fdc.quartesure.quartesurebackend.POJO;
 
+
 import lombok.Data;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.NamedQuery;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -19,16 +21,18 @@ import java.io.Serializable;
 @Entity
 @DynamicUpdate
 @DynamicInsert
-@Table(name = "user")
+@Table(name = "winner_user")
 public class User implements Serializable {
     private  static  final long serialVersionUID=1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Integer id;
+    @Column(name = "user_id")
+    private Integer user_id;
     @Column(name = "first_name")
     private String firstName;
+    @Column(name = "last_name")
+    private String lastName;
     @Column(name = "phoneNumber")
     private String phoneNumber;
     @Column(name = "email")
@@ -39,4 +43,6 @@ public class User implements Serializable {
     private String status;
     @Column(name = "role")
     private String role;
+
+    public String fullName() {return firstName + " " + lastName;}
 }

@@ -1,2 +1,15 @@
-package com.fdc.quartesure.quartesurebackend.service;public interface EmailService {
+package com.fdc.quartesure.quartesurebackend.service;
+
+import com.fdc.quartesure.quartesurebackend.POJO.EmailTemplateName;
+
+import javax.mail.MessagingException;
+
+public interface EmailService {
+
+    public void sendEmail(String to,
+                          String userName,
+                          EmailTemplateName emailTemplateName,
+                          String confirmationUrl,
+                          String activationCode,
+                          String subject) throws MessagingException;
 }
