@@ -64,7 +64,10 @@ public class UserServiceImpl implements UserService {
             if(validateSignUpMap(requestMap)) {
                 User user = userDao.findByEmailId(requestMap.get("email"));
                 if(Objects.isNull(user)){
-                    userDao.save(getUserFromMap(requestMap));
+                    user = getUserFromMap(requestMap);
+                    log.info("What is in user hire ==> {}",user);
+                    userDao.save(user);
+
                     sendValidationEmail(user);
                     return QuarteSureUtils.getResponseEntity("Succesfully Registred.",HttpStatus.OK);
 
@@ -103,7 +106,7 @@ public class UserServiceImpl implements UserService {
                 .expiresAt(LocalDateTime.now().plusMinutes(15))
                 .user(user)
                 .build();
-        tokenDao.save(token);
+     //   tokenDao.save(token);
         return generetedToken;
 
     }
@@ -219,6 +222,7 @@ public class UserServiceImpl implements UserService {
 
         User user = new User();
         user.setFirstName(requestMap.get("firstName"));
+        user.setLastName(requestMap.get("lastName"));
         user.setPhoneNumber(requestMap.get("phoneNumber"));
         user.setEmail(requestMap.get("email"));
         user.setPassword(passwordEncode.encode(requestMap.get("password")));
