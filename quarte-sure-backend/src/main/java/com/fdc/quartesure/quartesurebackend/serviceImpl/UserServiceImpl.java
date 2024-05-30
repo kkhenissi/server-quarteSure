@@ -17,7 +17,7 @@ import com.fdc.quartesure.quartesurebackend.wrapper.UserWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.querydsl.QuerydslUtils;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -99,14 +99,16 @@ public class UserServiceImpl implements UserService {
 
     private String generateAndSaveActivationToken(User user) {
         // generate a token
-        String generetedToken = generateActivationCode(6);
+        String generetedToken = generateActivationCode(5);
         var token = Token.builder()
+                .id(UUID.randomUUID().toString())
                 .token(generetedToken)
                 .createdAt(LocalDateTime.now())
                 .expiresAt(LocalDateTime.now().plusMinutes(15))
                 .user(user)
                 .build();
-     //   tokenDao.save(token);
+        log.info("What is in  token inside == {}",token.toString());
+        tokenDao.save(token);
         return generetedToken;
 
     }
@@ -190,11 +192,13 @@ public class UserServiceImpl implements UserService {
 
     }
 
+
+
     @Override
     @Transactional
-    public ResponseEntity<String> confirm(String token) throws MessagingException {
+    public ResponseEntity<String> activateAccount(String token) throws MessagingException {
 
-        Token savedToken =tokenDao.findByToken(token)
+        Token savedToken = tokenDao.findByToken(token)
                 // todo exception has to be defined
                 .orElseThrow(()-> new RuntimeException("Invalid token"));
         if(LocalDateTime.now().isAfter(savedToken.getExpiresAt())) {
@@ -225,7 +229,7 @@ public class UserServiceImpl implements UserService {
         user.setLastName(requestMap.get("lastName"));
         user.setPhoneNumber(requestMap.get("phoneNumber"));
         user.setEmail(requestMap.get("email"));
-        user.setPassword(passwordEncode.encode(requestMap.get("password")));
+        user.setPassword(requestMap.get("password")); // passwordEncode.encode();
         user.setStatus("false");
         user.setRole("user");
         return user;

@@ -22,8 +22,8 @@ public interface UserRest {
     public ResponseEntity<String> update(@RequestBody(required = true) Map<String,String> requestMap);
 
 
-    @PostMapping(path = "/activate")
-    public ResponseEntity<String> confirm(@RequestParam String token );
+    @GetMapping(path = "/activate")
+    public ResponseEntity<String> confirm(@RequestParam(required = true) String token );
     @GetMapping(path = "/checkToken")
     public ResponseEntity<String> checkToken();
 

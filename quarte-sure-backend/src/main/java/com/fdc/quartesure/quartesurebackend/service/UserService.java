@@ -16,7 +16,8 @@ public interface UserService {
 
     ResponseEntity<String> update(Map<String, String> requestMap);
 
-    ResponseEntity<String> confirm(String token) throws MessagingException;
+    public ResponseEntity<String>  activateAccount(String token) throws MessagingException;
+
 
     ResponseEntity<String> checkToken();
 

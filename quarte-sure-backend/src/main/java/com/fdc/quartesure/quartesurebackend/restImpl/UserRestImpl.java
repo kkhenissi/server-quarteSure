@@ -67,7 +67,7 @@ public class UserRestImpl implements UserRest {
     @Override
     public ResponseEntity<String> confirm(@RequestParam String token) {
         try {
-            userService.confirm(token);
+            userService.activateAccount(token);
             return QuarteSureUtils.getResponseEntity("User status update successfully",HttpStatus.OK);
         }catch (Exception ex) {
             ex.printStackTrace();

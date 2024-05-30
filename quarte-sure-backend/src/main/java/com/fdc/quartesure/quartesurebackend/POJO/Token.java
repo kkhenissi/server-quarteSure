@@ -10,11 +10,12 @@ import java.time.LocalDateTime;
 @Builder@AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@ToString
 
 public class Token {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+   // @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private String id;
     private String token;
     private LocalDateTime createdAt;
     private LocalDateTime expiresAt;
