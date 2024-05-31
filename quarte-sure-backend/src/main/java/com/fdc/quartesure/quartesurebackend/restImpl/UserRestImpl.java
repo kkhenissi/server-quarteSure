@@ -8,6 +8,7 @@ import com.fdc.quartesure.quartesurebackend.wrapper.UserWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -56,6 +57,17 @@ public class UserRestImpl implements UserRest {
     public ResponseEntity<String> update(Map<String, String> requestMap) {
         try {
             userService.update(requestMap);
+            return QuarteSureUtils.getResponseEntity("User status update successfully",HttpStatus.OK);
+        }catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return QuarteSureUtils.getResponseEntity(QuarteSureConstants.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @Override
+    public ResponseEntity<String> confirm(@RequestParam String token) {
+        try {
+            userService.activateAccount(token);
             return QuarteSureUtils.getResponseEntity("User status update successfully",HttpStatus.OK);
         }catch (Exception ex) {
             ex.printStackTrace();

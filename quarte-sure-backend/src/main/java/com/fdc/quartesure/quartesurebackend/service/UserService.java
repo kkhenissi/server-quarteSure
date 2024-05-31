@@ -3,6 +3,7 @@ package com.fdc.quartesure.quartesurebackend.service;
 import com.fdc.quartesure.quartesurebackend.wrapper.UserWrapper;
 import org.springframework.http.ResponseEntity;
 
+import javax.mail.MessagingException;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,9 @@ public interface UserService {
     ResponseEntity<List<UserWrapper>> getAllUser();
 
     ResponseEntity<String> update(Map<String, String> requestMap);
+
+    public ResponseEntity<String>  activateAccount(String token) throws MessagingException;
+
 
     ResponseEntity<String> checkToken();
 

@@ -7,6 +7,7 @@ import org.springframework.boot.json.GsonJsonParser;
 import org.springframework.context.annotation.Bean;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -15,6 +16,7 @@ import java.util.Properties;
 import java.util.Scanner;
 
 @SpringBootApplication
+@EnableAsync
 public class QuarteSureBackendApplication {
 
 	public static void main(String[] args) {

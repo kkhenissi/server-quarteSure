@@ -3,23 +3,34 @@ package com.fdc.quartesure.quartesurebackend.serviceImpl;
 import com.fdc.quartesure.quartesurebackend.JWT.CustomerUsersDetailsService;
 import com.fdc.quartesure.quartesurebackend.JWT.JwtFilter;
 import com.fdc.quartesure.quartesurebackend.JWT.JwtUtil;
+import com.fdc.quartesure.quartesurebackend.POJO.EmailTemplateName;
+import com.fdc.quartesure.quartesurebackend.POJO.Token;
 import com.fdc.quartesure.quartesurebackend.POJO.User;
 import com.fdc.quartesure.quartesurebackend.constants.QuarteSureConstants;
+import com.fdc.quartesure.quartesurebackend.dao.TokenDao;
 import com.fdc.quartesure.quartesurebackend.dao.UserDao;
+import com.fdc.quartesure.quartesurebackend.service.EmailService;
 import com.fdc.quartesure.quartesurebackend.service.UserService;
 import com.fdc.quartesure.quartesurebackend.utils.EmailUtils;
 import com.fdc.quartesure.quartesurebackend.utils.QuarteSureUtils;
 import com.fdc.quartesure.quartesurebackend.wrapper.UserWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.querydsl.QuerydslUtils;
+import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
+import javax.transaction.Transactional;
+import java.security.SecureRandom;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Slf4j
@@ -37,6 +48,15 @@ public class UserServiceImpl implements UserService {
     JwtFilter jwtFilter;
     @Autowired
     EmailUtils emailUtils;
+    @Autowired
+    private PasswordEncoder passwordEncode;
+    @Autowired
+    private TokenDao tokenDao;
+    @Autowired
+    private EmailService emailService;
+    @Value("${spring.application.mailing.frontend.activation-url}")
+    private String activationUrl;
+
     @Override
     public ResponseEntity<String> signup(Map<String, String> requestMap) {
         try {
@@ -44,7 +64,11 @@ public class UserServiceImpl implements UserService {
             if(validateSignUpMap(requestMap)) {
                 User user = userDao.findByEmailId(requestMap.get("email"));
                 if(Objects.isNull(user)){
-                    userDao.save(getUserFromMap(requestMap));
+                    user = getUserFromMap(requestMap);
+                    log.info("What is in user hire ==> {}",user);
+                    userDao.save(user);
+
+                    sendValidationEmail(user);
                     return QuarteSureUtils.getResponseEntity("Succesfully Registred.",HttpStatus.OK);
 
                 } else {
@@ -59,6 +83,49 @@ public class UserServiceImpl implements UserService {
             ex.printStackTrace();
         }
         return QuarteSureUtils.getResponseEntity(QuarteSureConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    private void sendValidationEmail(User user) throws MessagingException {
+
+        var newToken = generateAndSaveActivationToken(user);
+        emailService.sendEmail(
+                user.getEmail(),
+                user.fullName(), EmailTemplateName.ACTIVATE_ACCOUNT,
+                activationUrl,
+                newToken,
+                "Account activation"
+        );
+    }
+
+    private String generateAndSaveActivationToken(User user) {
+        // generate a token
+        String generetedToken = generateActivationCode(5);
+        UUID myuuid = UUID.randomUUID();
+        long highbits = myuuid.getMostSignificantBits();
+        long lowbits = myuuid.getLeastSignificantBits();
+        var token = Token.builder()
+                .id((int) (highbits+lowbits))
+                .token(generetedToken)
+                .createdAt(LocalDateTime.now())
+                .expiresAt(LocalDateTime.now().plusMinutes(15))
+                .user(user)
+                .build();
+        log.info("What is in  token inside == {}",token.toString());
+        tokenDao.save(token);
+        return generetedToken;
+
+    }
+
+    private String generateActivationCode(int length) {
+        String characters = "0123456789";
+        StringBuilder codeBuilder = new StringBuilder();
+        SecureRandom secureRandom = new SecureRandom();
+        for (int i = 0; i < length; i++) {
+            int randomIndex = secureRandom.nextInt(characters.length());  // 0..9
+            codeBuilder.append(characters.charAt(randomIndex));
+
+        }
+        return codeBuilder.toString();
     }
 
     @Override
@@ -130,6 +197,27 @@ public class UserServiceImpl implements UserService {
 
 
 
+    @Override
+    @Transactional
+    public ResponseEntity<String> activateAccount(String token) throws MessagingException {
+
+        Token savedToken = tokenDao.findByToken(token)
+                // todo exception has to be defined
+                .orElseThrow(()-> new RuntimeException("Invalid token"));
+        if(LocalDateTime.now().isAfter(savedToken.getExpiresAt())) {
+            sendValidationEmail(savedToken.getUser());
+            throw  new RuntimeException("Activation token has expired, a new token has been sent to the same email address");
+        }
+        var user = userDao.findById(savedToken.getUser().getUser_id())
+                .orElseThrow(()-> new UsernameNotFoundException("User not found"));
+        user.setStatus("true");
+        userDao.save(user);
+        savedToken.setValidatedAt(LocalDateTime.now());
+        tokenDao.save(savedToken);
+        return null;
+    }
+
+
     // arrivé jusquau 1:18:18
 
     private boolean validateSignUpMap(Map<String,String> requestMap) {
@@ -141,9 +229,10 @@ public class UserServiceImpl implements UserService {
 
         User user = new User();
         user.setFirstName(requestMap.get("firstName"));
+        user.setLastName(requestMap.get("lastName"));
         user.setPhoneNumber(requestMap.get("phoneNumber"));
         user.setEmail(requestMap.get("email"));
-        user.setPassword(requestMap.get("password"));
+        user.setPassword(requestMap.get("password")); // passwordEncode.encode();
         user.setStatus("false");
         user.setRole("user");
         return user;
