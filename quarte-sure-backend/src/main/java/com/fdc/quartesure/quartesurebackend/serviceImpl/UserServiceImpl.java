@@ -100,8 +100,11 @@ public class UserServiceImpl implements UserService {
     private String generateAndSaveActivationToken(User user) {
         // generate a token
         String generetedToken = generateActivationCode(5);
+        UUID myuuid = UUID.randomUUID();
+        long highbits = myuuid.getMostSignificantBits();
+        long lowbits = myuuid.getLeastSignificantBits();
         var token = Token.builder()
-                .id(UUID.randomUUID().toString())
+                .id((int) (highbits+lowbits))
                 .token(generetedToken)
                 .createdAt(LocalDateTime.now())
                 .expiresAt(LocalDateTime.now().plusMinutes(15))

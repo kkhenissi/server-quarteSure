@@ -1,7 +1,9 @@
 package com.fdc.quartesure.quartesurebackend.POJO;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.NamedQuery;
@@ -21,6 +23,8 @@ import java.io.Serializable;
 @Entity
 @DynamicUpdate
 @DynamicInsert
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "winner_user")
 public class User implements Serializable {
     private  static  final long serialVersionUID=1L;

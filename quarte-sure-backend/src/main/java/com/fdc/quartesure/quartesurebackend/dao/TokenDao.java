@@ -6,7 +6,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
-public interface TokenDao extends JpaRepository<Token, String> {
+public interface TokenDao extends JpaRepository<Token, Integer> {
 
     Optional<Token> findByToken(@Param("token") String token);
 }
