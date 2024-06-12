@@ -33,4 +33,9 @@
           frontend:
             activation-url: http://localhost:4600/activate-account
 
+      paypal:
+        client-id: AUWzkfsaoEIweTX-kosrBuvFvdVJBrd3r6TN8lTBTjamoJU_0UKjvCDztc3mR30BZjT0iO8TABIMM0kk
+        client-secret: EHizbqMq5RghRQ698tKVNpryzbzD3VMc9oV1tTp9MGBkKYBobwBnc9hEje4Pi2jzYTB7K_vAyZ4aNu46
+        mode: sandbox # use 'sandbox' for testing and 'live' for production
+
 
