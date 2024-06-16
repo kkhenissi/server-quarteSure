@@ -130,7 +130,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<String> login(Map<String, String> requestMap) {
-        log.info("inside login");
+        log.info("inside login {}",requestMap);
         try {
             Authentication auth = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(requestMap.get("email"),requestMap.get("password")));
@@ -140,7 +140,8 @@ public class UserServiceImpl implements UserService {
                 if(customerUsersDetailsService.getUserDetail().getStatus().equalsIgnoreCase("true")) {
                     return new ResponseEntity<String>("{\"token\":\""+jwtUtil.generateTocken(
                             customerUsersDetailsService.getUserDetail().getEmail(),
-                            customerUsersDetailsService.getUserDetail().getRole())+"\"}", HttpStatus.OK);
+                            customerUsersDetailsService.getUserDetail().getRole(),
+                            customerUsersDetailsService.getUserDetail().getCredit().toString())+"\"}", HttpStatus.OK);
 
                 }else {
                     return new ResponseEntity<String>("{\"message\":\""+"Wait for admin approval."+"\"}",HttpStatus.BAD_REQUEST);
@@ -234,6 +235,7 @@ public class UserServiceImpl implements UserService {
         user.setEmail(requestMap.get("email"));
         user.setPassword(requestMap.get("password")); // passwordEncode.encode();
         user.setStatus("false");
+        user.setCredit(5);
         user.setRole("user");
         return user;
     }
