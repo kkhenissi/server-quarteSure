@@ -46,13 +46,19 @@ public class JwtUtil {
         return extractExpiration(token).before(new Date());
     }
 
-    public String generateTocken(String username, String role) {
+    public String generateTocken(String username, String role, String credit) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role",role);
+        claims.put("credit", credit);
         return createToken(claims,username);
     }
 
     private String createToken(Map<String, Object> claims, String subject) {
+
+        log.info(" I passed from here evry connection == !!");
+
+
+
         return  Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)

@@ -10,10 +10,12 @@ import org.hibernate.annotations.NamedQuery;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @NamedQuery(name = "User.findByEmailId",query = "select u from User u where u.email =:email")
 
-@NamedQuery(name = "User.getAllUser", query = "select new com.fdc.quartesure.quartesurebackend.wrapper.UserWrapper(u.id,u.firstName,u.email,u.phoneNumber,u.status) from User u where u.role='user'")
+@NamedQuery(name = "User.getAllUser", query = "select new com.fdc.quartesure.quartesurebackend.wrapper.UserWrapper(u.id,u.firstName,u.email,u.phoneNumber,u.status,u.lastConnexion) from User u where u.role='user'")
 
 @NamedQuery(name = "User.updateStatus", query = "update User u set u.status =: status where u.id =: id")
 
@@ -25,6 +27,7 @@ import java.io.Serializable;
 @DynamicInsert
 @AllArgsConstructor
 @NoArgsConstructor
+
 @Table(name = "winner_user")
 public class User implements Serializable {
     private  static  final long serialVersionUID=1L;
@@ -45,6 +48,10 @@ public class User implements Serializable {
     private String password;
     @Column(name = "status")
     private String status;
+    @Column(name = "credit")
+    private Integer credit;
+    @Column(name = "lastConnexion")
+    private String lastConnexion;
     @Column(name = "role")
     private String role;
 

@@ -30,6 +30,8 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 import java.security.SecureRandom;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -130,7 +132,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<String> login(Map<String, String> requestMap) {
-        log.info("inside login");
+        log.info("inside login {}",requestMap);
         try {
             Authentication auth = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(requestMap.get("email"),requestMap.get("password")));
@@ -138,11 +140,25 @@ public class UserServiceImpl implements UserService {
             if(auth.isAuthenticated()) {
 
                 if(customerUsersDetailsService.getUserDetail().getStatus().equalsIgnoreCase("true")) {
+                    User user = userDao.findByEmailId(requestMap.get("email"));
+                    if(user.getLastConnexion().equals(Instant.now().toString().substring(0,10))) {
+                        // do noThing
+                    } else {
+                        if(user.getCredit() > 0) {
+                            user.setCredit(user.getCredit() - 1);
+                        }
+                        user.setLastConnexion(Instant.now().toString().substring(0,10));
+                   }
+
+                    log.info("What is in user when connected ==> {}",user);
+                    userDao.save(user);
+
                     return new ResponseEntity<String>("{\"token\":\""+jwtUtil.generateTocken(
                             customerUsersDetailsService.getUserDetail().getEmail(),
-                            customerUsersDetailsService.getUserDetail().getRole())+"\"}", HttpStatus.OK);
+                            customerUsersDetailsService.getUserDetail().getRole(),
+                            customerUsersDetailsService.getUserDetail().getCredit().toString())+"\"}", HttpStatus.OK);
 
-                }else {
+                } else {
                     return new ResponseEntity<String>("{\"message\":\""+"Wait for admin approval."+"\"}",HttpStatus.BAD_REQUEST);
                 }
             }
@@ -234,6 +250,8 @@ public class UserServiceImpl implements UserService {
         user.setEmail(requestMap.get("email"));
         user.setPassword(requestMap.get("password")); // passwordEncode.encode();
         user.setStatus("false");
+        user.setCredit(5);
+        user.setLastConnexion(Instant.now().toString().substring(5,10));
         user.setRole("user");
         return user;
     }
