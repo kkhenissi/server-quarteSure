@@ -31,6 +31,7 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
             log.info("Inside signup {}",requestMap);
             if(validateRefCourse(requestMap)) {
                 String aujourdhui = new SimpleDateFormat("ddMMyyyy").format(new Date());
+                // "07/07/2024"
                 String currentUrl="";
                 currentUrl = "https://online.turfinfo.api.pmu.fr/rest/client/1/programme/"+aujourdhui+"/"+requestMap.get("R")+"/"+requestMap.get("C")+"/participants?specialisation=INTERNET";
                 URL url = new URL(currentUrl);
@@ -95,6 +96,7 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
             log.info("Inside signup {}",requestMap);
             if(validateRefCourse(requestMap)) {
                 String aujourdhui = new SimpleDateFormat("ddMMyyyy").format(new Date());
+                // "07/05/2024"
                 String currentUrl="";
                 currentUrl = "https://online.turfinfo.api.pmu.fr/rest/client/61/programme/"+aujourdhui+"/"+requestMap.get("R")+"/"+requestMap.get("C")+"/performances-detaillees/pretty";
                 URL url = new URL(currentUrl);
