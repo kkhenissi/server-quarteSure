@@ -1,5 +1,9 @@
 package com.fdc.quartesure.quartesurebackend.serviceImpl;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.csv.CsvMapper;
+import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.fdc.quartesure.quartesurebackend.POJO.CurrentCourse;
 import com.fdc.quartesure.quartesurebackend.POJO.InfosParticipant;
 import com.fdc.quartesure.quartesurebackend.POJO.Participant;
@@ -15,6 +19,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -25,7 +31,7 @@ import java.util.*;
 @Slf4j
 public class CurrentCourseServiceImpl implements CurrentCourseService {
     @Override
-    public ResponseEntity<String> getCourse(Map<String, String> requestMap) {
+    public ResponseEntity<String> getCourse(Map<String, String> requestMap) throws IOException {
 
         try {
             log.info("Inside signup {}",requestMap);
@@ -36,6 +42,9 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
                 currentUrl = "https://online.turfinfo.api.pmu.fr/rest/client/1/programme/"+aujourdhui+"/"+requestMap.get("R")+"/"+requestMap.get("C")+"/participants?specialisation=INTERNET";
                 URL url = new URL(currentUrl);
                 log.info("CurrentUrl {}",currentUrl);
+
+
+
                 // https://online.turfinfo.api.pmu.fr/rest/client/1/programme/09052024/R1/C7/participants?specialisation=INTERNET
                 //   this.urlParticipants="/"+dateCourse.toISOString().split('-')[2].substring(0,2)+dateCourse.toISOString().split('-')[1]+dateCourse.toISOString().split('-')[0]+"/"+this.refCourse.R+"/"+this.refCourse.C+"/participants?specialisation=INTERNET"
                 // "https://online.turfinfo.api.pmu.fr/rest/client/61/programme/09022024/R7/C5/performances-detaillees/pretty"
@@ -54,7 +63,7 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
                 } else {
                     StringBuilder informationRetrived = new StringBuilder();
                     Scanner scanner = new Scanner(url.openStream());
-                    while (scanner.hasNext()){
+                    while (scanner.hasNext()) {
                         informationRetrived.append(scanner.nextLine());
                     }
                     // close the scanner
@@ -63,11 +72,44 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
                     JsonObject dataObject = new JsonParser().parse((informationRetrived.toString())).getAsJsonObject();
 
                     JsonElement bruteParticipants = dataObject;
-                    log.info("bruteParticipants {}",bruteParticipants);
-                    Type listType = new TypeToken<List<Participant>>() {}.getType();
-                    Type allureType = new TypeToken<String>() {}.getType();
-                   // List<InfosParticipant> jsonParticipants = (List<InfosParticipant>) bruteParticipants;
-                    String jsonAllure = new Gson().fromJson(dataObject.get("allure"),allureType);
+                    log.info("bruteParticipants {}", bruteParticipants);
+                    Type listType = new TypeToken<List<Participant>>() {
+                    }.getType();
+                    Type allureType = new TypeToken<String>() {
+                    }.getType();
+                    // List<InfosParticipant> jsonParticipants = (List<InfosParticipant>) bruteParticipants;
+                    String jsonAllure = new Gson().fromJson(dataObject.get("allure"), allureType);
+
+                    System.out.println("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT");
+                //    System.out.println(informationRetrived);
+                    try {
+                        JsonNode jsonTree = new ObjectMapper().readTree(String.valueOf(dataObject));
+                        System.out.println("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK");
+
+                        CsvSchema.Builder csvSchemaBuilder = CsvSchema.builder();
+                        System.out.println(csvSchemaBuilder);
+                        JsonNode firstObject = jsonTree.elements().next();
+                        csvSchemaBuilder.addColumn(String.valueOf(firstObject));
+
+                        firstObject.fieldNames().forEachRemaining(fieldName -> {
+                            System.out.println("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
+                            System.out.println(firstObject);
+                            System.out.println("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
+                         //   csvSchemaBuilder.addColumn(fieldName);
+                        });
+                        CsvSchema csvSchema = csvSchemaBuilder.build().withHeader();
+                        CsvMapper csvMapper = new CsvMapper();
+//                        csvMapper.writerFor(JsonNode.class)
+//                                .with(csvSchema)
+//                                .writeValue(new File("src/main/resources/lmsget.csv"), jsonTree);
+
+                    } catch (Exception ex) {
+                        throw ex;
+                    }
+
+
+
+                    System.out.println("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT");
 
 //                    System.out.println(jsonParticipants);
 //                    CurrentCourse translateCurrentCourse = new CurrentCourse();
