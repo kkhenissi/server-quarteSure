@@ -1,6 +1,5 @@
 package com.fdc.quartesure.quartesurebackend.rest;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -14,7 +13,7 @@ public interface CurrentCourseRest {
 
 
     @PostMapping(path = "/performances")
-    public ResponseEntity<String> getPerformances(@RequestBody(required = true) Map<String, String> requestMap);
+    public Object getPerformances(@RequestBody(required = true) Map<String, String> requestMap);
 
 }
 
