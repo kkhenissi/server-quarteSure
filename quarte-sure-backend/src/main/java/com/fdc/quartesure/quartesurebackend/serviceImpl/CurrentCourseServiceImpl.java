@@ -1,12 +1,8 @@
 package com.fdc.quartesure.quartesurebackend.serviceImpl;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.csv.CsvMapper;
-import com.fasterxml.jackson.dataformat.csv.CsvSchema;
-import com.fdc.quartesure.quartesurebackend.POJO.CurrentCourse;
-import com.fdc.quartesure.quartesurebackend.POJO.InfosParticipant;
+import com.fdc.quartesure.quartesurebackend.POJO.CurrentCourseStringFormat;
 import com.fdc.quartesure.quartesurebackend.POJO.Participant;
+import com.fdc.quartesure.quartesurebackend.dao.CurrentCourseStringFormatDao;
 import com.fdc.quartesure.quartesurebackend.service.CurrentCourseService;
 import com.fdc.quartesure.quartesurebackend.utils.QuarteSureUtils;
 import com.google.gson.Gson;
@@ -15,11 +11,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
@@ -30,6 +26,9 @@ import java.util.*;
 @Service
 @Slf4j
 public class CurrentCourseServiceImpl implements CurrentCourseService {
+
+    @Autowired
+    CurrentCourseStringFormatDao currentCourseStringFormatDao;
     @Override
     public ResponseEntity<String> getCourse(Map<String, String> requestMap) throws IOException {
 
@@ -40,6 +39,10 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
                 // "07/07/2024"
                 String currentUrl="";
                 currentUrl = "https://online.turfinfo.api.pmu.fr/rest/client/1/programme/"+aujourdhui+"/"+requestMap.get("R")+"/"+requestMap.get("C")+"/participants?specialisation=INTERNET";
+                String currentCurseStringFrmatId = aujourdhui+"-"+requestMap.get("R")+"-"+requestMap.get("C");
+                System.out.println("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
+                System.out.println(currentCurseStringFrmatId);
+                System.out.println("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
                 URL url = new URL(currentUrl);
                 log.info("CurrentUrl {}",currentUrl);
 
@@ -72,44 +75,45 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
                     JsonObject dataObject = new JsonParser().parse((informationRetrived.toString())).getAsJsonObject();
 
                     JsonElement bruteParticipants = dataObject;
+                    CurrentCourseStringFormat courseToSave = new CurrentCourseStringFormat();
+                    courseToSave.setId(currentCurseStringFrmatId);
+                    courseToSave.setContent(bruteParticipants.toString());
+                    currentCourseStringFormatDao.save(courseToSave);
                     log.info("bruteParticipants {}", bruteParticipants);
-                    Type listType = new TypeToken<List<Participant>>() {
-                    }.getType();
-                    Type allureType = new TypeToken<String>() {
-                    }.getType();
-                    // List<InfosParticipant> jsonParticipants = (List<InfosParticipant>) bruteParticipants;
-                    String jsonAllure = new Gson().fromJson(dataObject.get("allure"), allureType);
+//                    Type listType = new TypeToken<List<Participant>>() {
+//                    }.getType();
+//                    Type allureType = new TypeToken<String>() {
+//                    }.getType();
+//                    // List<InfosParticipant> jsonParticipants = (List<InfosParticipant>) bruteParticipants;
+//                    String jsonAllure = new Gson().fromJson(dataObject.get("allure"), allureType);
 
-                    System.out.println("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT");
                 //    System.out.println(informationRetrived);
-                    try {
-                        JsonNode jsonTree = new ObjectMapper().readTree(String.valueOf(dataObject));
-                        System.out.println("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK");
+//                    try {
+//                        JsonNode jsonTree = new ObjectMapper().readTree(String.valueOf(dataObject));
+//                        System.out.println("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK");
+//
+//                        CsvSchema.Builder csvSchemaBuilder = CsvSchema.builder();
+//                        System.out.println(csvSchemaBuilder);
+//                        JsonNode firstObject = jsonTree.elements().next();
+//                        csvSchemaBuilder.addColumn(String.valueOf(firstObject));
+//
+//                        firstObject.fieldNames().forEachRemaining(fieldName -> {
+//                            System.out.println("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
+//                            System.out.println(firstObject);
+//                            System.out.println("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
+//                         //   csvSchemaBuilder.addColumn(fieldName);
+//                        });
+//                        CsvSchema csvSchema = csvSchemaBuilder.build().withHeader();
+//                        CsvMapper csvMapper = new CsvMapper();
+////                        csvMapper.writerFor(JsonNode.class)
+////                                .with(csvSchema)
+////                                .writeValue(new File("src/main/resources/lmsget.csv"), jsonTree);
+//
+//                    } catch (Exception ex) {
+//                        throw ex;
+//                    }
 
-                        CsvSchema.Builder csvSchemaBuilder = CsvSchema.builder();
-                        System.out.println(csvSchemaBuilder);
-                        JsonNode firstObject = jsonTree.elements().next();
-                        csvSchemaBuilder.addColumn(String.valueOf(firstObject));
 
-                        firstObject.fieldNames().forEachRemaining(fieldName -> {
-                            System.out.println("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
-                            System.out.println(firstObject);
-                            System.out.println("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
-                         //   csvSchemaBuilder.addColumn(fieldName);
-                        });
-                        CsvSchema csvSchema = csvSchemaBuilder.build().withHeader();
-                        CsvMapper csvMapper = new CsvMapper();
-//                        csvMapper.writerFor(JsonNode.class)
-//                                .with(csvSchema)
-//                                .writeValue(new File("src/main/resources/lmsget.csv"), jsonTree);
-
-                    } catch (Exception ex) {
-                        throw ex;
-                    }
-
-
-
-                    System.out.println("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT");
 
 //                    System.out.println(jsonParticipants);
 //                    CurrentCourse translateCurrentCourse = new CurrentCourse();
@@ -130,6 +134,13 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
             ex.printStackTrace();
         }
             return  QuarteSureUtils.getResponseEntity("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @Override
+    public Optional<CurrentCourseStringFormat> getCourseFromLocalDB(Map<String, String> requestMap) throws IOException {
+        String aujourdhui = new SimpleDateFormat("ddMMyyyy").format(new Date());
+        String currentCurseStringFrmatId = aujourdhui+"-"+requestMap.get("R")+"-"+requestMap.get("C");
+        return this.currentCourseStringFormatDao.findById(currentCurseStringFrmatId);
     }
 
     @Override
