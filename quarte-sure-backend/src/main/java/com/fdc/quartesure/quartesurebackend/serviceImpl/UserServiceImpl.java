@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
                 User user = userDao.findByEmailId(requestMap.get("email"));
                 if(Objects.isNull(user)){
                     user = getUserFromMap(requestMap);
-                    log.info("What is in user hire ==> {}",user);
+                    log.info("What is in requestMap hire ==> {}",requestMap);
                     userDao.save(user);
 
                     sendValidationEmail(user);
@@ -148,15 +148,17 @@ public class UserServiceImpl implements UserService {
                             user.setCredit(user.getCredit() - 1);
                         }
                         user.setLastConnexion(Instant.now().toString().substring(0,10));
+                        log.info("What is in user when connected ==> {}",user);
+                        userDao.save(user);
                    }
 
-                    log.info("What is in user when connected ==> {}",user);
-                    userDao.save(user);
+
 
                     return new ResponseEntity<String>("{\"token\":\""+jwtUtil.generateTocken(
                             customerUsersDetailsService.getUserDetail().getEmail(),
                             customerUsersDetailsService.getUserDetail().getRole(),
-                            customerUsersDetailsService.getUserDetail().getCredit().toString())+"\"}", HttpStatus.OK);
+                            customerUsersDetailsService.getUserDetail().getCredit().toString(),
+                            customerUsersDetailsService.getUserDetail().getSelectedOptions().toString())+"\"}", HttpStatus.OK);
 
                 } else {
                     return new ResponseEntity<String>("{\"message\":\""+"Wait for admin approval."+"\"}",HttpStatus.BAD_REQUEST);
@@ -211,6 +213,11 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
+    public ResponseEntity<String> updateSelectedOptions(Map<String, String> requestMap) {
+        log.info("requestMap.get(\"selectedOptions\") {}==>",requestMap.get("selectedOptions"));
+        return null;
+    }
 
 
     @Override
@@ -251,6 +258,7 @@ public class UserServiceImpl implements UserService {
         user.setPassword(requestMap.get("password")); // passwordEncode.encode();
         user.setStatus("false");
         user.setCredit(5);
+        user.setSelectedOptions(requestMap.get("selectedOptions"));
         user.setLastConnexion(Instant.now().toString().substring(5,10));
         user.setRole("user");
         return user;

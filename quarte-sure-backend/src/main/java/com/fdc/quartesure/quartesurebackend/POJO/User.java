@@ -1,12 +1,14 @@
 package com.fdc.quartesure.quartesurebackend.POJO;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.NamedQuery;
+import views.html.helper.options;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -18,6 +20,8 @@ import java.util.Date;
 @NamedQuery(name = "User.getAllUser", query = "select new com.fdc.quartesure.quartesurebackend.wrapper.UserWrapper(u.id,u.firstName,u.email,u.phoneNumber,u.status,u.lastConnexion) from User u where u.role='user'")
 
 @NamedQuery(name = "User.updateStatus", query = "update User u set u.status =: status where u.id =: id")
+
+@NamedQuery(name = "User.updateSelectedOptions", query = "update User u set u.selectedOptions =: selectedOptions where u.id =: id")
 
 @NamedQuery(name = "User.getAllAdmin", query = "select u.email from User u where u.role='admin'")
 
@@ -54,6 +58,8 @@ public class User implements Serializable {
     private String lastConnexion;
     @Column(name = "role")
     private String role;
+    @Column(name = "selectedOptions")
+    private String selectedOptions;
 
     public String fullName() {return firstName + " " + lastName;}
 }

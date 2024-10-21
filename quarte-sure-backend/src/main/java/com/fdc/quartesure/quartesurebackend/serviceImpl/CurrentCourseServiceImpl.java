@@ -83,6 +83,7 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
                     CurrentCourseStringFormat courseToSave = new CurrentCourseStringFormat();
                     courseToSave.setId(currentCurseStringFrmatId);
                     courseToSave.setContent(bruteParticipants.toString());
+                    log.info("courseToSave {}", courseToSave);
                     currentCourseStringFormatDao.save(courseToSave);
                     log.info("bruteParticipants {}", bruteParticipants);
 //                    Type listType = new TypeToken<List<Participant>>() {
@@ -145,6 +146,9 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
     public Optional<CurrentCourseStringFormat> getCourseFromLocalDB(Map<String, String> requestMap) throws IOException {
         String aujourdhui = new SimpleDateFormat("ddMMyyyy").format(new Date());
         String currentCurseStringFrmatId = aujourdhui+"-"+requestMap.get("R")+"-"+requestMap.get("C");
+
+/*        Optional strinTolog = this.currentCourseStringFormatDao.findById(currentCurseStringFrmatId);
+        log.info("strinTolog {}", strinTolog);*/
         return this.currentCourseStringFormatDao.findById(currentCurseStringFrmatId);
     }
 

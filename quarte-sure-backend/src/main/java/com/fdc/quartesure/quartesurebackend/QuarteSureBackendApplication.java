@@ -46,6 +46,7 @@ public class QuarteSureBackendApplication {
 
 	public static void main(String[] args) throws Exception {
 		SpringApplication.run(QuarteSureBackendApplication.class, args);
+/*
 		double learningRate=0.001;
 		int numbInputs=7;
 		int numbHidden=10;
@@ -53,6 +54,7 @@ public class QuarteSureBackendApplication {
 		int batchSize=1;
 		int classIndex=7;
         int numEpochs=500;
+*/
 
 
 

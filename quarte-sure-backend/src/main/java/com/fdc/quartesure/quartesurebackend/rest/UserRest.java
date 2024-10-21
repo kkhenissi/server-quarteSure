@@ -30,6 +30,9 @@ public interface UserRest {
     @PostMapping(path = "/changePassword")
     public ResponseEntity<String> changePassword(@RequestBody(required = true) Map<String,String> requestMap);
 
+    @PatchMapping("/updateSelectedOptions/{id}")
+    public ResponseEntity<String> updateSelectedOptions(@RequestBody(required = true) Map<String,String> requestMap);
+
 
 
 }

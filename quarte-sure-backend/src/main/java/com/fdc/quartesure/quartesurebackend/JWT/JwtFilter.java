@@ -77,7 +77,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if(request.getServletPath().matches(("/user/login|/user/activate|/currentcourse/participants|/user/forgotPassword|/user/signup|/h2-console"))) {
+        if(request.getServletPath().matches(("/user/login|/user/activate|/currentcourse/participants|/user/forgotPassword|/user/signup|/user/updateSelectedOptions/:id|/h2-console"))) {
             filterChain.doFilter(request,response);
         } else {
             String authorizationHeader = response.getHeader("Authorization");
@@ -101,6 +101,9 @@ public class JwtFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
                 }
             }
+            System.out.println("°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°");
+            System.out.println(request);
+            System.out.println("°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°");
             filterChain.doFilter(request,response);
         }
     }

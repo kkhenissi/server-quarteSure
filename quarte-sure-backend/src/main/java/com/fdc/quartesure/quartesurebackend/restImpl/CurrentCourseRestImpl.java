@@ -29,8 +29,8 @@ public class CurrentCourseRestImpl implements CurrentCourseRest {
 
             if(!currentCourse.isEmpty()) {
                 String refinedString = currentCourse.toString().substring(60);
-
-                return refinedString.substring(2, refinedString.length()-2);
+                System.out.println("What is in refinedString"+refinedString.substring(3, refinedString.length()-2));
+                return refinedString.substring(3, refinedString.length()-2);
             }
 
            return  currentCourseService.getCourse(requestMap);
