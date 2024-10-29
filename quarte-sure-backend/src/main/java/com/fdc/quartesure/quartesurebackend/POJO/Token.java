@@ -7,10 +7,12 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@Builder@AllArgsConstructor
+@Builder
+@ToString
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@ToString
+
 
 public class Token {
     @Id

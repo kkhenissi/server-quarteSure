@@ -2,9 +2,7 @@ package com.fdc.quartesure.quartesurebackend.POJO;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.NamedQuery;
@@ -17,7 +15,7 @@ import java.util.Date;
 
 @NamedQuery(name = "User.findByEmailId",query = "select u from User u where u.email =:email")
 
-@NamedQuery(name = "User.getAllUser", query = "select new com.fdc.quartesure.quartesurebackend.wrapper.UserWrapper(u.id,u.firstName,u.email,u.phoneNumber,u.status,u.lastConnexion) from User u where u.role='user'")
+@NamedQuery(name = "User.getAllUser", query = "select new com.fdc.quartesure.quartesurebackend.wrapper.UserWrapper(u.id,u.firstName,u.email,u.phoneNumber,u.status,u.lastConnexion,u.subscribeDate) from User u where u.role='user'")
 
 @NamedQuery(name = "User.updateStatus", query = "update User u set u.status =: status where u.id =: id")
 
@@ -25,7 +23,10 @@ import java.util.Date;
 
 @NamedQuery(name = "User.getAllAdmin", query = "select u.email from User u where u.role='admin'")
 
-@Data
+@Getter
+@Setter
+@Builder
+@ToString
 @Entity
 @DynamicUpdate
 @DynamicInsert
@@ -56,6 +57,8 @@ public class User implements Serializable {
     private Integer credit;
     @Column(name = "lastConnexion")
     private String lastConnexion;
+    @Column(name= "subscribeDate")
+    private String subscribeDate;
     @Column(name = "role")
     private String role;
     @Column(name = "selectedOptions")

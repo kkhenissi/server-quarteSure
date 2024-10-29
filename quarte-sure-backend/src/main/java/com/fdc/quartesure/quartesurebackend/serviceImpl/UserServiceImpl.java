@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
                 User user = userDao.findByEmailId(requestMap.get("email"));
                 if(Objects.isNull(user)){
                     user = getUserFromMap(requestMap);
-                    log.info("What is in requestMap hire ==> {}",requestMap);
+                    log.info("What is in user hire ==> {}",user);
                     userDao.save(user);
 
                     sendValidationEmail(user);
@@ -173,11 +173,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<List<UserWrapper>> getAllUser() {
         try {
-            if (jwtFilter.isAdmin()){
+         //   if (jwtFilter.isAdmin()){
                 return new ResponseEntity<>(userDao.getAllUser(),HttpStatus.OK);
-            }else {
-                return new ResponseEntity<>(new ArrayList<>(), HttpStatus.UNAUTHORIZED);
-            }
+//            }else {
+//                return new ResponseEntity<>(new ArrayList<>(), HttpStatus.UNAUTHORIZED);
+//            }
         }catch (Exception ex) {
            ex.printStackTrace();
         }
@@ -260,6 +260,7 @@ public class UserServiceImpl implements UserService {
         user.setCredit(5);
         user.setSelectedOptions(requestMap.get("selectedOptions"));
         user.setLastConnexion(Instant.now().toString().substring(5,10));
+        user.setSubscribeDate(Instant.now().toString().substring(0,10));
         user.setRole("user");
         return user;
     }
