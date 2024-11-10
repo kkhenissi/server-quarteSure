@@ -23,4 +23,8 @@ public class UserWrapper {
     private String status;
 
     private String lastConnexion;
+
+    private String subscribeDate;
+
+    private String selectedOptions;
 }

@@ -9,6 +9,7 @@
         default-produces-media-type: appliaction/json
 
       server:
+        port: 8085
         servlet:
           context-path: /
 

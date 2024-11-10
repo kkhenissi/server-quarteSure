@@ -2,7 +2,9 @@ package com.fdc.quartesure.quartesurebackend.serviceImpl;
 
 import com.fdc.quartesure.quartesurebackend.POJO.CurrentCourseStringFormat;
 import com.fdc.quartesure.quartesurebackend.POJO.Participant;
+import com.fdc.quartesure.quartesurebackend.POJO.PerformanceStringFormat;
 import com.fdc.quartesure.quartesurebackend.dao.CurrentCourseStringFormatDao;
+import com.fdc.quartesure.quartesurebackend.dao.PerformanceStringFormatDao;
 import com.fdc.quartesure.quartesurebackend.service.CurrentCourseService;
 import com.fdc.quartesure.quartesurebackend.utils.QuarteSureUtils;
 import com.google.gson.Gson;
@@ -29,6 +31,9 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
 
     @Autowired
     CurrentCourseStringFormatDao currentCourseStringFormatDao;
+
+    @Autowired
+    PerformanceStringFormatDao performanceStringFormatDao;
     @Override
     public ResponseEntity<String> getCourse(Map<String, String> requestMap) throws IOException {
 
@@ -78,6 +83,7 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
                     CurrentCourseStringFormat courseToSave = new CurrentCourseStringFormat();
                     courseToSave.setId(currentCurseStringFrmatId);
                     courseToSave.setContent(bruteParticipants.toString());
+                    log.info("courseToSave {}", courseToSave);
                     currentCourseStringFormatDao.save(courseToSave);
                     log.info("bruteParticipants {}", bruteParticipants);
 //                    Type listType = new TypeToken<List<Participant>>() {
@@ -140,6 +146,9 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
     public Optional<CurrentCourseStringFormat> getCourseFromLocalDB(Map<String, String> requestMap) throws IOException {
         String aujourdhui = new SimpleDateFormat("ddMMyyyy").format(new Date());
         String currentCurseStringFrmatId = aujourdhui+"-"+requestMap.get("R")+"-"+requestMap.get("C");
+
+/*        Optional strinTolog = this.currentCourseStringFormatDao.findById(currentCurseStringFrmatId);
+        log.info("strinTolog {}", strinTolog);*/
         return this.currentCourseStringFormatDao.findById(currentCurseStringFrmatId);
     }
 
@@ -154,6 +163,8 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
                 currentUrl = "https://online.turfinfo.api.pmu.fr/rest/client/61/programme/"+aujourdhui+"/"+requestMap.get("R")+"/"+requestMap.get("C")+"/performances-detaillees/pretty";
                 URL url = new URL(currentUrl);
                 log.info("CurrentUrl {}",currentUrl);
+                String performanceStringFrmatId = aujourdhui+"-"+requestMap.get("R")+"-"+requestMap.get("C");
+
                 // https://online.turfinfo.api.pmu.fr/rest/client/1/programme/09052024/R1/C7/participants?specialisation=INTERNET
                 //   this.urlParticipants="/"+dateCourse.toISOString().split('-')[2].substring(0,2)+dateCourse.toISOString().split('-')[1]+dateCourse.toISOString().split('-')[0]+"/"+this.refCourse.R+"/"+this.refCourse.C+"/participants?specialisation=INTERNET"
                 // "https://online.turfinfo.api.pmu.fr/rest/client/61/programme/09022024/R7/C5/performances-detaillees/pretty"
@@ -187,11 +198,14 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
                     // List<InfosParticipant> jsonParticipants = (List<InfosParticipant>) bruteParticipants;
                     String jsonAllure = new Gson().fromJson(dataObject.get("allure"),allureType);
 
-//                    System.out.println(jsonParticipants);
-//                    CurrentCourse translateCurrentCourse = new CurrentCourse();
-//
-//                    translateCurrentCourse.setParticipants((ArrayList<Participant>) jsonParticipants);
-//                    translateCurrentCourse.setAllure(jsonAllure);
+
+              //      JsonElement bruteParticipants = dataObject;
+                    PerformanceStringFormat performanceToSave = new PerformanceStringFormat();
+                    performanceToSave.setId(performanceStringFrmatId);
+                    performanceToSave.setContent(bruteParticipants.toString());
+                    performanceStringFormatDao.save(performanceToSave);
+
+
                     Gson gson = new Gson();
 
 
@@ -206,6 +220,13 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
             ex.printStackTrace();
         }
         return  QuarteSureUtils.getResponseEntity("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @Override
+    public Optional<PerformanceStringFormat> getPerformanceFromLocalDB(Map<String, String> requestMap) throws IOException {
+        String aujourdhui = new SimpleDateFormat("ddMMyyyy").format(new Date());
+        String performanceStringFrmatId = aujourdhui+"-"+requestMap.get("R")+"-"+requestMap.get("C");
+        return this.performanceStringFormatDao.findById(performanceStringFrmatId);
     }
 
     private boolean validateRefCourse(Map<String,String> requestMap) {

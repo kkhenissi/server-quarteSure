@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
         try {
             log.info("Inside signup {}",requestMap);
             if(validateSignUpMap(requestMap)) {
-                User user = userDao.findByEmailId(requestMap.get("email"));
+                User user = userDao.findByEmail(requestMap.get("email"));
                 if(Objects.isNull(user)){
                     user = getUserFromMap(requestMap);
                     log.info("What is in user hire ==> {}",user);
@@ -140,7 +140,7 @@ public class UserServiceImpl implements UserService {
             if(auth.isAuthenticated()) {
 
                 if(customerUsersDetailsService.getUserDetail().getStatus().equalsIgnoreCase("true")) {
-                    User user = userDao.findByEmailId(requestMap.get("email"));
+                    User user = userDao.findByEmail(requestMap.get("email"));
                     if(user.getLastConnexion().equals(Instant.now().toString().substring(0,10))) {
                         // do noThing
                     } else {
@@ -148,15 +148,17 @@ public class UserServiceImpl implements UserService {
                             user.setCredit(user.getCredit() - 1);
                         }
                         user.setLastConnexion(Instant.now().toString().substring(0,10));
+                        log.info("What is in user when connected ==> {}",user);
+                        userDao.save(user);
                    }
 
-                    log.info("What is in user when connected ==> {}",user);
-                    userDao.save(user);
+
 
                     return new ResponseEntity<String>("{\"token\":\""+jwtUtil.generateTocken(
                             customerUsersDetailsService.getUserDetail().getEmail(),
                             customerUsersDetailsService.getUserDetail().getRole(),
-                            customerUsersDetailsService.getUserDetail().getCredit().toString())+"\"}", HttpStatus.OK);
+                            customerUsersDetailsService.getUserDetail().getCredit().toString(),
+                            customerUsersDetailsService.getUserDetail().getSelectedOptions().toString())+"\"}", HttpStatus.OK);
 
                 } else {
                     return new ResponseEntity<String>("{\"message\":\""+"Wait for admin approval."+"\"}",HttpStatus.BAD_REQUEST);
@@ -171,11 +173,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<List<UserWrapper>> getAllUser() {
         try {
-            if (jwtFilter.isAdmin()){
+         //   if (jwtFilter.isAdmin()){
                 return new ResponseEntity<>(userDao.getAllUser(),HttpStatus.OK);
-            }else {
-                return new ResponseEntity<>(new ArrayList<>(), HttpStatus.UNAUTHORIZED);
-            }
+//            }else {
+//                return new ResponseEntity<>(new ArrayList<>(), HttpStatus.UNAUTHORIZED);
+//            }
         }catch (Exception ex) {
            ex.printStackTrace();
         }
@@ -211,6 +213,11 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
+    public ResponseEntity<String> updateSelectedOptions(Map<String, String> requestMap) {
+        log.info("requestMap.get(\"selectedOptions\") {}==>",requestMap.get("selectedOptions"));
+        return null;
+    }
 
 
     @Override
@@ -251,7 +258,9 @@ public class UserServiceImpl implements UserService {
         user.setPassword(requestMap.get("password")); // passwordEncode.encode();
         user.setStatus("false");
         user.setCredit(5);
+        user.setSelectedOptions(requestMap.get("selectedOptions"));
         user.setLastConnexion(Instant.now().toString().substring(5,10));
+        user.setSubscribeDate(Instant.now().toString().substring(0,10));
         user.setRole("user");
         return user;
     }

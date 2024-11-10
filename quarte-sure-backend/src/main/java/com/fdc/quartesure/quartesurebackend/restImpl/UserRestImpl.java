@@ -97,4 +97,16 @@ public class UserRestImpl implements UserRest {
         }
         return QuarteSureUtils.getResponseEntity(QuarteSureConstants.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @Override
+    public ResponseEntity<String> updateSelectedOptions(Map<String, String> requestMap) {
+        try {
+            System.out.println("===================+++++++}}}}}}}}}}}}}}}}}}}}}}}}}}}");
+            System.out.println(requestMap);
+            return userService.updateSelectedOptions(requestMap);
+        }catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
 }

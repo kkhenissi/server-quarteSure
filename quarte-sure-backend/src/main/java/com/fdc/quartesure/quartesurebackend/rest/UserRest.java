@@ -15,7 +15,7 @@ public interface UserRest {
     @PostMapping(path = "/login")
     public ResponseEntity<String> login(@RequestBody(required = true)Map<String,String> requestMap);
 
-    @GetMapping(path = "/get")
+    @GetMapping(path = "/allUser")
     public ResponseEntity<List<UserWrapper>> getAllUser();
 
     @PostMapping(path = "/update")
@@ -29,6 +29,9 @@ public interface UserRest {
 
     @PostMapping(path = "/changePassword")
     public ResponseEntity<String> changePassword(@RequestBody(required = true) Map<String,String> requestMap);
+
+    @PatchMapping("/updateSelectedOptions/{id}")
+    public ResponseEntity<String> updateSelectedOptions(@RequestBody(required = true) Map<String,String> requestMap);
 
 
 

@@ -1,12 +1,13 @@
 package com.fdc.quartesure.quartesurebackend.POJO;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 
-@Data
+@Getter
+@Setter
+@Builder
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class CurrentCourse {

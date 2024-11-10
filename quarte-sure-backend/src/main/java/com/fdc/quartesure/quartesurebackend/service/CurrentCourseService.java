@@ -1,6 +1,7 @@
 package com.fdc.quartesure.quartesurebackend.service;
 
 import com.fdc.quartesure.quartesurebackend.POJO.CurrentCourseStringFormat;
+import com.fdc.quartesure.quartesurebackend.POJO.PerformanceStringFormat;
 import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
@@ -14,4 +15,6 @@ public interface CurrentCourseService {
     Optional<CurrentCourseStringFormat> getCourseFromLocalDB(Map<String, String> requestMap) throws IOException;
 
     ResponseEntity<String> getPerfomances(Map<String, String> requestMap);
+
+    Optional<PerformanceStringFormat> getPerformanceFromLocalDB(Map<String, String> requestMap) throws IOException;
 }

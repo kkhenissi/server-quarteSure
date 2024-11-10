@@ -1,8 +1,6 @@
 package com.fdc.quartesure.quartesurebackend.POJO;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -11,7 +9,10 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 
-@Data
+@Getter
+@Setter
+@Builder
+@ToString
 @Entity
 @DynamicUpdate
 @DynamicInsert
