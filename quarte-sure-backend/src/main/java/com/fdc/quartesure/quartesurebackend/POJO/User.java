@@ -13,9 +13,9 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-@NamedQuery(name = "User.findByEmailId",query = "select u from User u where u.email =:email")
+@NamedQuery(name = "User.findByEmail",query = "select u from User u where u.email =:email")
 
-@NamedQuery(name = "User.getAllUser", query = "select new com.fdc.quartesure.quartesurebackend.wrapper.UserWrapper(u.id,u.firstName,u.email,u.phoneNumber,u.status,u.lastConnexion,u.subscribeDate) from User u where u.role='user'")
+@NamedQuery(name = "User.getAllUser", query = "select new com.fdc.quartesure.quartesurebackend.wrapper.UserWrapper(u.id,u.firstName,u.email,u.phoneNumber,u.status,u.lastConnexion,u.subscribeDate,u.selectedOptions) from User u where u.role='user'")
 
 @NamedQuery(name = "User.updateStatus", query = "update User u set u.status =: status where u.id =: id")
 

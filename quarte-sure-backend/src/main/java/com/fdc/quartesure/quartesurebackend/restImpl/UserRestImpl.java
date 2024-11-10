@@ -100,8 +100,13 @@ public class UserRestImpl implements UserRest {
 
     @Override
     public ResponseEntity<String> updateSelectedOptions(Map<String, String> requestMap) {
-        System.out.println("))))))))))))))))))))))))))))))))))))))))))))))");
-        System.out.println(requestMap);
+        try {
+            System.out.println("===================+++++++}}}}}}}}}}}}}}}}}}}}}}}}}}}");
+            System.out.println(requestMap);
+            return userService.updateSelectedOptions(requestMap);
+        }catch (Exception ex) {
+            ex.printStackTrace();
+        }
         return null;
     }
 }

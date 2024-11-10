@@ -13,7 +13,7 @@ import java.util.Map;
 
 public interface UserDao extends JpaRepository<User,Integer> {
 
-    User findByEmailId(@Param("email") String email);
+    User findByEmail(@Param("email") String email);
 
     List<UserWrapper> getAllUser();
     @Transactional
@@ -26,5 +26,5 @@ public interface UserDao extends JpaRepository<User,Integer> {
 
     List<String> getAllAdmin();
 
-    User findByEmail(String email);
+  //  User findByEmail(String email);
 }

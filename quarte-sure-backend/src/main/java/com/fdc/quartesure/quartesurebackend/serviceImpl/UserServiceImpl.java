@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
         try {
             log.info("Inside signup {}",requestMap);
             if(validateSignUpMap(requestMap)) {
-                User user = userDao.findByEmailId(requestMap.get("email"));
+                User user = userDao.findByEmail(requestMap.get("email"));
                 if(Objects.isNull(user)){
                     user = getUserFromMap(requestMap);
                     log.info("What is in user hire ==> {}",user);
@@ -140,7 +140,7 @@ public class UserServiceImpl implements UserService {
             if(auth.isAuthenticated()) {
 
                 if(customerUsersDetailsService.getUserDetail().getStatus().equalsIgnoreCase("true")) {
-                    User user = userDao.findByEmailId(requestMap.get("email"));
+                    User user = userDao.findByEmail(requestMap.get("email"));
                     if(user.getLastConnexion().equals(Instant.now().toString().substring(0,10))) {
                         // do noThing
                     } else {
