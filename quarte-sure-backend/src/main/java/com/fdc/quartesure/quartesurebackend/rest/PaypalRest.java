@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Map;
 
-@RequestMapping(path = "/paypal")
+@RequestMapping(path = "/payByPaypal")
 public interface PaypalRest {
 
     @PostMapping(path = "/payment")
