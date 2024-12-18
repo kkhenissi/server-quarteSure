@@ -30,7 +30,7 @@ public class CurrentCourseRestImpl implements CurrentCourseRest {
                 System.out.println("8888888888888888888888888888888888");
                 String refinedString = currentCourse.toString().substring(60);
                 System.out.println("What is in refinedString"+refinedString.substring(3, refinedString.length()-2));
-                if(requestMap.get("C").length()<2) {
+                if(requestMap.get("C").length()<3) {
                     return refinedString.substring(2, refinedString.length()-2);
                 }else {
                     return refinedString.substring(3, refinedString.length()-2);
@@ -55,7 +55,7 @@ public class CurrentCourseRestImpl implements CurrentCourseRest {
 
             if(!currentPerformance.isEmpty()) {
                 String refinedString = currentPerformance.toString().substring(58);
-                if(requestMap.get("C").length()<2) {
+                if(requestMap.get("C").length()<3) {
                     return refinedString.substring(2, refinedString.length()-2);
                 }else {
                     return refinedString.substring(3, refinedString.length()-2);
