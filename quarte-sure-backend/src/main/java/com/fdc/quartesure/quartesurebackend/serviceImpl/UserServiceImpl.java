@@ -259,7 +259,7 @@ public class UserServiceImpl implements UserService {
         user.setEmail(requestMap.get("email"));
         user.setPassword(requestMap.get("password")); // passwordEncode.encode();
         user.setStatus("false");
-        user.setCredit(5);
+        user.setCredit(0);
         user.setSelectedOptions(requestMap.get("selectedOptions"));
         user.setLastConnexion(Instant.now().toString().substring(5,10));
         user.setSubscribeDate(Instant.now().toString().substring(0,10));
@@ -323,9 +323,6 @@ public class UserServiceImpl implements UserService {
                     userDao.save(userObj);
                     log.info("Inside creditAccount  updated user {}",userObj);
                     return QuarteSureUtils.getResponseEntity("account Credited Successfully.",HttpStatus.OK);
-
-
-
             }
             return QuarteSureUtils.getResponseEntity(QuarteSureConstants.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
         }catch (Exception ex) {
