@@ -309,8 +309,17 @@ public class UserServiceImpl implements UserService {
             User userObj = userDao.findByEmail(this.currentUserEmail);
             log.info("Inside creditAccount {}",userObj);
             if(!userObj.equals(null)) {
-
-                    userObj.setCredit(userObj.getCredit()+Integer.valueOf((int) requestMap));
+                switch (Integer.valueOf((int) requestMap)) {
+                    case 10:
+                        userObj.setCredit(userObj.getCredit()+Integer.valueOf((int) requestMap));;
+                        break;
+                    case 20:
+                        userObj.setCredit((int) (userObj.getCredit()+(Integer.valueOf((int) requestMap)/.74)));
+                        break;
+                    case 30:
+                        userObj.setCredit((int) (userObj.getCredit()+(Integer.valueOf((int) requestMap)/.5)));
+                        break;
+                }
                     userDao.save(userObj);
                     log.info("Inside creditAccount  updated user {}",userObj);
                     return QuarteSureUtils.getResponseEntity("account Credited Successfully.",HttpStatus.OK);
