@@ -44,9 +44,9 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
                 // "07/07/2024"
                 String currentUrl="";
                 currentUrl = "https://online.turfinfo.api.pmu.fr/rest/client/1/programme/"+requestMap.get("date")+"/"+requestMap.get("R")+"/"+requestMap.get("C")+"/participants?specialisation=INTERNET";
-                String currentCurseStringFrmatId = requestMap.get("date")+"-"+requestMap.get("R")+"-"+requestMap.get("C");
+                String currentCurseStringFormatId = requestMap.get("date")+"-"+requestMap.get("R")+"-"+requestMap.get("C");
                 System.out.println("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
-                System.out.println(currentCurseStringFrmatId);
+                System.out.println(currentCurseStringFormatId);
                 System.out.println("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
                 URL url = new URL(currentUrl);
                 log.info("CurrentUrl {}",currentUrl);
@@ -81,7 +81,7 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
 
                     JsonElement bruteParticipants = dataObject;
                     CurrentCourseStringFormat courseToSave = new CurrentCourseStringFormat();
-                    courseToSave.setId(currentCurseStringFrmatId);
+                    courseToSave.setId(currentCurseStringFormatId);
                     courseToSave.setContent(bruteParticipants.toString());
                     log.info("courseToSave {}", courseToSave);
                     currentCourseStringFormatDao.save(courseToSave);
@@ -145,11 +145,11 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
     @Override
     public Optional<CurrentCourseStringFormat> getCourseFromLocalDB(Map<String, String> requestMap) throws IOException {
         String aujourdhui = new SimpleDateFormat("ddMMyyyy").format(new Date());
-        String currentCurseStringFrmatId = requestMap.get("date")+"-"+requestMap.get("R")+"-"+requestMap.get("C");
+        String currentCurseStringFormatId = requestMap.get("date")+"-"+requestMap.get("R")+"-"+requestMap.get("C");
 
-/*        Optional strinTolog = this.currentCourseStringFormatDao.findById(currentCurseStringFrmatId);
+/*        Optional strinTolog = this.currentCourseStringFormatDao.findById(o);
         log.info("strinTolog {}", strinTolog);*/
-        return this.currentCourseStringFormatDao.findById(currentCurseStringFrmatId);
+        return this.currentCourseStringFormatDao.findById(currentCurseStringFormatId);
     }
 
     @Override
