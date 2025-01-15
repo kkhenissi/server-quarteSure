@@ -18,7 +18,7 @@ public interface UserRest {
     @GetMapping(path = "/allUser")
     public ResponseEntity<List<UserWrapper>> getAllUser();
 
-    @PostMapping(path = "/update")
+    @PatchMapping(path = "/update/{id}")
     public ResponseEntity<String> update(@RequestBody(required = true) Map<String,String> requestMap);
 
 

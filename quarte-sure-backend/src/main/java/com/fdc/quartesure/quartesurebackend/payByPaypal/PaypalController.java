@@ -1,8 +1,7 @@
-package com.fdc.quartesure.quartesurebackend.paypal;
+package com.fdc.quartesure.quartesurebackend.payByPaypal;
 
 import com.paypal.api.payments.Links;
 import com.paypal.api.payments.Payment;
-import com.paypal.base.exception.PayPalException;
 
 import com.paypal.base.rest.PayPalRESTException;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package com.fdc.quartesure.quartesurebackend.paypal;
+package com.fdc.quartesure.quartesurebackend.payByPaypal;
 
 import com.paypal.api.payments.*;
 import com.paypal.base.rest.APIContext;

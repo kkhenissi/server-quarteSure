@@ -30,7 +30,6 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 import java.security.SecureRandom;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -59,6 +58,8 @@ public class UserServiceImpl implements UserService {
     @Value("${spring.application.mailing.frontend.activation-url}")
     private String activationUrl;
 
+    private String currentUserEmail;
+
     @Override
     public ResponseEntity<String> signup(Map<String, String> requestMap) {
         try {
@@ -69,6 +70,7 @@ public class UserServiceImpl implements UserService {
                     user = getUserFromMap(requestMap);
                     log.info("What is in user hire ==> {}",user);
                     userDao.save(user);
+                    this.currentUserEmail=user.getEmail();
 
                     sendValidationEmail(user);
                     return QuarteSureUtils.getResponseEntity("Succesfully Registred.",HttpStatus.OK);
@@ -257,7 +259,7 @@ public class UserServiceImpl implements UserService {
         user.setEmail(requestMap.get("email"));
         user.setPassword(requestMap.get("password")); // passwordEncode.encode();
         user.setStatus("false");
-        user.setCredit(5);
+        user.setCredit(0);
         user.setSelectedOptions(requestMap.get("selectedOptions"));
         user.setLastConnexion(Instant.now().toString().substring(5,10));
         user.setSubscribeDate(Instant.now().toString().substring(0,10));
@@ -295,6 +297,34 @@ public class UserServiceImpl implements UserService {
 
            }
            return QuarteSureUtils.getResponseEntity(QuarteSureConstants.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
+        }catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return QuarteSureUtils.getResponseEntity(QuarteSureConstants.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @Override
+    public ResponseEntity<String> creditAccount(long requestMap) {
+        try {
+            User userObj = userDao.findByEmail(this.currentUserEmail);
+            log.info("Inside creditAccount {}",userObj);
+            if(!userObj.equals(null)) {
+                switch (Integer.valueOf((int) requestMap)) {
+                    case 10:
+                        userObj.setCredit(userObj.getCredit()+Integer.valueOf((int) requestMap));;
+                        break;
+                    case 20:
+                        userObj.setCredit((int) (userObj.getCredit()+(Integer.valueOf((int) requestMap)/.74)));
+                        break;
+                    case 30:
+                        userObj.setCredit((int) (userObj.getCredit()+(Integer.valueOf((int) requestMap)/.5)));
+                        break;
+                }
+                    userDao.save(userObj);
+                    log.info("Inside creditAccount  updated user {}",userObj);
+                    return QuarteSureUtils.getResponseEntity("account Credited Successfully.",HttpStatus.OK);
+            }
+            return QuarteSureUtils.getResponseEntity(QuarteSureConstants.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
         }catch (Exception ex) {
             ex.printStackTrace();
         }

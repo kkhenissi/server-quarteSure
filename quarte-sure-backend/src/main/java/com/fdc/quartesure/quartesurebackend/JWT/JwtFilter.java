@@ -47,7 +47,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if(request.getServletPath().matches(("/user/login|/user/activate|/currentcourse/participants|/user/forgotPassword|/user/signup|/h2-console"))) {
+        if(request.getServletPath().matches(("/user/login|/user/activate|/current-programme/today|/api/payment|/currentcourse/participants|/user/forgotPassword|/user/signup|/h2-console"))) {
            //  || request.getServletPath().contains("/user/updateSelectedOptions/")
             filterChain.doFilter(request,response);
         } else {
@@ -83,7 +83,9 @@ public class JwtFilter extends OncePerRequestFilter {
                 System.out.println("°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°");
 
             }
-
+            System.out.println("°°°°°°°°°°°°°°°°°°°°°°°°°° +++++++ °°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°");
+            System.out.println(request.toString());
+            System.out.println("°°°°°°°°°°°°°°°°°°°°°°°°°°° ++++++++ °°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°");
          filterChain.doFilter(request,response);
         }
     }

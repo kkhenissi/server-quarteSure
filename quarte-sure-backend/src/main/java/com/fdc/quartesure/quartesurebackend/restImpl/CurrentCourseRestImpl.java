@@ -23,14 +23,19 @@ public class CurrentCourseRestImpl implements CurrentCourseRest {
     @Override
     public Object getCourse(Map<String, String> requestMap) {
         try {
-
-
             Optional<CurrentCourseStringFormat> currentCourse = currentCourseService.getCourseFromLocalDB(requestMap);
-
             if(!currentCourse.isEmpty()) {
+                System.out.println("8888888888888888888888888888888888");
+                System.out.println(requestMap);
+                System.out.println("8888888888888888888888888888888888");
                 String refinedString = currentCourse.toString().substring(60);
                 System.out.println("What is in refinedString"+refinedString.substring(3, refinedString.length()-2));
-                return refinedString.substring(2, refinedString.length()-2);
+                if(requestMap.get("C").length()<3) {
+                    return refinedString.substring(2, refinedString.length()-2);
+                }else {
+                    return refinedString.substring(3, refinedString.length()-2);
+                }
+
             }
 
            return  currentCourseService.getCourse(requestMap);
@@ -50,9 +55,11 @@ public class CurrentCourseRestImpl implements CurrentCourseRest {
 
             if(!currentPerformance.isEmpty()) {
                 String refinedString = currentPerformance.toString().substring(58);
-                System.out.println("ZZZZZZZZZZZZZZZZZZZZZZZ  ZZZZZZ");
-
-                return refinedString.substring(2, refinedString.length()-2);
+                if(requestMap.get("C").length()<3) {
+                    return refinedString.substring(2, refinedString.length()-2);
+                }else {
+                    return refinedString.substring(3, refinedString.length()-2);
+                }
             }
             return  currentCourseService.getPerfomances(requestMap);
 
