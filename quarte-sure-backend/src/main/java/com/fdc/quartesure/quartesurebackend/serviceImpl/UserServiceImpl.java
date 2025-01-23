@@ -217,7 +217,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<String> updateSelectedOptions(Map<String, String> requestMap) {
-        log.info("requestMap.get(\"selectedOptions\") {}==>",requestMap.get("selectedOptions"));
+        log.info("requestMap.get() {}==>",requestMap.get("selectedOptions"));
         return null;
     }
 

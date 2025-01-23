@@ -48,6 +48,30 @@ public class CurrentProgrammeRestImpl implements CurrentProgrammeRest {
 
     @Override
     public Object getYesterdayProgramme(Map<String, String> requestMap) {
-        return null;
+        try {
+            Optional<CurrentProgrammeStringFormat> currentProgramme = currentProgrammeService.getYesterdayProgrammeFromLocalDB(requestMap);
+                    // getTodayProgrammeFromLocalDB(requestMap);
+            if(!currentProgramme.isEmpty()) {
+                System.out.println("8888888888888888888888888888888888");
+                System.out.println(requestMap);
+                System.out.println("8888888888888888888888888888888888");
+                String refinedString = currentProgramme.toString().substring(60);
+                System.out.println("What is in refinedString"+refinedString.substring(3, refinedString.length()-2));
+                // if(requestMap.get("C").length()<3) {
+                return refinedString.substring(3, refinedString.length()-2);
+                //   }else {
+                //       return refinedString.substring(3, refinedString.length()-2);
+                //   }
+
+            }
+            System.out.println("uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu");
+            System.out.println(requestMap);
+
+            return  currentProgrammeService.getYesterdayProgramme(requestMap);
+
+        }catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return QuarteSureUtils.getResponseEntity("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
