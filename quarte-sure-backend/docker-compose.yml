@@ -1,6 +1,6 @@
     services:
       postgres:
-        container_name: postgresql-winner
+        container_name: postgres
         image: postgres
         environment:
           POSTGRES_USER: username
@@ -20,25 +20,30 @@
         ports:
           - '1080:1080'
           - '1025:1025'
+
       winner-back:
-        build: ./
-        container_name: winner_backend_container
+    #    build: ./
+        container_name: winner-back
+        image: winner-server:1.0.0
         environment:
-          - DB_URL:jdbc:postgresql://postgresql-winner:5432/winner_db
+          - DB_URL=jdbc:postgresql://localhost:5432/winner_db
         ports:
           - '8085:8085'
         networks:
           - spring-winner
         depends_on:
           - postgres
-
       winner-front:
-        build: ../../argon-dashboard-angular-master
+      #  build: ../../argon-dashboard-angular-master
         container_name: winner_frontend_container
+        image: winner-front:1.0.0
         ports:
           - '8086:80'
         networks:
           - spring-winner
+        depends_on:
+          - winner-back
+
 
     networks:
       spring-winner:
