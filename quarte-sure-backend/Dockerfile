@@ -1,19 +1,3 @@
-<<<<<<< HEAD
-#      # Stage 1: Build app
-#      FROM maven:3.8.4-openjdk-11 AS build
-#      WORKDIR /app
-#      COPY pom.xml .
-#      COPY src ./src
-#      RUN mvn clean install
-
-      # Stage 2: Run the app
-      FROM openjdk:17
-      VOLUME /tmp
-      WORKDIR /app
-      COPY --from=build /app/target/quarte-sure-backend-0.0.1-SNAPSHOT.jar ./winner-server.jar
-      EXPOSE 8085
-      CMD ["java", "-jar", "winner-server.jar"]
-=======
       # Stage 1: Build app
       FROM maven:3.8.7-openjdk-18 AS build
       WORKDIR /build
@@ -28,6 +12,7 @@
       ARG JAR_VERSION=1.0.5
       VOLUME /tmp
       WORKDIR /app
+
       COPY --from=build /build/target/quarte-sure-backend-*.jar /app/
 #      COPY target/quarte-sure-backend*.jar winner-server.jar
       EXPOSE 8085
@@ -39,4 +24,4 @@
       ENV EMAIL_PASSWORD=missing_password
       CMD java -jar -Dspring.profiles.active=${ACTIVE_PROFILE} -Dspring.datasource.url=${DB_URL} quarte-sure-backend-${JAR_VERSION}.jar
 #      ENTRYPOINT ["java", "-jar", "winner-server.jar"]
->>>>>>> fb4b9870f9facf66d0c34a5d13995cc800dd023a
+
