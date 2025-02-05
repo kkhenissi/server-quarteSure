@@ -1,6 +1,8 @@
     spring:
+#      profiles:
+#        active: dev
       datasource:
-        url: jdbc:postgresql://localhost:5432/winner_db
+        url: ${DB_URL:jdbc:postgresql://localhost:5432/winner_db}
         username: username
         password: password
         driver-class-name: org.postgresql.Driver
@@ -13,26 +15,34 @@
         database: postgresql
         database-platform: org.hibernate.dialect.PostgreSQLDialect
       mail:
-        host: localhost
-        port: 1025
-        username: kkhenissi
-        password: password
+        host: ${EMAIL_HOSTNAME}
+        # smtp.gmail.com
+        # localhost
+        port: 465
+        # 1025
+        username: ${EMAIL_USER_NAME}
+        password: ${EMAIL_PASSWORD}
+        # ybfv kklj sqkh hzxj
         properties:
           mail:
             smtp:
-              trust: "*"
-            auth: true
+              auth: true
+              ssl:
+                enable: true
+                trust: "*"
             starttls:
-              enable: true
-            connection-timeout: 5000
-            timeout: 3000
-            write-timeout: 5000
-
+              enabled: true
+#            connection-timeout: 5000
+#            timeout: 3000
+#            write-timeout: 5000
+        protocol: smtp
       application:
         mailing:
           frontend:
             activation-url: http://localhost:4600/activate-account
-
+        cors:
+          origins: http://localhost:4600,http://localhost:8585
+          # add vps ipadresse of the frontend && the bckend to origins key
       paypal:
         client-id: v
         client-secret: EHizbqMq5RghRQ698tKVNpryzbzD3VMc9oV1tTp9MGBkKYBobwBnc9hEje4Pi2jzYTB7K_vAyZ4aNu46

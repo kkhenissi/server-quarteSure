@@ -1,7 +1,6 @@
 package com.fdc.quartesure.quartesurebackend.service;
 
 import com.fdc.quartesure.quartesurebackend.POJO.CurrentProgrammeStringFormat;
-import com.fdc.quartesure.quartesurebackend.POJO.PerformanceStringFormat;
 import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
@@ -15,5 +14,5 @@ public interface CurrentProgrammeService {
 
     ResponseEntity<String> getYesterdayProgramme(Map<String, String> requestMap);
 
-    Optional<PerformanceStringFormat> getYesterdayProgrammeFromLocalDB(Map<String, String> requestMap) throws IOException;
+    Optional<CurrentProgrammeStringFormat> getYesterdayProgrammeFromLocalDB(Map<String, String> requestMap) throws IOException;
 }
