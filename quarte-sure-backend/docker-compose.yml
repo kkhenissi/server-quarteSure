@@ -22,11 +22,10 @@
 #          - '1025:1025'
 
       winner-back:
-    #    build: ./
-        container_name: winner-back
-        image: winner-server:1.0.5
+        build: ./
+        container_name: winner_backend_container
         environment:
-          - DB_URL=jdbc:postgresql://postgresql:5432/winner_db
+          - DB_URL:jdbc:postgresql://postgresql-winner:5432/winner_db
         ports:
           - 8085:8085
         networks:
@@ -43,7 +42,6 @@
 #          - spring-winner
 #        depends_on:
 #          - winner-back
-
 
     networks:
       spring-winner:

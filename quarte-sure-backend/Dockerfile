@@ -12,6 +12,7 @@
       ARG JAR_VERSION=1.0.5
       VOLUME /tmp
       WORKDIR /app
+
       COPY --from=build /build/target/quarte-sure-backend-*.jar /app/
 #      COPY target/quarte-sure-backend*.jar winner-server.jar
       EXPOSE 8085
@@ -23,3 +24,4 @@
       ENV EMAIL_PASSWORD=missing_password
       CMD java -jar -Dspring.profiles.active=${ACTIVE_PROFILE} -Dspring.datasource.url=${DB_URL} quarte-sure-backend-${JAR_VERSION}.jar
 #      ENTRYPOINT ["java", "-jar", "winner-server.jar"]
+
