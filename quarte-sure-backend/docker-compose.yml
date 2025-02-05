@@ -14,35 +14,35 @@
         networks:
           - spring-winner
         restart: unless-stopped
-      mail-dev:
-        container_name: mail-dev-winner
-        image: maildev/maildev
-        ports:
-          - '1080:1080'
-          - '1025:1025'
+#      mail-dev:
+#        container_name: mail-dev-winner
+#        image: maildev/maildev
+#        ports:
+#          - '1080:1080'
+#          - '1025:1025'
 
       winner-back:
     #    build: ./
         container_name: winner-back
-        image: winner-server:1.0.0
+        image: winner-server:1.0.5
         environment:
-          - DB_URL=jdbc:postgresql://localhost:5432/winner_db
+          - DB_URL=jdbc:postgresql://postgresql:5432/winner_db
         ports:
-          - '8085:8085'
+          - 8085:8085
         networks:
           - spring-winner
         depends_on:
           - postgres
-      winner-front:
-      #  build: ../../argon-dashboard-angular-master
-        container_name: winner_frontend_container
-        image: winner-front:1.0.0
-        ports:
-          - '8086:80'
-        networks:
-          - spring-winner
-        depends_on:
-          - winner-back
+#      winner-front:
+#      #  build: ../../argon-dashboard-angular-master
+#        container_name: winner_frontend_container
+#        image: winner-front:1.0.0
+#        ports:
+#          - '8086:80'
+#        networks:
+#          - spring-winner
+#        depends_on:
+#          - winner-back
 
 
     networks:

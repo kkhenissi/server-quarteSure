@@ -15,12 +15,14 @@
         database: postgresql
         database-platform: org.hibernate.dialect.PostgreSQLDialect
       mail:
-        host: smtp.gmail.com
+        host: ${EMAIL_HOSTNAME}
+        # smtp.gmail.com
         # localhost
         port: 465
         # 1025
-        username: kkhenissi
-        password: ybfv kklj sqkh hzxj
+        username: ${EMAIL_USER_NAME}
+        password: ${EMAIL_PASSWORD}
+        # ybfv kklj sqkh hzxj
         properties:
           mail:
             smtp:
@@ -29,7 +31,7 @@
                 enable: true
                 trust: "*"
             starttls:
-              enable: true
+              enabled: true
 #            connection-timeout: 5000
 #            timeout: 3000
 #            write-timeout: 5000
@@ -38,7 +40,9 @@
         mailing:
           frontend:
             activation-url: http://localhost:4600/activate-account
-
+        cors:
+          origins: http://localhost:4600,http://localhost:8585
+          # add vps ipadresse of the frontend && the bckend to origins key
       paypal:
         client-id: v
         client-secret: EHizbqMq5RghRQ698tKVNpryzbzD3VMc9oV1tTp9MGBkKYBobwBnc9hEje4Pi2jzYTB7K_vAyZ4aNu46

@@ -1,0 +1,141 @@
+    name: WINNER Backend Pipeline
+
+    on:
+      push:
+        branches:
+     #     - ci/pipeline
+          - main
+      pull_request:
+        branches:
+          -main
+     #   paths:
+     #     - quarte-sure-backend/**
+    jobs:
+      compile:
+        runs-on: ubuntu-latest
+        # self-hosted
+        defaults:
+          run:
+            working-directory: quarte-sure-backend
+        name: Compile project
+        steps:
+          - name: Checkout code
+            uses: actions/checkout@v4
+            width:
+              fetch-depth: 0
+
+          - name: Setup JDK
+            uses: actions/setup-jdk@v4
+            width:
+              java-version: 17
+              distribution: 'corretto'
+
+          - name: Compile Project
+            run:
+              ./mvnw clean compile
+      unit-tests:
+        runs_on: ubuntu-latest
+        # self-hosted
+        name: Unit tests
+        steps:
+          - name: Checkout code
+            uses: actions/checkout@v4
+            width:
+              fetch-depth: 0
+
+          - name: Setup JDK
+            uses: actions/setup-jdk@v4
+            width:
+              java-version: 17
+              distribution: 'corretto'
+
+          - name: Running unit tests
+            run:
+              ./mvnw clean test
+
+      build:
+        runs_on: ubuntu-latest
+        # self-hosted
+        name: Build Backend
+        needs: [compile, unit-tests]
+        steps:
+          - name: Checkout code
+            uses: actions/checkout@v4
+            width:
+              fetch-depth: 0
+
+          - name: Setup JDK
+            uses: actions/setup-jdk@v4
+            width:
+              java-version: 17
+              distribution: 'corretto'
+
+          - name: Building project
+            run:
+              ./mvnw clean package
+      build-image:
+        name: Build Docker image
+        runs_on: ubuntu-latest
+        # self-hosted
+        needs: [build]
+        steps:
+          - name: Checkout code
+            uses: actions/checkout@v4
+            width:
+              fetch-depth: 0
+
+          - name: Setup JDK
+            uses: actions/setup-jdk@v4
+            width:
+              java-version: 17
+              distribution: 'corretto'
+          - name: Building project
+            run:
+              ./mvnw clean package
+          - name: extract project version
+            id: extract_version
+            run: |
+              echo "VERSION=$(./mvnw -q -Dexec.executable='echo' -Dexec.args='${project.version}' --non-recursive exec:exec)" >> $GITHUB_OUTPUT
+
+          - name: Login to DockerHub
+            uses: docker/login-action@v3
+            with:
+              username: ${{ secrets.DOCKERHUB_USERNAME }}
+              password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+          - name: Build & Push to DockerHub
+            uses: docker/build-push-action@v5
+            with:
+              context: .
+              file: Dockerfile
+              push: true
+
+              platforms: linux/amd64
+              tags: ${{ secrets.DOCKERHUB_USERNAME }}/winner-back:${{ steps.extract_version.outputs.VERSION }},${{ secrets.DOCKERHUB_USERNAME }}/winner-back:latest
+              build-args: |
+                PROFILE=dev
+                APP_VERSION=${{ steps.extract_version.outputs.VERSION }}
+
+
+      deploy:
+        name: Deploy Backend
+        runs-on: ubuntu-latest
+        # self-hosted
+        needs: [build-image]
+        steps:
+          - name: Create deployment folder
+            run: ssh ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_VPS_IP }} "mkdir -p ci-cd"
+
+          - name: Copy docker-compose file
+            run: scp docker_compose.yml ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_IP }}:ci-cd/docker-compose.yml
+
+          - name: Set ENV variable & deploy
+            run: |
+              ssh ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_IP }} <<EOF
+              export EMAIL_HOSTNAME={{ secrets.EMAIL_HOSTNAME }}
+              export EMAIL_USER_NAME={{ secrets.EMAIL_USER_NAME }}
+              export EMAIL_PASSWORD={{ secrets.EMAIL_PASSWORD }}
+              cd ci-cd
+              docker-compose -f docker-compose.yml pull -q
+              docker-compose -f docker-compose up -d
+              EOF
