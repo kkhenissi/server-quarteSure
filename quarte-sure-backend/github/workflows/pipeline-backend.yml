@@ -1,5 +1,5 @@
-    name: WINNER Backend Pipeline
 
+    name: WINNER Backend Pipeline after anhancement
     on:
       push:
         branches:
@@ -7,7 +7,7 @@
           - main
       pull_request:
         branches:
-          -main
+          - main
      #   paths:
      #     - quarte-sure-backend/**
     jobs:
