@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.fdc.quartesure</groupId>
 	<artifactId>quarte-sure-backend</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.5-SNAPSHOT</version>
 	<name>quarte-sure-backend</name>
 	<description>Is the winner server  </description>
 	<properties>
@@ -116,10 +116,10 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-thymeleaf</artifactId>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.boot</groupId>-->
+<!--			<artifactId>spring-boot-starter-thymeleaf</artifactId>-->
+<!--		</dependency>-->
 		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
 			<artifactId>jackson-dataformat-csv</artifactId>
