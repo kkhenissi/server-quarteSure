@@ -34,7 +34,7 @@ public class EmailServiceImpl implements EmailService {
         if(emailTemplateName == null) {
             templateName = "confirm-email";
         } else {
-            templateName = emailTemplateName.name();
+            templateName = emailTemplateName.getName();
         }
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper helper =new MimeMessageHelper(

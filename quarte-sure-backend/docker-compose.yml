@@ -1,10 +1,6 @@
     services:
       postgres:
-<<<<<<< HEAD
-        container_name: postgresql-winner
-=======
         container_name: postgres
->>>>>>> fb4b9870f9facf66d0c34a5d13995cc800dd023a
         image: postgres
         environment:
           POSTGRES_USER: username
@@ -18,6 +14,7 @@
         networks:
           - spring-winner
         restart: unless-stopped
+
 #      mail-dev:
 #        container_name: mail-dev-winner
 #        image: maildev/maildev
@@ -26,51 +23,27 @@
 #          - '1025:1025'
 
       winner-back:
-    #    build: ./
-        container_name: winner-back
-        image: winner-server:1.0.5
-        environment:
-          - DB_URL=jdbc:postgresql://postgresql:5432/winner_db
-        ports:
-<<<<<<< HEAD
-          - '1080:1080'
-          - '1025:1025'
-      winner-back:
-        build: ./
+      #  build: ../docker/backend/Dockerfile .
         container_name: winner_backend_container
+        image: winner-back-image:1.0.6
         environment:
           - DB_URL:jdbc:postgresql://postgresql-winner:5432/winner_db
         ports:
-          - '8085:8085'
-=======
           - 8085:8085
->>>>>>> fb4b9870f9facf66d0c34a5d13995cc800dd023a
         networks:
           - spring-winner
         depends_on:
           - postgres
-<<<<<<< HEAD
-=======
-#      winner-front:
-#      #  build: ../../argon-dashboard-angular-master
-#        container_name: winner_frontend_container
-#        image: winner-front:1.0.0
-#        ports:
-#          - '8086:80'
-#        networks:
-#          - spring-winner
-#        depends_on:
-#          - winner-back
->>>>>>> fb4b9870f9facf66d0c34a5d13995cc800dd023a
-
       winner-front:
-        build: ../../argon-dashboard-angular-master
+     #  build: ../../argon-dashboard-angular-master
         container_name: winner_frontend_container
+        image: winner-front-image:1.0.6
         ports:
-          - '8086:80'
+         - '8086:81'
         networks:
-          - spring-winner
-
+         - spring-winner
+        depends_on:
+         - winner-back
     networks:
       spring-winner:
         driver: bridge
