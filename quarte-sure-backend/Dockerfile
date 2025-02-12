@@ -19,10 +19,10 @@
       EXPOSE 8085
       ENV DB_URL=jdbc:postgresql://postgresql:5432/winner_db
       ENV ACTIVE_PROFILE=${PROFILE}
-      ENV JAR_VERSION=${APP_VERSION}-SNAPSHOT
+      ENV APP_VERSION=${JAR_VERSION}-SNAPSHOT
       ENV EMAIL_HOSTNAME=missing_host_name
       ENV EMAIL_USER_NAME=missing_user_name
       ENV EMAIL_PASSWORD=missing_password
-      CMD java -jar -Dspring.profiles.active=${ACTIVE_PROFILE} -Dspring.datasource.url=${DB_URL} quarte-sure-backend-${JAR_VERSION}.jar
+      CMD java -jar -Dspring.profiles.active=${ACTIVE_PROFILE} -Dspring.datasource.url=${DB_URL} quarte-sure-backend-${APP_VERSION}.jar
 #      ENTRYPOINT ["java", "-jar", "winner-server.jar"]
 

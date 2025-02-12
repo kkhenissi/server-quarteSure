@@ -7,6 +7,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum EmailTemplateName {
 
-    ACTIVATE_ACCOUNT("activte_account");
+    ACTIVATE_ACCOUNT("activate_account");
     private final  String name;
 }

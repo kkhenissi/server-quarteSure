@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.fdc.quartesure</groupId>
 	<artifactId>quarte-sure-backend</artifactId>
-	<version>1.0.5-SNAPSHOT</version>
+	<version>1.0.6-SNAPSHOT</version>
 	<name>quarte-sure-backend</name>
 	<description>Is the winner server  </description>
 	<properties>
