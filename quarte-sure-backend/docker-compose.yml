@@ -26,6 +26,7 @@
       #  build: ../docker/backend/Dockerfile .
         container_name: winner_backend_container
         image: winner-back-image:1.0.6
+
         environment:
           - DB_URL:jdbc:postgresql://postgresql-winner:5432/winner_db
         ports:
@@ -34,7 +35,6 @@
           - spring-winner
         depends_on:
           - postgres
-
       winner-front:
      #  build: ../../argon-dashboard-angular-master
         container_name: winner_frontend_container
@@ -45,6 +45,7 @@
          - spring-winner
         depends_on:
          - winner-back
+
     networks:
       spring-winner:
         driver: bridge
