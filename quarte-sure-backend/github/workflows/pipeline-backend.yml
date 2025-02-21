@@ -40,12 +40,12 @@
         steps:
           - name: Checkout code
             uses: actions/checkout@v4
-            width:
+            with:
               fetch-depth: 0
 
           - name: Setup JDK
             uses: actions/setup-jdk@v4
-            width:
+            with:
               java-version: 17
               distribution: 'corretto'
 
