@@ -1,0 +1,24 @@
+{
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "winnerDb_on_docker",
+      "database": "winner_db",
+      "username": "username",
+      "password": "password"
+    },
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "winnerdbOnDocker",
+      "database": "winner_db",
+      "username": "username",
+      "password": "password"
+    }
+  ]
+}
