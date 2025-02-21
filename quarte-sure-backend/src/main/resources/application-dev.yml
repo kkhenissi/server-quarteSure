@@ -15,16 +15,15 @@
         database: postgresql
         database-platform: org.hibernate.dialect.PostgreSQLDialect
       mail:
-        host: smtp.gmail.com
-        # ${EMAIL_HOSTNAME}
+        host: ${EMAIL_HOSTNAME}
         # smtp.gmail.com
         # localhost
         port: 465
         # 1025
-        username: kkhenissi
-        # ${EMAIL_USER_NAME}
-        password: ybfv kklj sqkh hzxj
-        # ${EMAIL_PASSWORD}
+        username: ${EMAIL_USER_NAME}
+        # kkhenissi
+        password: ${EMAIL_PASSWORD}
+        # ybfv kklj sqkh hzxj
         # 
         properties:
           mail:
