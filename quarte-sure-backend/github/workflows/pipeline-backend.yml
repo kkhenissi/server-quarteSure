@@ -21,12 +21,12 @@
         steps:
           - name: Checkout code
             uses: actions/checkout@v4
-            width:
+            with:
               fetch-depth: 0
 
           - name: Setup JDK
             uses: actions/setup-jdk@v4
-            width:
+            with:
               java-version: 17
               distribution: 'corretto'
 
@@ -109,7 +109,7 @@
             uses: docker/build-push-action@v5
             with:
               context: quarte-sure-backend
-              file: docker/backend/Dockerfile
+              file: Dockerfile
               push: true
 
               platforms: linux/amd64
