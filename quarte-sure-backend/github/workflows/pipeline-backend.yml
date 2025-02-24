@@ -108,8 +108,8 @@
           - name: Build & Push to DockerHub
             uses: docker/build-push-action@v5
             with:
-              context: .
-              file: Dockerfile
+              context: quarte-sure-backend
+              file: docker/backend/Dockerfile
               push: true
 
               platforms: linux/amd64
@@ -132,8 +132,9 @@
             run: scp docker_compose.yml ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_IP }}:ci-cd/docker-compose.yml
 
           - name: Set ENV variable & deploy
+          # ssh ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_IP }} <<EOF
             run: |
-              ssh ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_IP }} <<EOF
+              
               export EMAIL_HOSTNAME={{ secrets.EMAIL_HOSTNAME }}
               export EMAIL_USER_NAME={{ secrets.EMAIL_USER_NAME }}
               export EMAIL_PASSWORD={{ secrets.EMAIL_PASSWORD }}
