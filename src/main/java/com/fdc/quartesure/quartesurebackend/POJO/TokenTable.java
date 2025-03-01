@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 
 
-public class Token {
+public class TokenTable {
     @Id
    // @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
