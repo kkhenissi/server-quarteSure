@@ -45,11 +45,11 @@
          - spring-winner
         depends_on:
          - winner-back
-      networks:
-        spring-winner:
-          driver: bridge
-      volumes:
-        db_data:
+ networks:
+    spring-winner:
+      driver: bridge
+ volumes:
+    db-data:
 
         
         
