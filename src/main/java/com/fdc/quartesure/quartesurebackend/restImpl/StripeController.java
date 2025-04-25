@@ -1,17 +1,21 @@
 package com.fdc.quartesure.quartesurebackend.restImpl;
 
 import com.fdc.quartesure.quartesurebackend.POJO.CheckoutPayment;
+import com.fdc.quartesure.quartesurebackend.POJO.EmailTemplateName;
+import com.fdc.quartesure.quartesurebackend.service.EmailService;
 import com.fdc.quartesure.quartesurebackend.service.UserService;
 import com.google.gson.Gson;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
+import com.fdc.quartesure.quartesurebackend.POJO.EmailTemplateName;
 
 import com.stripe.param.checkout.SessionCreateParams;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,6 +26,11 @@ public class StripeController {
     private static Gson gson = new Gson();
     @Autowired
     UserService userService;
+
+    @Autowired
+    EmailService emailService;
+
+
 
     private long paymentchoice;
 
@@ -63,10 +72,18 @@ public class StripeController {
         return gson.toJson(responseData);
     }
     @PatchMapping("/successPayment/{id}")
-    public String stripePaymentSuccess(@RequestBody CheckoutPayment payment) {
+    public String stripePaymentSuccess(@RequestBody CheckoutPayment payment) throws MessagingException {
         System.out.println("797979797979999999999");
         System.out.println(this.paymentchoice);
         this.userService.creditAccount(this.paymentchoice/100);
+//        String to,
+//        String userName,
+//        EmailTemplateName emailTemplateName,
+//        String confirmationUrl,
+//        //  String activationCode,
+//        String subject
+        EmailTemplateName emailTemplateName = null;
+        this.emailService.sendStatusPayment("kkhenissi@yahoo.fr","moi meme", emailTemplateName,"","text a afficher ...");
         return gson.toJson("responseData");
 
     }

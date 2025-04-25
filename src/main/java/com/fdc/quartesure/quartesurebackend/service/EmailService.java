@@ -12,4 +12,12 @@ public interface EmailService {
                           String confirmationUrl,
                           String activationCode,
                           String subject) throws MessagingException;
+
+
+    public void sendStatusPayment(String to,
+                          String userName,
+                          EmailTemplateName emailTemplateName,
+                          String confirmationUrl,
+                        //  String activationCode,
+                          String subject) throws MessagingException;
 }
