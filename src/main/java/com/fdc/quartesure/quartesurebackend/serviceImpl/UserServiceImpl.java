@@ -4,7 +4,7 @@ import com.fdc.quartesure.quartesurebackend.JWT.CustomerUsersDetailsService;
 import com.fdc.quartesure.quartesurebackend.JWT.JwtFilter;
 import com.fdc.quartesure.quartesurebackend.JWT.JwtUtil;
 import com.fdc.quartesure.quartesurebackend.POJO.EmailTemplateName;
-import com.fdc.quartesure.quartesurebackend.POJO.TokenTable;
+import com.fdc.quartesure.quartesurebackend.POJO.Token;
 import com.fdc.quartesure.quartesurebackend.POJO.User;
 import com.fdc.quartesure.quartesurebackend.constants.QuarteSureConstants;
 import com.fdc.quartesure.quartesurebackend.dao.TokenDao;
@@ -107,7 +107,7 @@ public class UserServiceImpl implements UserService {
         UUID myuuid = UUID.randomUUID();
         long highbits = myuuid.getMostSignificantBits();
         long lowbits = myuuid.getLeastSignificantBits();
-        var token = TokenTable.builder()
+        var token = Token.builder()
                 .id((int) (highbits+lowbits))
                 .token(generetedToken)
                 .createdAt(LocalDateTime.now())
@@ -226,7 +226,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public ResponseEntity<String> activateAccount(String token) throws MessagingException {
 
-        TokenTable savedToken = tokenDao.findByToken(token)
+        Token savedToken = tokenDao.findByToken(token)
                 // todo exception has to be defined
                 .orElseThrow(()-> new RuntimeException("Invalid token"));
         if(LocalDateTime.now().isAfter(savedToken.getExpiresAt())) {
