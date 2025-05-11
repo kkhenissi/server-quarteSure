@@ -8,7 +8,6 @@ import com.google.gson.Gson;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
-import com.fdc.quartesure.quartesurebackend.POJO.EmailTemplateName;
 
 import com.stripe.param.checkout.SessionCreateParams;
 

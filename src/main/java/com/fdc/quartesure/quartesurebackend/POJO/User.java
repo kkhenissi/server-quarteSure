@@ -1,17 +1,13 @@
 package com.fdc.quartesure.quartesurebackend.POJO;
 
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.NamedQuery;
-import views.html.helper.options;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 @NamedQuery(name = "User.findByEmail",query = "select u from User u where u.email =:email")
 

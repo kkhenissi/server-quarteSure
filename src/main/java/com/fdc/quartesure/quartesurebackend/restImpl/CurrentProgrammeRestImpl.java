@@ -1,9 +1,7 @@
 package com.fdc.quartesure.quartesurebackend.restImpl;
 
-import com.fdc.quartesure.quartesurebackend.POJO.CurrentCourseStringFormat;
 import com.fdc.quartesure.quartesurebackend.POJO.CurrentProgrammeStringFormat;
 import com.fdc.quartesure.quartesurebackend.rest.CurrentProgrammeRest;
-import com.fdc.quartesure.quartesurebackend.service.CurrentCourseService;
 import com.fdc.quartesure.quartesurebackend.service.CurrentProgrammeService;
 import com.fdc.quartesure.quartesurebackend.utils.QuarteSureUtils;
 import org.springframework.beans.factory.annotation.Autowired;

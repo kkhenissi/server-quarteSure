@@ -5,7 +5,6 @@ import com.fdc.quartesure.quartesurebackend.POJO.PerformanceStringFormat;
 import com.fdc.quartesure.quartesurebackend.rest.CurrentCourseRest;
 import com.fdc.quartesure.quartesurebackend.service.CurrentCourseService;
 import com.fdc.quartesure.quartesurebackend.utils.QuarteSureUtils;
-import org.hibernate.tool.schema.internal.exec.ScriptTargetOutputToFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;

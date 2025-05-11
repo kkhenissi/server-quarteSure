@@ -1,6 +1,4 @@
 package com.fdc.quartesure.quartesurebackend.handler;
-
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 

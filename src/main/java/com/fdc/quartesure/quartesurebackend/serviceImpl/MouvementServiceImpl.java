@@ -3,7 +3,6 @@ package com.fdc.quartesure.quartesurebackend.serviceImpl;
 import com.fdc.quartesure.quartesurebackend.POJO.Mouvement;
 import com.fdc.quartesure.quartesurebackend.dao.MouvementDao;
 import com.fdc.quartesure.quartesurebackend.service.MouvementService;
-import com.fdc.quartesure.quartesurebackend.utils.QuarteSureUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

@@ -1,7 +1,6 @@
 package com.fdc.quartesure.quartesurebackend.POJO;
 
 import lombok.*;
-import org.datavec.api.io.serializers.Serialization;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 

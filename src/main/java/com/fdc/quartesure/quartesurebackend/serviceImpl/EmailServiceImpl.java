@@ -11,8 +11,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-import org.thymeleaf.spring5.templateresource.*;
-import org.thymeleaf.templateresolver.StringTemplateResolver;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
