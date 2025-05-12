@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 @Slf4j
 @RestController
-@RequestMapping("/api/traffic")
 public class TrafficControllerImpl implements TrafficController {
     private final TrafficService trafficService;
 
@@ -40,8 +39,18 @@ public class TrafficControllerImpl implements TrafficController {
     }
 
     @Override
-    public List<TrafficStatsWrapper> getStats() {
+    public List<TrafficStatsWrapper> getStatsGroupedByDate() {
         return trafficService.getStatsGroupedByDate();
                 //findAllTrafficLogs();
+    }
+    @Override
+    public List<TrafficStatsWrapper> getStatsGroupedByWeek() {
+        return trafficService.getStatsGroupedByWeek();
+        //findAllTrafficLogs();
+    }
+    @Override
+    public List<TrafficStatsWrapper> getStatsGroupedByMonth() {
+        return trafficService.getStatsGroupedByMonth();
+        //findAllTrafficLogs();
     }
 }

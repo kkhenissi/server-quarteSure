@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.time.temporal.WeekFields;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -52,6 +54,7 @@ public class TrafficServiceImpl implements TrafficService {
     @Override
     public List<TrafficStatsWrapper> getStatsGroupedByDate() {
         List<TrafficLog> logs = repository.findAllTrafficLogs();
+        log.info(" What is in logs ==> {}",logs);
 
         return logs.stream()
                 .collect(Collectors.groupingBy(
@@ -71,4 +74,67 @@ public class TrafficServiceImpl implements TrafficService {
                 )
                 .collect(Collectors.toList());
     }
+    @Override
+    public List<TrafficStatsWrapper> getStatsGroupedByWeek() {
+        List<TrafficLog> logs = repository.findAll();
+
+        WeekFields weekFields = WeekFields.ISO; // lundi comme début de semaine
+
+        return logs.stream()
+                .collect(Collectors.groupingBy(
+                        log -> {
+                            LocalDate date = log.getTimestamp().toLocalDate();
+                            int year = date.getYear();
+                            int week = date.get(weekFields.weekOfWeekBasedYear());
+                            return year + "-W" + week; // format : "2025-W18"
+                        },
+                        Collectors.groupingBy(
+                                TrafficLog::getTargetUrl,
+                                Collectors.counting()
+                        )
+                ))
+                .entrySet().stream()
+                .flatMap(weekEntry -> weekEntry.getValue().entrySet().stream()
+                        .map(urlEntry -> {
+                            String weekStr = weekEntry.getKey(); // exemple : 2025-W18
+                            LocalDate firstDayOfWeek = QuarteSureUtils.getFirstDayOfWeek(weekStr);
+                            return new TrafficStatsWrapper(
+                                    urlEntry.getKey(),       // url
+                                    firstDayOfWeek,          // date (début de semaine)
+                                    urlEntry.getValue()      // count
+                            );
+                        })
+                )
+                .collect(Collectors.toList());
+    }
+    @Override
+    public List<TrafficStatsWrapper> getStatsGroupedByMonth() {
+        List<TrafficLog> logs = repository.findAll();
+
+        return logs.stream()
+                .collect(Collectors.groupingBy(
+                        log -> {
+                            LocalDate date = log.getTimestamp().toLocalDate();
+                            return YearMonth.from(date); // ex: 2025-05
+                        },
+                        Collectors.groupingBy(
+                                TrafficLog::getTargetUrl,
+                                Collectors.counting()
+                        )
+                ))
+                .entrySet().stream()
+                .flatMap(monthEntry -> monthEntry.getValue().entrySet().stream()
+                        .map(urlEntry -> {
+                            YearMonth ym = monthEntry.getKey();
+                            return new TrafficStatsWrapper(
+                                    urlEntry.getKey(),             // url
+                                    ym.atDay(1),                   // date = 1er jour du mois
+                                    urlEntry.getValue()            // count
+                            );
+                        })
+                )
+                .collect(Collectors.toList());
+    }
+
+
 }

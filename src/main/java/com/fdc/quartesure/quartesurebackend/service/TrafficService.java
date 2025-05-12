@@ -14,4 +14,8 @@ public interface TrafficService {
     List<TrafficLog> findAllTrafficLogs();
 
     List<TrafficStatsWrapper> getStatsGroupedByDate();
+
+    List<TrafficStatsWrapper> getStatsGroupedByWeek();
+
+    List<TrafficStatsWrapper> getStatsGroupedByMonth();
 }
