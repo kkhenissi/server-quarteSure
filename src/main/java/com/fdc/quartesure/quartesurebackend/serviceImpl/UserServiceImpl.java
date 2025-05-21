@@ -94,7 +94,8 @@ public class UserServiceImpl implements UserService {
         var newToken = generateAndSaveActivationToken(user);
         emailService.sendEmail(
                 user.getEmail(),
-                user.fullName(), EmailTemplateName.ACTIVATE_ACCOUNT,
+                user.fullName(),
+                EmailTemplateName.ACTIVATE_ACCOUNT,
                 activationUrl,
                 newToken,
                 "Account activation"
@@ -318,6 +319,7 @@ public class UserServiceImpl implements UserService {
                         break;
                     case 30:
                         userObj.setCredit((int) (userObj.getCredit()+(Integer.valueOf((int) requestMap)/.5)));
+                        log.info("Inside creditAccount case 30 {}",userObj);
                         break;
                 }
                     userDao.save(userObj);

@@ -4,6 +4,7 @@ import com.fdc.quartesure.quartesurebackend.POJO.EmailTemplateName;
 import com.fdc.quartesure.quartesurebackend.service.EmailService;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -17,7 +18,7 @@ import javax.mail.internet.MimeMessage;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
-
+@Slf4j
 @Service
 @AllArgsConstructor
 public class EmailServiceImpl implements EmailService {
@@ -44,7 +45,7 @@ public class EmailServiceImpl implements EmailService {
         properties.put("username", userName);
         properties.put("confirmationUrl", confirmationUrl);
         properties.put("activation_code", activationCode);
-
+        log.info("What is in confirmation {}",confirmationUrl);
         Context context = new Context();
         context.setVariables(properties);
 
