@@ -41,7 +41,8 @@
       application:
         mailing:
           frontend:
-            activation-url: http://localhost:4600/#/activate-account
+#            activation-url: http://localhost:4600/#/activate-account
+            activation-url: http://winner-frontend.s3-website.eu-north-1.amazonaws.com/#/activate-account
         cors:
           origins: http://localhost:4600,http://localhost:8585
           # add vps ipadresse of the frontend && the bckend to origins key

@@ -1,0 +1,48 @@
+spring:
+  profiles:
+    active: prod
+
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://192.168.1.100:5432/winner_db}
+    username: ${DB_USERNAME:username}
+    password: ${DB_PASSWORD:password}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      format_sql: false
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+  mail:
+    host: smtp.gmail.com
+    port: 465
+  #  username: ${EMAIL_USERNAME}
+    username: kkhenissi
+  #  password: ${EMAIL_PASSWORD}
+    password: ybfv kklj sqkh hzxj 
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+            trust: "*"
+        starttls:
+          enabled: true
+    protocol: smtp
+
+application:
+  mailing:
+    frontend:
+      activation-url: http://winner-frontend.s3-website.eu-north-1.amazonaws.com/#/activate-account
+  cors:
+    origins: https://winner-frontend.s3-website.eu-north-1.amazonaws.com,https://api.winner-frontend.s3-website.eu-north-1.amazonaws.com
+
+paypal:
+  client-id: v
+  client-secret: EHizbqMq5RghRQ698tKVNpryzbzD3VMc9oV1tTp9MGBkKYBobwBnc9hEje4Pi2jzYTB7K_vAyZ4aNu46
+  mode: sandbox # use 'sandbox' for testing and 'live' for production
