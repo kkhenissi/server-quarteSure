@@ -8,8 +8,11 @@ import org.hibernate.annotations.NamedQuery;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @NamedQuery(name = "User.findByEmail",query = "select u from User u where u.email =:email")
+
+@NamedQuery(name = "User.findById",query = "select u from User u where u.user_id =:user_id")
 
 @NamedQuery(name = "User.getAllUser", query = "select new com.fdc.quartesure.quartesurebackend.wrapper.UserWrapper(u.id,u.firstName,u.email,u.phoneNumber,u.status,u.lastConnexion,u.subscribeDate,u.selectedOptions) from User u where u.role='user'")
 
@@ -61,4 +64,10 @@ public class User implements Serializable {
     private String selectedOptions;
 
     public String fullName() {return firstName + " " + lastName;}
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Subscription> subscriptions;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Payment> payments;
 }

@@ -2,6 +2,7 @@ package com.fdc.quartesure.quartesurebackend.rest;
 
 import com.fdc.quartesure.quartesurebackend.wrapper.TrafficStatsWrapper;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-
+@PreAuthorize("hasRole('ADMIN')")
 @RequestMapping("/api/traffic/stats")
 public interface TrafficController {
     @PostMapping("/redirect")
