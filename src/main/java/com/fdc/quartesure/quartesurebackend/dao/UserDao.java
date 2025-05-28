@@ -8,8 +8,12 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserDao extends JpaRepository<User,Integer> {
+
+    @Override
+    Optional<User> findById(Integer integer);
 
     User findByEmail(@Param("email") String email);
 

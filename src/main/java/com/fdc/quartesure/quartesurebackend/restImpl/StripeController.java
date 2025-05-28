@@ -1,9 +1,13 @@
 package com.fdc.quartesure.quartesurebackend.restImpl;
 
+import com.fdc.quartesure.quartesurebackend.JWT.AuthService;
+import com.fdc.quartesure.quartesurebackend.JWT.JwtUtil;
 import com.fdc.quartesure.quartesurebackend.POJO.CheckoutPayment;
 import com.fdc.quartesure.quartesurebackend.POJO.EmailTemplateName;
 import com.fdc.quartesure.quartesurebackend.service.EmailService;
+import com.fdc.quartesure.quartesurebackend.service.SubscriptionService;
 import com.fdc.quartesure.quartesurebackend.service.UserService;
+import com.fdc.quartesure.quartesurebackend.wrapper.SubscriptionWrapper;
 import com.google.gson.Gson;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
@@ -11,15 +15,20 @@ import com.stripe.model.checkout.Session;
 
 import com.stripe.param.checkout.SessionCreateParams;
 
+import io.jsonwebtoken.Claims;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/api")
+@Slf4j
 public class StripeController {
     // create a Gson object
     private static Gson gson = new Gson();
@@ -27,8 +36,14 @@ public class StripeController {
     UserService userService;
 
     @Autowired
+    private AuthService authService;
+
+
+    @Autowired
     EmailService emailService;
 
+    @Autowired
+    JwtUtil jwtUtil;
 
 
     private long paymentchoice;
@@ -39,9 +54,10 @@ public class StripeController {
      *
      * @throws StripeException
      */
-    public String paymentWithCheckoutPage(@RequestBody CheckoutPayment payment) throws StripeException {
+    @Transactional
+    public String paymentWithCheckoutPage(HttpServletRequest request, @RequestBody CheckoutPayment payment) throws StripeException {
         // We initilize stripe object with the api key
-        this.paymentchoice=payment.getAmount();
+        this.paymentchoice = payment.getAmount();
         init();
         // We create a  stripe session parameters
         SessionCreateParams params = SessionCreateParams.builder()
@@ -68,13 +84,34 @@ public class StripeController {
         // We can return only the sessionId as a String
         // we update credit in user entity
 
-        return gson.toJson(responseData);
+        String authorizationHeader = request.getHeader("Authorization");
+        String token = null;
+
+        System.out.println("€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€");
+        System.out.println(authorizationHeader);
+
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+
+            token = authorizationHeader.substring(7);
+            String userName = jwtUtil.extractUserName(token);
+            Claims claims = jwtUtil.extractAllClaims(token);
+            log.info("What is in userName here==>{}", userName);
+            this.userService.creditAccount(this.paymentchoice / 100, session.getId(), userName);
+
+            return gson.toJson(responseData);
+
+        }
+
+    return null;
     }
+
     @PatchMapping("/successPayment/{id}")
     public String stripePaymentSuccess(@RequestBody CheckoutPayment payment) throws MessagingException {
-        System.out.println("797979797979999999999");
-        System.out.println(this.paymentchoice);
-        this.userService.creditAccount(this.paymentchoice/100);
+
+     // // //   this.userService.creditAccount(this.paymentchoice/100);
+
+     //   subscriptionWrapper.
+    //    this.subscriptionService.subscribe(())
 //        String to,
 //        String userName,
 //        EmailTemplateName emailTemplateName,

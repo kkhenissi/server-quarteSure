@@ -25,7 +25,6 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-@ToString
 @Entity
 @DynamicUpdate
 @DynamicInsert
@@ -65,8 +64,8 @@ public class User implements Serializable {
 
     public String fullName() {return firstName + " " + lastName;}
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Subscription> subscriptions;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Subscription subscription;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Payment> payments;

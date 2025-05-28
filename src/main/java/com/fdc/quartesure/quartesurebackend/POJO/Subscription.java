@@ -2,6 +2,8 @@ package com.fdc.quartesure.quartesurebackend.POJO;
 
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -9,10 +11,11 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 // @NamedQuery(name = "User.findByEmail",query = "select u from User u where u.email =:email")
-@NamedQuery (name = "Subscription.findByUser_id", query = "SELECT s FROM Subscription s WHERE s.user.user_id = :userId")
+@NamedQuery (name = "Subscription.findByUser_id", query = "SELECT s FROM Subscription s WHERE s.user.user_id = :user_Id")
 @Entity
 @Table(name = "subscriptions")
-@Data
+@Getter
+@Setter
 public class Subscription {
 
     @Id
@@ -20,9 +23,9 @@ public class Subscription {
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
 
-    private String plan;
+    // private String plan;
 
-    private BigDecimal amountPaid;
+    private Double amountPaid;
 
     private String currency = "EUR";
 
@@ -30,9 +33,9 @@ public class Subscription {
 
     private String transactionId;
 
-    private LocalDateTime startDate;
+   // private LocalDateTime startDate;
 
-    private LocalDateTime endDate;
+   // private LocalDateTime endDate;
 
     private String status = "active";
 

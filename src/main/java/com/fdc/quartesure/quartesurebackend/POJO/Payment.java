@@ -1,6 +1,8 @@
 package com.fdc.quartesure.quartesurebackend.POJO;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -9,7 +11,8 @@ import java.time.LocalDateTime;
 @NamedQuery (name = "Payment.findById", query = "SELECT p FROM Payment p WHERE p.user.user_id = :userId")
 @Entity
 @Table(name = "payments")
-@Data
+@Getter
+@Setter
 public class Payment {
 
     @Id
@@ -17,7 +20,7 @@ public class Payment {
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
 
-    private BigDecimal amount;
+    private Double amount;
 
     private String currency = "EUR";
 

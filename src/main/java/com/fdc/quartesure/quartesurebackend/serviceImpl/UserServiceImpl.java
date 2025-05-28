@@ -3,10 +3,10 @@ package com.fdc.quartesure.quartesurebackend.serviceImpl;
 import com.fdc.quartesure.quartesurebackend.JWT.CustomerUsersDetailsService;
 import com.fdc.quartesure.quartesurebackend.JWT.JwtFilter;
 import com.fdc.quartesure.quartesurebackend.JWT.JwtUtil;
-import com.fdc.quartesure.quartesurebackend.POJO.EmailTemplateName;
-import com.fdc.quartesure.quartesurebackend.POJO.TokenTable;
-import com.fdc.quartesure.quartesurebackend.POJO.User;
+import com.fdc.quartesure.quartesurebackend.POJO.*;
 import com.fdc.quartesure.quartesurebackend.constants.QuarteSureConstants;
+import com.fdc.quartesure.quartesurebackend.dao.PaymentDao;
+import com.fdc.quartesure.quartesurebackend.dao.SubscriptionDao;
 import com.fdc.quartesure.quartesurebackend.dao.TokenDao;
 import com.fdc.quartesure.quartesurebackend.dao.UserDao;
 import com.fdc.quartesure.quartesurebackend.service.EmailService;
@@ -40,6 +40,11 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserDao userDao;
     @Autowired
+    SubscriptionDao subscriptionDao;
+
+    @Autowired
+    PaymentDao paymentDao;
+    @Autowired
     AuthenticationManager authenticationManager;
     @Autowired
     CustomerUsersDetailsService customerUsersDetailsService;
@@ -53,6 +58,7 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncode;
     @Autowired
     private TokenDao tokenDao;
+
     @Autowired
     private EmailService emailService;
     @Value("${spring.application.mailing.frontend.activation-url}")
@@ -279,7 +285,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<String> checkToken() {
-       return QuarteSureUtils.getResponseEntity("true",HttpStatus.OK);
+//        return Jwts.parser()
+//                .setSigningKey(secretKey)
+//                .parseClaimsJws(token)
+//                .getBody()
+//                .getSubject();  // ou get("email")
+
+        return QuarteSureUtils.getResponseEntity("true",HttpStatus.OK);
     }
 
     @Override
@@ -305,10 +317,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<String> creditAccount(long requestMap) {
+    public ResponseEntity<String> creditAccount(long requestMap, String id, String email) {
+
         try {
-            User userObj = userDao.findByEmail(this.currentUserEmail);
-            log.info("Inside creditAccount {}",userObj);
+            User userObj = userDao.findByEmail(email);
+            log.info("Inside creditAccount {}",requestMap);
             if(!userObj.equals(null)) {
                 switch (Integer.valueOf((int) requestMap)) {
                     case 10:
@@ -323,8 +336,55 @@ public class UserServiceImpl implements UserService {
                         break;
                 }
                     userDao.save(userObj);
+
+
+                 //   Subscription subscription = new Subscription();
+                Subscription subscription = subscriptionDao.findByUser_id(userObj.getUser_id());
+                log.info("Inside subscription   {}",subscription);
+                if(subscription != null) {
+                    subscription.setAmountPaid(Double.valueOf(userObj.getCredit()));
+                    subscription.setUser(userObj);
+                    subscription.setPaymentMethod("Stripe");
+                    subscription.setCreatedAt(LocalDateTime.now());
+                    subscription.setTransactionId(id);
+                    subscriptionDao.save(subscription);
+
+                    Payment payment = new Payment();
+                    payment.setTransactionId(id);
+                    payment.setAmount(Double.valueOf(Integer.valueOf((int) requestMap)));
+                    payment.setUser(userObj);
+                    payment.setCurrency("Eur");
+                    payment.setPaidAt(LocalDateTime.now());
+                    payment.setSubscription(subscription);
+                    // payment.set
+                    paymentDao.save(payment);
+
                     log.info("Inside creditAccount  updated user {}",userObj);
                     return QuarteSureUtils.getResponseEntity("account Credited Successfully.",HttpStatus.OK);
+
+                } else {
+                    subscription = new Subscription();
+                    subscription.setAmountPaid(Double.valueOf(userObj.getCredit()));
+                    subscription.setUser(userObj);
+                    subscription.setPaymentMethod("Stripe");
+                    subscription.setCreatedAt(LocalDateTime.now());
+                    subscription.setTransactionId(id);
+                    subscriptionDao.save(subscription);
+
+                    Payment payment = new Payment();
+                    payment.setTransactionId(id);
+                    payment.setAmount(Double.valueOf(Integer.valueOf((int) requestMap)));
+                    payment.setUser(userObj);
+                    payment.setCurrency("Eur");
+                    payment.setPaidAt(LocalDateTime.now());
+                    payment.setSubscription(subscription);
+                    // payment.set
+                    paymentDao.save(payment);
+                    log.info("Inside creditAccount  updated user {}",userObj);
+                    return QuarteSureUtils.getResponseEntity("account Credited Successfully.",HttpStatus.OK);
+
+                }
+
             }
             return QuarteSureUtils.getResponseEntity(QuarteSureConstants.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
         }catch (Exception ex) {
