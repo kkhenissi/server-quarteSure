@@ -43,6 +43,9 @@ public class UserServiceImpl implements UserService {
     SubscriptionDao subscriptionDao;
 
     @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
     PaymentDao paymentDao;
     @Autowired
     AuthenticationManager authenticationManager;
@@ -258,13 +261,16 @@ public class UserServiceImpl implements UserService {
     }
 
     private User getUserFromMap(Map<String, String> requestMap) {
+        String rawPassword = requestMap.get("password");
+        String hashedPassword = passwordEncoder.encode(rawPassword);
+//        user.setPassword(hashedPassword);
 
         User user = new User();
         user.setFirstName(requestMap.get("firstName"));
         user.setLastName(requestMap.get("lastName"));
         user.setPhoneNumber(requestMap.get("phoneNumber"));
         user.setEmail(requestMap.get("email"));
-        user.setPassword(requestMap.get("password")); // passwordEncode.encode();
+        user.setPassword(hashedPassword); // passwordEncode.encode();
         user.setStatus("false");
         user.setCredit(0);
         user.setSelectedOptions(requestMap.get("selectedOptions"));

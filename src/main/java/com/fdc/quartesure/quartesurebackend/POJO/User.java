@@ -61,6 +61,8 @@ public class User implements Serializable {
     private String role;
     @Column(name = "selectedOptions")
     private String selectedOptions;
+    @Column(name = "parrainer_par")
+    private String parrainerby;
 
     public String fullName() {return firstName + " " + lastName;}
 

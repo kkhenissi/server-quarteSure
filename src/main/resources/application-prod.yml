@@ -39,6 +39,7 @@ application:
   mailing:
     frontend:
       activation-url: http://winner-frontend.s3-website.eu-north-1.amazonaws.com/#/activate-account
+      registration-url: http://winner-frontend.s3-website.eu-north-1.amazonaws.com/#/register
   cors:
     origins: https://winner-frontend.s3-website.eu-north-1.amazonaws.com,https://api.winner-frontend.s3-website.eu-north-1.amazonaws.com
 

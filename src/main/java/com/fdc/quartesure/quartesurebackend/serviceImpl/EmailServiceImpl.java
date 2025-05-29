@@ -1,6 +1,7 @@
 package com.fdc.quartesure.quartesurebackend.serviceImpl;
 
 import com.fdc.quartesure.quartesurebackend.POJO.EmailTemplateName;
+import com.fdc.quartesure.quartesurebackend.POJO.EmailTemplateRegister;
 import com.fdc.quartesure.quartesurebackend.service.EmailService;
 
 import lombok.AllArgsConstructor;
@@ -46,6 +47,38 @@ public class EmailServiceImpl implements EmailService {
         properties.put("confirmationUrl", confirmationUrl);
         properties.put("activation_code", activationCode);
         log.info("What is in confirmation {}",confirmationUrl);
+        Context context = new Context();
+        context.setVariables(properties);
+
+        helper.setFrom("contact@winner.fr");
+        helper.setTo(to);
+        helper.setSubject(subject);
+
+        String template = templateEngine.process(templateName, context);
+
+        helper.setText(template, true);
+        javaMailSender.send(mimeMessage);
+    }
+
+    @Override
+    public void sendEmailInvitation(String to, String userName, EmailTemplateRegister emailTemplateRegister, String confirmationUrl, String subject) throws MessagingException {
+        String templateName;
+        if(emailTemplateRegister == null) {
+            templateName = "confirm-email";
+        } else {
+            templateName = emailTemplateRegister.getRegister();
+        }
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper =new MimeMessageHelper(
+                mimeMessage,
+                MimeMessageHelper.MULTIPART_MODE_MIXED,
+                StandardCharsets.UTF_8.name()
+        );
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("username", userName);
+        properties.put("confirmationUrl", confirmationUrl);
+        //properties.put("activation_code", activationCode);
+       // log.info("What is in confirmation {}",confirmationUrl);
         Context context = new Context();
         context.setVariables(properties);
 
