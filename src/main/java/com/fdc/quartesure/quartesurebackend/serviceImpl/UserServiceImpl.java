@@ -5,10 +5,7 @@ import com.fdc.quartesure.quartesurebackend.JWT.JwtFilter;
 import com.fdc.quartesure.quartesurebackend.JWT.JwtUtil;
 import com.fdc.quartesure.quartesurebackend.POJO.*;
 import com.fdc.quartesure.quartesurebackend.constants.QuarteSureConstants;
-import com.fdc.quartesure.quartesurebackend.dao.PaymentDao;
-import com.fdc.quartesure.quartesurebackend.dao.SubscriptionDao;
-import com.fdc.quartesure.quartesurebackend.dao.TokenDao;
-import com.fdc.quartesure.quartesurebackend.dao.UserDao;
+import com.fdc.quartesure.quartesurebackend.dao.*;
 import com.fdc.quartesure.quartesurebackend.service.EmailService;
 import com.fdc.quartesure.quartesurebackend.service.UserService;
 import com.fdc.quartesure.quartesurebackend.utils.EmailUtils;
@@ -39,6 +36,9 @@ import java.util.*;
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private FillolDao fillolDao;
     @Autowired
     SubscriptionDao subscriptionDao;
 
@@ -305,7 +305,7 @@ public class UserServiceImpl implements UserService {
         try {
            User userObj = userDao.findByEmail(jwtFilter.getCurrentUser());
            log.info("Inside changePassword {}",userObj);
-           if(!userObj.equals(null)) {
+           if(userObj!=null) {
                if(userObj.getPassword().equals(requestMap.get("oldPassword"))) {
                    userObj.setPassword(requestMap.get("newPassword"));
                    userDao.save(userObj);
@@ -328,13 +328,13 @@ public class UserServiceImpl implements UserService {
         try {
             User userObj = userDao.findByEmail(email);
             log.info("Inside creditAccount {}",requestMap);
-            if(!userObj.equals(null)) {
+            if(userObj!=null) {
                 switch (Integer.valueOf((int) requestMap)) {
                     case 10:
                         userObj.setCredit(userObj.getCredit()+Integer.valueOf((int) requestMap));;
                         break;
                     case 20:
-                        userObj.setCredit((int) (userObj.getCredit()+(Integer.valueOf((int) requestMap)/.74)));
+                        userObj.setCredit((int) (userObj.getCredit()+(Integer.valueOf((int) requestMap)/.75)));
                         break;
                     case 30:
                         userObj.setCredit((int) (userObj.getCredit()+(Integer.valueOf((int) requestMap)/.5)));
@@ -342,6 +342,18 @@ public class UserServiceImpl implements UserService {
                         break;
                 }
                     userDao.save(userObj);
+                    Fillol fillol = fillolDao.findByEmail(email);
+                       if(fillol!=null) {
+                            Subscription fromFillolToParrainSubscription = subscriptionDao.findByUser_id(fillol.getUser().getUser_id());
+                            User parrain = userDao.getById(fillol.getUser().getUser_id());
+
+                            parrain.setCredit(parrain.getCredit()+Integer.valueOf((int) requestMap)/10);
+                            userDao.save(parrain);
+                            fillol.setStatus("validé");
+                            fillolDao.saveAndFlush(fillol);
+                           fromFillolToParrainSubscription.setAmountPaid(Double.valueOf(parrain.getCredit()));
+                           subscriptionDao.saveAndFlush(fromFillolToParrainSubscription);
+                        }
 
 
                  //   Subscription subscription = new Subscription();
@@ -364,6 +376,14 @@ public class UserServiceImpl implements UserService {
                     payment.setSubscription(subscription);
                     // payment.set
                     paymentDao.save(payment);
+
+                  //  Subscription fillolSubscription = subscriptionDao.findByUser_id(fillol.getUser().getUser_id());
+                  //  fillolSubscription.setAmountPaid(Double.valueOf(parrain.getCredit()));
+                  //  subscription.setUser(userObj);
+//                    subscription.setPaymentMethod("Stripe");
+//                    subscription.setCreatedAt(LocalDateTime.now());
+//                    subscription.setTransactionId(id);
+//                    subscriptionDao.saveAndFlush(subscription);
 
                     log.info("Inside creditAccount  updated user {}",userObj);
                     return QuarteSureUtils.getResponseEntity("account Credited Successfully.",HttpStatus.OK);
