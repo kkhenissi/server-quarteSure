@@ -353,6 +353,15 @@ public class UserServiceImpl implements UserService {
                             fillolDao.saveAndFlush(fillol);
                            fromFillolToParrainSubscription.setAmountPaid(Double.valueOf(parrain.getCredit()));
                            subscriptionDao.saveAndFlush(fromFillolToParrainSubscription);
+                           Payment payment = new Payment();
+                           payment.setTransactionId(id);
+                           payment.setAmount(Double.valueOf(Integer.valueOf((int) requestMap)/10));
+                           payment.setUser(userObj);
+                           payment.setCurrency("Jour(s)");
+                           payment.setPaidAt(LocalDateTime.now());
+                           payment.setSubscription(fromFillolToParrainSubscription);
+                           // payment.set
+                           paymentDao.save(payment);
                         }
 
 
