@@ -8,6 +8,7 @@ import org.hibernate.annotations.NamedQuery;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @NamedQuery(name = "User.findByEmail",query = "select u from User u where u.email =:email")
@@ -64,6 +65,9 @@ public class User implements Serializable {
     @Column(name = "parrainer_par")
     private String parrainerby;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Fillol> fillols;
+
     public String fullName() {return firstName + " " + lastName;}
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
@@ -71,4 +75,5 @@ public class User implements Serializable {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Payment> payments;
+
 }
