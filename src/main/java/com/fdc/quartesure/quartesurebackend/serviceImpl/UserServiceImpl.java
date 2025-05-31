@@ -385,15 +385,6 @@ public class UserServiceImpl implements UserService {
                     payment.setSubscription(subscription);
                     // payment.set
                     paymentDao.save(payment);
-
-                  //  Subscription fillolSubscription = subscriptionDao.findByUser_id(fillol.getUser().getUser_id());
-                  //  fillolSubscription.setAmountPaid(Double.valueOf(parrain.getCredit()));
-                  //  subscription.setUser(userObj);
-//                    subscription.setPaymentMethod("Stripe");
-//                    subscription.setCreatedAt(LocalDateTime.now());
-//                    subscription.setTransactionId(id);
-//                    subscriptionDao.saveAndFlush(subscription);
-
                     log.info("Inside creditAccount  updated user {}",userObj);
                     return QuarteSureUtils.getResponseEntity("account Credited Successfully.",HttpStatus.OK);
 

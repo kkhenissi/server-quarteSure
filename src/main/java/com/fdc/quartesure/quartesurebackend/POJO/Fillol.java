@@ -25,7 +25,7 @@ public class Fillol {
     @Id
     @GeneratedValue
     private Integer id;
-    @Column(name = "email")
+    @Column(unique = true, name = "email")
     private String email;
 
     @Column(name = "status")

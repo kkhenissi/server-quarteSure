@@ -41,13 +41,24 @@
 </head>
 <body>
 <div class="container">
-    <h1>Successfully Payment</h1>
-    <p class="greeting" th:text="'Hello '+${username} + ','"></p>
-    <p>Thank you for signin up! Please use the following activation code to activate your account</p>
-    <div class="activation-code"><span th:text="${activation_code}"></span></div>
-    <div class="activation-link">
-        <a th:href="${confirmationUrl}" target="_blank">Activate your account</a>
-    </div>
+    <h1>Merci pour votre abonnement !</h1>
+    <p class="greeting" th:text="'Bonjour '+${username} + ','"></p>
+    <p>
+        Nous vous remercions chaleureusement pour votre abonnement à WINNER.
+
+        Votre confiance nous honore, et nous sommes ravis de vous compter parmi nos utilisateurs.
+        Vous pouvez dès à présent profiter de toutes les fonctionnalités de votre abonnement.
+
+        Si vous avez la moindre question ou besoin d’aide, notre équipe est là pour vous accompagner.
+
+        Encore merci, et bienvenue dans l’aventure !
+
+        Bien cordialement,
+        L’équipe WINNER</p>
+<!--    <div class="activation-code"><span th:text="${activation_code}"></span></div>-->
+<!--    <div class="activation-link">-->
+<!--        <a th:href="${confirmationUrl}" target="_blank">Activate your account</a>-->
+<!--    </div>-->
 </div>
 </body>
 </html>
