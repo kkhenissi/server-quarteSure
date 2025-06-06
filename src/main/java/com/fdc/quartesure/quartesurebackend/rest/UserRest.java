@@ -33,6 +33,6 @@ public interface UserRest {
     public ResponseEntity<String> changePassword(@RequestBody(required = true) Map<String,String> requestMap);
 
     @PatchMapping(value = "/updateSelectedOptions/{id}", consumes = MediaType.TEXT_PLAIN_VALUE)
-    public ResponseEntity<String> updateSelectedOptions(@RequestBody(required = true) String request);
+    public ResponseEntity<String> updateSelectedOptions(@PathVariable String id, @RequestBody(required = true) String request);
 
 }

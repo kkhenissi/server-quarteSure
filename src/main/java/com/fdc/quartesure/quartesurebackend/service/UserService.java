@@ -16,7 +16,7 @@ public interface UserService {
 
     ResponseEntity<String> update(Map<String, String> requestMap);
 
-    ResponseEntity<String> updateSelectedOptions(String request);
+    ResponseEntity<String> updateSelectedOptions(String id, String request);
 
     public ResponseEntity<String>  activateAccount(String token) throws MessagingException;
 
