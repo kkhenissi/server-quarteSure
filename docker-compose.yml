@@ -7,8 +7,10 @@
           POSTGRES_PASSWORD: password
           PGDATA: /var/lib/postgresql/data
           POSTGRES_DB: winner_db
+#        volumes:
+#          - db-data:/var/lib/postgres/data
         volumes:
-          - db-data:/var/lib/postgres/data
+          - ./postgres_data:/var/lib/postgres/data
         ports:
           - 5432:5432
         networks:
@@ -49,7 +51,7 @@
     spring-winner:
       driver: bridge
  volumes:
-    db-data:
+   postgres_data:
 
         
         
