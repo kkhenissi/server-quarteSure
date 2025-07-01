@@ -37,16 +37,16 @@
           - spring-winner
         depends_on:
           - postgres
-      winner-front:
-      #  build: ../../argon-dashboard-angular-master
-        container_name: winner_frontend_container
-        image: kkhenissi/winner-front-image:latest
-        ports:
-         - '8086:81'
-        networks:
-         - spring-winner
-        depends_on:
-         - winner-back
+#      winner-front:
+#      #  build: ../../argon-dashboard-angular-master
+#        container_name: winner_frontend_container
+#        image: kkhenissi/winner-front-image:latest
+#        ports:
+#         - '8086:81'
+#        networks:
+#         - spring-winner
+#        depends_on:
+#         - winner-back
  networks:
     spring-winner:
       driver: bridge
