@@ -10,14 +10,14 @@
       # Runtime stage
       FROM openjdk:17
       ARG PROFILE=dev
-      ARG JAR_VERSION=1.0.5
+      ARG JAR_VERSION=1.0.6
       VOLUME /tmp
       WORKDIR /app
 
       COPY --from=build /build/target/quarte-sure-backend-*.jar /app/
 #      COPY target/quarte-sure-backend*.jar winner-server.jar
       EXPOSE 8085
-      ENV DB_URL=jdbc:postgresql://postgresql:5432/winner_db
+      ENV DB_URL=jdbc:postgresql://postgres:5432/winner_db
       ENV ACTIVE_PROFILE=${PROFILE}
       ENV APP_VERSION=${JAR_VERSION}-SNAPSHOT
       ENV EMAIL_HOSTNAME=missing_host_name
