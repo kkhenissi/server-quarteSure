@@ -31,6 +31,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.io.File;
 import java.io.IOException;
@@ -61,64 +63,22 @@ public class QuarteSureBackendApplication {
 
 
 
-//		try {
-//
-//			URL url = new URL("https://online.turfinfo.api.pmu.fr/rest/client/1/programme/prochainesCourses");
-//			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-//			conn.setRequestMethod("GET");
-//			conn.connect();
-//
-//			// Check if Connect is made
-//			int responseCode = conn.getResponseCode();
-//
-//			// 200 Ok
-//			if(responseCode != 200) {
-//				throw new RuntimeException("HttpResponseCode:"+responseCode);
-//			} else {
-//				StringBuilder informationRetrived = new StringBuilder();
-//				Scanner scanner = new Scanner(url.openStream());
-//				while (scanner.hasNext()){
-//					informationRetrived.append(scanner.nextLine());
-//				}
-//			// close the scanner
-//				scanner.close();
-//				System.out.println(informationRetrived);
-//				GsonJsonParser parse = new GsonJsonParser();
-//				List<Object> dataObject = parse.parseList(informationRetrived.toString());
-//				System.out.println(dataObject);
-//			}
-//
-//		}catch (Exception ex) {
-//			System.out.println(ex.getStackTrace());
-//		}
-
-
-
 
 
 
 
 	}
 
-//	@Bean
-//	public JavaMailSender getJavaMailSender() {
-//		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-//		mailSender.setHost("smtp.gmail.com");
-//		mailSender.setPort(587);
-//
-//		mailSender.setUsername("kkhenissi@gmail.com");
-//		mailSender.setPassword("eyalenakhenissi");
-//
-//		Properties props = mailSender.getJavaMailProperties();
-//		props.put("mail.transport.protocol", "smtp");
-//		props.put("mail.smtp.auth", "true");
-//		props.put("mail.smtp.starttls.enable", "true");
-//		props.put("mail.debug", "true");
-//
-//		return mailSender;
-//	}
 
+	@Bean
+	public WebMvcConfigurer configure() {
+		return new WebMvcConfigurer(){
+			public void ddCorsMappings(CorsRegistry reg){
+				reg.addMapping("/*");
+			}
 
+		};
+	}
 
 
 

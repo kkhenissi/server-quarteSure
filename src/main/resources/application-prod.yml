@@ -1,9 +1,7 @@
 spring:
   profiles:
     active: prod
-
-  datasource:
-    url: ${DB_URL:jdbc:postgresql://192.168.1.100:5432/winner_db}
+    url: ${DB_URL:jdbc:postgresql://postgres:5432/winner_db}
     username: ${DB_USERNAME:username}
     password: ${DB_PASSWORD:password}
     driver-class-name: org.postgresql.Driver
@@ -13,6 +11,8 @@ spring:
       idle-timeout: 600000
       max-lifetime: 1800000
       connection-timeout: 30000
+  mvc:
+    dispatch-options-request: true
 
   jpa:
     hibernate:
@@ -44,11 +44,10 @@ spring:
 application:
   mailing:
     frontend:
-      activation-url: http://winner-frontend.s3-website.eu-north-1.amazonaws.com/#/activate-account
-      registration-url: http://winner-frontend.s3-website.eu-north-1.amazonaws.com/#/register
+      activation-url: http://winner-one-frontend.s3-website.eu-west-3.amazonaws.com/#/activate-account
+      registration-url: http://winner-one-frontend.s3-website.eu-west-3.amazonaws.com/#/register
   cors:
-    origins: https://winner-frontend.s3-website.eu-north-1.amazonaws.com,https://api.winner-frontend.s3-website.eu-north-1.amazonaws.com
-
+    origins: http://winner-one-frontend.s3-website.eu-west-3.amazonaws.com,http://winner-one-frontend.s3-website.eu-west-3.amazonaws.com
 paypal:
   client-id: v
   client-secret: EHizbqMq5RghRQ698tKVNpryzbzD3VMc9oV1tTp9MGBkKYBobwBnc9hEje4Pi2jzYTB7K_vAyZ4aNu46

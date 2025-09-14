@@ -30,7 +30,7 @@
         image: kkhenissi/winner-back-image:latest
 
         environment:
-          - DB_URL:jdbc:postgresql://postgresql-winner:5432/winner_db
+          - DB_URL:jdbc:postgresql://postgres:5432/winner_db
         ports:
           - 8085:8085
         networks:
