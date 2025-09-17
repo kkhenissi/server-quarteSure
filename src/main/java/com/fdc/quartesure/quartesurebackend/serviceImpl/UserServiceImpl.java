@@ -337,11 +337,12 @@ public class UserServiceImpl implements UserService {
 
         try {
             User userObj = userDao.findByEmail(email);
-            log.info("Inside creditAccount {}",requestMap);
+            log.info("Inside creditAccount first time in creditAccount {}",requestMap);
             if(userObj!=null) {
                 switch (Integer.valueOf((int) requestMap)) {
                     case 10:
                         userObj.setCredit(userObj.getCredit()+Integer.valueOf((int) requestMap));;
+                        log.info("Inside creditAccount case 10 {}",userObj.getCredit());
                         break;
                     case 20:
                         userObj.setCredit((int) (userObj.getCredit()+(Integer.valueOf((int) requestMap)/.75)));

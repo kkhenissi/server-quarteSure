@@ -48,61 +48,83 @@ public class StripeController {
 
     private long paymentchoice;
 
-    @PostMapping("/payment")
+
+    @Transactional
+//    public String paymentWithCheckoutPage(HttpServletRequest request, @RequestBody CheckoutPayment payment) throws StripeException {
+//        // We initilize stripe object with the api key
+//        this.paymentchoice = payment.getAmount();
+//        init();
+//        // We create a  stripe session parameters
+//        SessionCreateParams params = SessionCreateParams.builder()
+//                // We will use the credit card payment method
+//            //    .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
+//            //    .setMode(SessionCreateParams.Mode.PAYMENT).setSuccessUrl(payment.getSuccessUrl())
+////                .setCancelUrl(
+////                        payment.getCancelUrl())
+////                .addLineItem(
+////                        SessionCreateParams.LineItem.builder().setQuantity(payment.getQuantity())
+////                                .setPriceData(
+////                                        SessionCreateParams.LineItem.PriceData.builder()
+////                                                .setCurrency(payment.getCurrency()).setUnitAmount(payment.getAmount())
+////                                                .setProductData(SessionCreateParams.LineItem.PriceData.ProductData
+////                                                        .builder().setName(payment.getName()).build())
+////                                                .build())
+////                                .build())
+//                .build();
+//        // create a stripe session
+//        Session session = Session.create(params);
+//        Map<String, String> responseData = new HashMap<>();
+//        // We get the sessionId and we putted inside the response data you can get more info from the session object
+//        responseData.put("id", session.getId());
+//        // We can return only the sessionId as a String
+//        // we update credit in user entity
+//
+//        String authorizationHeader = request.getHeader("Authorization");
+//        String token = null;
+//
+//        System.out.println("€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€");
+//        System.out.println(authorizationHeader);
+//
+//        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+//
+////            token = authorizationHeader.substring(7);
+////            String userName = jwtUtil.extractUserName(token);
+////            Claims claims = jwtUtil.extractAllClaims(token);
+//      //      log.info("What is in userName here==>{}", userName);
+//    //        this.userService.creditAccount(this.paymentchoice / 100, session.getId(), userName);
+//
+//            return gson.toJson(responseData);
+//
+//        }
+//
+//    return null;
+//    }
+    @PatchMapping(path = "/payment/{id}")
     /**
-     * Payment with Stripe checkout page
+     * Credit user account
      *
      * @throws StripeException
      */
-    @Transactional
-    public String paymentWithCheckoutPage(HttpServletRequest request, @RequestBody CheckoutPayment payment) throws StripeException {
-        // We initilize stripe object with the api key
-        this.paymentchoice = payment.getAmount();
-        init();
-        // We create a  stripe session parameters
-        SessionCreateParams params = SessionCreateParams.builder()
-                // We will use the credit card payment method
-                .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
-                .setMode(SessionCreateParams.Mode.PAYMENT).setSuccessUrl(payment.getSuccessUrl())
-                .setCancelUrl(
-                        payment.getCancelUrl())
-                .addLineItem(
-                        SessionCreateParams.LineItem.builder().setQuantity(payment.getQuantity())
-                                .setPriceData(
-                                        SessionCreateParams.LineItem.PriceData.builder()
-                                                .setCurrency(payment.getCurrency()).setUnitAmount(payment.getAmount())
-                                                .setProductData(SessionCreateParams.LineItem.PriceData.ProductData
-                                                        .builder().setName(payment.getName()).build())
-                                                .build())
-                                .build())
-                .build();
-        // create a stripe session
-        Session session = Session.create(params);
-        Map<String, String> responseData = new HashMap<>();
-        // We get the sessionId and we putted inside the response data you can get more info from the session object
-        responseData.put("id", session.getId());
-        // We can return only the sessionId as a String
-        // we update credit in user entity
-
+    public String creditUserAccount(HttpServletRequest request, @RequestBody CheckoutPayment payment) {
         String authorizationHeader = request.getHeader("Authorization");
         String token = null;
+        this.paymentchoice = payment.getAmount();
+        token = authorizationHeader.substring(7);
+        String userName = jwtUtil.extractUserName(token);
+        Claims claims = jwtUtil.extractAllClaims(token);
 
-        System.out.println("€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€");
-        System.out.println(authorizationHeader);
+         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
 
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-
-            token = authorizationHeader.substring(7);
-            String userName = jwtUtil.extractUserName(token);
-            Claims claims = jwtUtil.extractAllClaims(token);
             log.info("What is in userName here==>{}", userName);
-         //   this.userService.creditAccount(this.paymentchoice / 100, session.getId(), userName);
+            log.info("What is in this.paymentchoice here==>{}", this.paymentchoice);
+            this.userService.creditAccount(this.paymentchoice, "session.getId()", userName);
+         }
 
-            return gson.toJson(responseData);
 
-        }
 
-    return null;
+      //  return gson.toJson(responseData);
+
+        return new String(String.valueOf(this.paymentchoice));
     }
 
     @PatchMapping("/successPayment/{id}")
