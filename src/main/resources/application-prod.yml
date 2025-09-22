@@ -47,7 +47,7 @@ application:
       activation-url: http://winner-one-frontend.s3-website.eu-west-3.amazonaws.com/#/activate-account
       registration-url: http://winner-one-frontend.s3-website.eu-west-3.amazonaws.com/#/register
   cors:
-    origins: http://winner-one-frontend.s3-website.eu-west-3.amazonaws.com,http://winner-one-frontend.s3-website.eu-west-3.amazonaws.com
+    origins: http://winner-one-frontend.s3-website.eu-west-3.amazonaws.com
 paypal:
   client-id: v
   client-secret: EHizbqMq5RghRQ698tKVNpryzbzD3VMc9oV1tTp9MGBkKYBobwBnc9hEje4Pi2jzYTB7K_vAyZ4aNu46

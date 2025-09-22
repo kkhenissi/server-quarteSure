@@ -22,3 +22,5 @@
           secret:
             key: sk_test_51MaipqFzoKzk6dX5bqCUklrZxdyoqv9nxMYelFlS0QAN5u7GCphDmA7zJlzDmdwTtk1FacrT2LHJIZmA3i2zby0I00VHgJTqGt
            # key: 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
+        webhook:
+            secret: whsec_hJaJ3Y6TvmxRhO4xx4SGmkPH09BAfSPx          # secret de ton webhook (Stripe Dashboard)
