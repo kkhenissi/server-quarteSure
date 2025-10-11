@@ -13,6 +13,14 @@ spring:
       connection-timeout: 30000
   mvc:
     dispatch-options-request: true
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: health,info
+    endpoint:
+      health:
+        show-details: always
 
   jpa:
     hibernate:

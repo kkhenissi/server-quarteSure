@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
@@ -46,25 +47,38 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues())
-                .and()
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
                 .csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/**","/user/login","/user/signup","/user/activate",
-                        "swagger-resources",
-                        "/user/forgotPassword","/user/updateSelectedOptions/**","/h2/**","/swagger-ui/**")
-                .permitAll()
-                .anyRequest()
-                .authenticated().and().exceptionHandling()
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .cors().and()
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers().permitAll()
+                        .anyRequest().authenticated()
+                );
 
-        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-        http.csrf().disable();
-        http.headers().frameOptions().disable();
+        return http.build();
     }
+
+//    @Override
+//    protected void configure(HttpSecurity http) throws Exception {
+//        http.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues())
+//                .and()
+//                .csrf().disable()
+//                .authorizeRequests()
+//                .antMatchers("/**","/user/login","/user/signup","/user/activate",
+//                        "swagger-resources",
+//                        "/user/forgotPassword","/user/updateSelectedOptions/**","/h2/**","/swagger-ui/**")
+//                .permitAll()
+//                .anyRequest()
+//                .authenticated().and().exceptionHandling()
+//                .and()
+//                .sessionManagement()
+//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+//
+//        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+//        http.csrf().disable();
+//        http.headers().frameOptions().disable();
+//    }
 
 }

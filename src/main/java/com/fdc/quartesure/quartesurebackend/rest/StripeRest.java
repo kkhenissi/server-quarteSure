@@ -1,12 +1,13 @@
 package com.fdc.quartesure.quartesurebackend.rest;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Map;
-
+@CrossOrigin(origins = "http://winner-one-frontend.s3-website.eu-west-3.amazonaws.com")
 @RequestMapping(path = "/api")
 public interface StripeRest {
 

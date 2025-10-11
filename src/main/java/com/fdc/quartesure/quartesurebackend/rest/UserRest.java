@@ -11,7 +11,7 @@ import java.util.Map;
 @RequestMapping(path = "/user")
 // @CrossOrigin("*")
 // origins = "*", allowedHeaders = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PATCH, RequestMethod.OPTIONS }
-// @CrossOrigin(origins = "http://winner-one-frontend.s3-website.eu-west-3.amazonaws.com")
+@CrossOrigin(origins = "http://winner-one-frontend.s3-website.eu-west-3.amazonaws.com")
 public interface UserRest {
     @PostMapping(path = "/signup")
     public ResponseEntity<String> signUp(@RequestBody(required = true)Map<String,String> requestMap);
@@ -36,10 +36,10 @@ public interface UserRest {
     @PostMapping(path = "/changePassword")
     public ResponseEntity<String> changePassword(@RequestBody(required = true) Map<String,String> requestMap);
 
-    @CrossOrigin(
-            origins = "*",
-            methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.PATCH, RequestMethod.OPTIONS}
-    )
+//    @CrossOrigin(
+//            origins = "*",
+//            methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.PATCH, RequestMethod.OPTIONS}
+//    )
     @PatchMapping(value = "/updateSelectedOptions/{id}", consumes = MediaType.TEXT_PLAIN_VALUE)
 
     public ResponseEntity<String> updateSelectedOptions(@PathVariable String id, @RequestBody(required = true) String request);
