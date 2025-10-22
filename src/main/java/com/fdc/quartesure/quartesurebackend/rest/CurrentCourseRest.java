@@ -15,6 +15,14 @@ public interface CurrentCourseRest {
     @PostMapping(path = "/performances")
     public Object getPerformances(@RequestBody(required = true) Map<String, String> requestMap);
 
+
+//    @PostMapping(path = "/arriveOrder")
+//    public Object getResultatCourse(@RequestBody(required = true) Map<String, String> requestMap);
+
+    @PostMapping(path = "/arriveOrder/{numOrdre}")
+    public Object getOrdreArrivee(@PathVariable int numOrdre,
+                                  @RequestBody(required = true) Map<String, String> requestMap);
+
 }
 
 

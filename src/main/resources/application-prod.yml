@@ -30,7 +30,9 @@ spring:
       format_sql: false
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-
+  openai:
+    api:
+      key: "${OPENAI_API_KEY}"
   mail:
     host: smtp.gmail.com
     port: 465

@@ -1,18 +1,22 @@
 package com.fdc.quartesure.quartesurebackend.restImpl;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fdc.quartesure.quartesurebackend.POJO.CurrentCourseStringFormat;
 import com.fdc.quartesure.quartesurebackend.POJO.PerformanceStringFormat;
 import com.fdc.quartesure.quartesurebackend.rest.CurrentCourseRest;
 import com.fdc.quartesure.quartesurebackend.service.CurrentCourseService;
 import com.fdc.quartesure.quartesurebackend.utils.QuarteSureUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 import java.util.Optional;
 
 @RestController
+@Slf4j
 public class CurrentCourseRestImpl implements CurrentCourseRest {
 
     @Autowired
@@ -67,4 +71,39 @@ public class CurrentCourseRestImpl implements CurrentCourseRest {
         }
         return QuarteSureUtils.getResponseEntity("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @Override
+    public Object getOrdreArrivee(int numOrdre, Map<String, String> requestMap) {
+        log.info(" What is in numOrde {}",numOrdre);
+        log.info("📦 Contenu brut de requestMap : {}", requestMap);
+
+        ResponseEntity ordreArrivee = currentCourseService.getOrdreArriveeByNumOrdre(requestMap, numOrdre);
+
+//        if (ordreArrivee == null || ordreArrivee.isMissingNode()) {
+//            return ResponseEntity.notFound().build();
+//        }
+
+        return ResponseEntity.ok(ordreArrivee);
+    }
+
+//    @Override
+//    public Object getResultatCourse(Map<String, String> requestMap) {
+//        try {
+//            // Appel à ton service existant
+//            String jsonResponse = (String) getResultatCourse(requestMap);
+//
+//            // Parser le JSON
+//            ObjectMapper mapper = new ObjectMapper();
+//            JsonNode root = mapper.readTree(jsonResponse);
+//
+//            // Extraire uniquement le tableau "courses"
+//            JsonNode courses = root.path("courses");
+//
+//            // Retourner le tableau (Jackson convertira automatiquement en JSON)
+//            return courses;
+//        }catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
+//        return QuarteSureUtils.getResponseEntity("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
 }

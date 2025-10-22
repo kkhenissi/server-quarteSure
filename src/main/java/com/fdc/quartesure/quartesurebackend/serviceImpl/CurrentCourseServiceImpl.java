@@ -1,5 +1,6 @@
 package com.fdc.quartesure.quartesurebackend.serviceImpl;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fdc.quartesure.quartesurebackend.POJO.CurrentCourseStringFormat;
 import com.fdc.quartesure.quartesurebackend.POJO.Participant;
 import com.fdc.quartesure.quartesurebackend.POJO.PerformanceStringFormat;
@@ -227,6 +228,182 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
         String aujourdhui = new SimpleDateFormat("ddMMyyyy").format(new Date());
         String performanceStringFrmatId = requestMap.get("date")+"-"+requestMap.get("R")+"-"+requestMap.get("C");
         return this.performanceStringFormatDao.findById(performanceStringFrmatId);
+    }
+
+    @Override
+    public ResponseEntity<String> getResultatCourse(Map<String, String> requestMap) {
+        try {
+            log.info("Inside signup {}",requestMap);
+            if(validateRefCourse(requestMap)) {
+                String aujourdhui = new SimpleDateFormat("ddMMyyyy").format(new Date());
+                // "07/05/2024"
+                String currentUrl="";
+                currentUrl = "https://online.turfinfo.api.pmu.fr/rest/client/61/programme/"+requestMap.get("date")+"/"+requestMap.get("R")+"/"+"?specialisation=INTERNET";
+                URL url = new URL(currentUrl);
+                log.info("CurrentUrl {}",currentUrl);
+             //   String performanceStringFrmatId = requestMap.get("date")+"-"+requestMap.get("R")+"-"+requestMap.get("C");
+
+                // https://online.turfinfo.api.pmu.fr/rest/client/1/programme/09052024/R1/C7/participants?specialisation=INTERNET
+                //   this.urlParticipants="/"+dateCourse.toISOString().split('-')[2].substring(0,2)+dateCourse.toISOString().split('-')[1]+dateCourse.toISOString().split('-')[0]+"/"+this.refCourse.R+"/"+this.refCourse.C+"/participants?specialisation=INTERNET"
+                // "https://online.turfinfo.api.pmu.fr/rest/client/61/programme/09022024/R7/C5/performances-detaillees/pretty"
+
+                // "https://online.turfinfo.api.pmu.fr/rest/client/61/programme/"+aujourdhui+"/"+requestMap.get("R")+"/"+requestMap.get("C")+"/performances-detaillees/pretty";
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                conn.connect();
+
+                // Check if Connect is made
+                int responseCode = conn.getResponseCode();
+
+                // 200 Ok
+                if(responseCode != 200) {
+                    throw new RuntimeException("HttpResponseCode:"+responseCode);
+                } else {
+                    StringBuilder informationRetrived = new StringBuilder();
+                    Scanner scanner = new Scanner(url.openStream());
+                    while (scanner.hasNext()){
+                        informationRetrived.append(scanner.nextLine());
+                    }
+                    // close the scanner
+                    scanner.close();
+
+                    JsonObject dataObject = new JsonParser().parse((informationRetrived.toString())).getAsJsonObject();
+
+                    JsonElement bruteResultats = dataObject;
+                    log.info("bruteResultats {}",bruteResultats);
+                    Type listType = new TypeToken<List<Participant>>() {}.getType();
+                    Type allureType = new TypeToken<String>() {}.getType();
+                    // List<InfosParticipant> jsonParticipants = (List<InfosParticipant>) bruteResultats;
+                    String jsonAllure = new Gson().fromJson(dataObject.get("allure"),allureType);
+
+
+                    //      JsonElement bruteResultats = dataObject;
+               //     PerformanceStringFormat performanceToSave = new PerformanceStringFormat();
+               //     performanceToSave.setId(performanceStringFrmatId);
+                //    performanceToSave.setContent(bruteResultats.toString());
+                 //   performanceStringFormatDao.save(performanceToSave);
+
+
+                    Gson gson = new Gson();
+
+
+                    //     log.info("What is in translateCurrentCourse {}",gson.toJson(translateCurrentCourse));
+
+                    return new ResponseEntity<>(bruteResultats.toString() ,HttpStatus.OK);
+                }
+            }
+
+
+        }catch(Exception ex) {
+            ex.printStackTrace();
+        }
+        return  QuarteSureUtils.getResponseEntity("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @Override
+    public JsonNode getCourseByOrder(Map<String, String> requestMap, int numOrderTarget) {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<String> getOrdreArriveeByNumOrdre(Map<String, String> requestMap, int numOrdreTarget) {
+        log.info("What is in numOrderTarget{}",numOrdreTarget);
+        try {
+            log.info("Inside signup {}",requestMap.toString());
+            if(validateRefCourse(requestMap)) {
+                String aujourdhui = new SimpleDateFormat("ddMMyyyy").format(new Date());
+                // "07/05/2024"
+                String currentUrl="";
+                currentUrl = "https://online.turfinfo.api.pmu.fr/rest/client/61/programme/"+requestMap.get("date")+"/"+requestMap.get("R")+"?specialisation=INTERNET";
+                URL url = new URL(currentUrl);
+                log.info("Curre---ntUrl {}",currentUrl);
+                //   String performanceStringFrmatId = requestMap.get("date")+"-"+requestMap.get("R")+"-"+requestMap.get("C");
+
+                // https://online.turfinfo.api.pmu.fr/rest/client/1/programme/09052024/R1/C7/participants?specialisation=INTERNET
+                //   this.urlParticipants="/"+dateCourse.toISOString().split('-')[2].substring(0,2)+dateCourse.toISOString().split('-')[1]+dateCourse.toISOString().split('-')[0]+"/"+this.refCourse.R+"/"+this.refCourse.C+"/participants?specialisation=INTERNET"
+                // "https://online.turfinfo.api.pmu.fr/rest/client/61/programme/09022024/R7/C5/performances-detaillees/pretty"
+
+                // "https://online.turfinfo.api.pmu.fr/rest/client/61/programme/"+aujourdhui+"/"+requestMap.get("R")+"/"+requestMap.get("C")+"/performances-detaillees/pretty";
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                conn.connect();
+
+                // Check if Connect is made
+                int responseCode = conn.getResponseCode();
+
+                // 200 Ok
+                if(responseCode != 200) {
+                    throw new RuntimeException("HttpResponseCode:"+responseCode);
+                } else {
+                    StringBuilder informationRetrived = new StringBuilder();
+                    Scanner scanner = new Scanner(url.openStream());
+                    while (scanner.hasNext()){
+                        informationRetrived.append(scanner.nextLine());
+                    }
+                    // close the scanner
+                    scanner.close();
+
+                    JsonObject dataObject = new JsonParser().parse((informationRetrived.toString())).getAsJsonObject();
+
+                    JsonElement bruteResultats = dataObject;
+                    log.info("bruteResultats {}",bruteResultats);
+                    Type listType = new TypeToken<List<Participant>>() {}.getType();
+                    Type allureType = new TypeToken<String>() {}.getType();
+                    // List<InfosParticipant> jsonParticipants = (List<InfosParticipant>) bruteResultats;
+                    String jsonAllure = new Gson().fromJson(dataObject.get("allure"),allureType);
+
+
+                    //      JsonElement bruteResultats = dataObject;
+                    //     PerformanceStringFormat performanceToSave = new PerformanceStringFormat();
+                    //     performanceToSave.setId(performanceStringFrmatId);
+                    //    performanceToSave.setContent(bruteResultats.toString());
+                    //   performanceStringFormatDao.save(performanceToSave);
+
+
+                    Gson gson = new Gson();
+
+
+                    //     log.info("What is in translateCurrentCourse {}",gson.toJson(translateCurrentCourse));
+
+                    return new ResponseEntity<> (bruteResultats.toString(), HttpStatus.OK);
+                }
+            }
+
+
+        }catch(Exception ex) {
+            ex.printStackTrace();
+        }
+        return  QuarteSureUtils.getResponseEntity("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+
+//        try {
+//            ResponseEntity<String> jsonResponse =  getResultatCourse(requestMap);
+//            ObjectMapper mapper = new ObjectMapper();
+//            JsonNode root = mapper.convertValue(jsonResponse, JsonNode.class);
+//
+//            JsonNode courses = root.path("courses");
+//            if (!courses.isArray()) {
+//                throw new IllegalArgumentException("Champ 'courses' manquant ou invalide");
+//            }
+//
+//            for (JsonNode course : courses) {
+//                JsonNode numNode = course.path("numOrdre");
+//                if (numNode.isMissingNode()) continue;
+//
+//                if (numNode.asInt() == numOrdreTarget) {
+//                    JsonNode ordreArrivee = course.path("ordreArrivee");
+//                    if (ordreArrivee.isMissingNode())
+//                        throw new IllegalStateException("Champ 'ordreArrivee' manquant pour numOrdre=" + numOrdreTarget);
+//
+//                    return ordreArrivee;
+//                }
+//            }
+//
+//            throw new IllegalArgumentException("Aucune course trouvée pour numOrdre=" + numOrdreTarget);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            throw new RuntimeException("Erreur lors de l’extraction de ordreArrivee pour numOrdre=" + numOrdreTarget, e);
+//        }
+//        return null;
     }
 
     private boolean validateRefCourse(Map<String,String> requestMap) {

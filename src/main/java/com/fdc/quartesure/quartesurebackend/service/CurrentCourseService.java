@@ -1,7 +1,9 @@
 package com.fdc.quartesure.quartesurebackend.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fdc.quartesure.quartesurebackend.POJO.CurrentCourseStringFormat;
 import com.fdc.quartesure.quartesurebackend.POJO.PerformanceStringFormat;
+import com.google.gson.JsonElement;
 import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
@@ -17,4 +19,10 @@ public interface CurrentCourseService {
     ResponseEntity<String> getPerfomances(Map<String, String> requestMap);
 
     Optional<PerformanceStringFormat> getPerformanceFromLocalDB(Map<String, String> requestMap) throws IOException;
+
+    ResponseEntity<String> getResultatCourse(Map<String, String> requestMap);
+
+    JsonNode getCourseByOrder(Map<String, String> requestMap, int numOrderTarget);
+
+    ResponseEntity<String> getOrdreArriveeByNumOrdre(Map<String, String> requestMap, int numOrdreTarget);
 }

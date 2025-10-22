@@ -1,84 +1,120 @@
 package com.fdc.quartesure.quartesurebackend.JWT;
+//
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.context.annotation.Bean;
+//import org.springframework.context.annotation.Configuration;
+//import org.springframework.security.authentication.AuthenticationManager;
+//import org.springframework.security.config.BeanIds;
+//import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+//import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+//import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+//import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+//import org.springframework.security.config.http.SessionCreationPolicy;
+//import org.springframework.security.core.Authentication;
+//import org.springframework.security.core.context.SecurityContextHolder;
+//import org.springframework.security.core.userdetails.UserDetails;
+//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+//import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+//import org.springframework.security.crypto.password.PasswordEncoder;
+//import org.springframework.security.web.SecurityFilterChain;
+//import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+//import org.springframework.web.cors.CorsConfiguration;
+//
+//@Configuration
+//@EnableWebSecurity
+//public class SecurityConfig extends WebSecurityConfigurerAdapter {
+//
+//    @Autowired
+//    CustomerUsersDetailsService customerUsersDetailsService;
+//    @Autowired
+//    JwtFilter jwtFilter;
+//    @Override
+//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//        auth.userDetailsService(customerUsersDetailsService);
+//    }
+////    @Bean
+////    public PasswordEncoder passwordEncoder() {
+////         return NoOpPasswordEncoder.getInstance();
+////    }
+//
+//    @Bean
+//    public PasswordEncoder passwordEncoder() {
+//        return new BCryptPasswordEncoder();
+//    }
+//    @Bean(name = BeanIds.AUTHENTICATION_MANAGER)
+//    @Override
+//    public AuthenticationManager authenticationManagerBean() throws Exception {
+//        return super.authenticationManagerBean();
+//    }
+//
+//    @Bean
+//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+//        http
+//                .csrf().disable()
+//                .cors().and()
+//                .authorizeHttpRequests(auth -> auth
+//                        .requestMatchers().permitAll()
+//                        .anyRequest().authenticated()
+//                );
+//
+//        return http.build();
+//    }
+//
+////    @Override
+////    protected void configure(HttpSecurity http) throws Exception {
+////        http.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues())
+////                .and()
+////                .csrf().disable()
+////                .authorizeRequests()
+////                .antMatchers("/**","/user/login","/user/signup","/user/activate",
+////                        "swagger-resources",
+////                        "/user/forgotPassword","/user/updateSelectedOptions/**","/h2/**","/swagger-ui/**")
+////                .permitAll()
+////                .anyRequest()
+////                .authenticated().and().exceptionHandling()
+////                .and()
+////                .sessionManagement()
+////                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+////
+////        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+////        http.csrf().disable();
+////        http.headers().frameOptions().disable();
+////    }
+//
+//}
 
-import org.springframework.beans.factory.annotation.Autowired;
+
+
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.BeanIds;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
-@EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig {
 
-    @Autowired
-    CustomerUsersDetailsService customerUsersDetailsService;
-    @Autowired
-    JwtFilter jwtFilter;
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(customerUsersDetailsService);
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf().disable()
+                .authorizeRequests()
+                .anyRequest().permitAll();
+        return http.build();
     }
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//         return NoOpPasswordEncoder.getInstance();
-//    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    @Bean(name = BeanIds.AUTHENTICATION_MANAGER)
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
 
+    // ✅ Ceci rend AuthenticationManager injectable partout
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf().disable()
-                .cors().and()
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers().permitAll()
-                        .anyRequest().authenticated()
-                );
-
-        return http.build();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
     }
-
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception {
-//        http.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues())
-//                .and()
-//                .csrf().disable()
-//                .authorizeRequests()
-//                .antMatchers("/**","/user/login","/user/signup","/user/activate",
-//                        "swagger-resources",
-//                        "/user/forgotPassword","/user/updateSelectedOptions/**","/h2/**","/swagger-ui/**")
-//                .permitAll()
-//                .anyRequest()
-//                .authenticated().and().exceptionHandling()
-//                .and()
-//                .sessionManagement()
-//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-//
-//        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-//        http.csrf().disable();
-//        http.headers().frameOptions().disable();
-//    }
-
 }
