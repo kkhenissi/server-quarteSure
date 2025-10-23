@@ -349,6 +349,10 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
                         }
 
                         log.info("✅ Ordre d'arrivée trouvé: {}", ordreArrivee);
+//                        return ResponseEntity.ok()
+//                                .contentType(MediaType.APPLICATION_JSON)
+//                                .body(jsonString);
+
                         return new ResponseEntity<>(ordreArrivee.toString(), HttpStatus.OK);
                     }
                 }
