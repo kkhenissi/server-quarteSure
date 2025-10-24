@@ -6,19 +6,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
-@RestController
 @RequestMapping("/ai")
-@CrossOrigin
 public interface AiRest {
-//        @GetMapping(value = "/ask", produces = MediaType.TEXT_PLAIN_VALUE)
-//        public String ask(@RequestParam String prompt);
 
-        @PostMapping(value = "/ask", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
-        public ResponseEntity<Map<String, Object>> ask(@RequestBody Map<String, Object> body);
-        //{
-         //       String prompt = body.get("prompt");
-              //  return aiCustomService.generateResponse(prompt);
-      //  }
+        @PostMapping(
+                value = "/ask",
+                consumes = MediaType.APPLICATION_JSON_VALUE,
+                produces = MediaType.APPLICATION_JSON_VALUE // ✅ on précise que la réponse est du JSON
+        )
+        ResponseEntity<Object> ask(@RequestBody Map<String, Object> body);
 }
-
-

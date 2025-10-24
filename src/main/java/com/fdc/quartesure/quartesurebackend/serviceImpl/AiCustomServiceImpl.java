@@ -35,6 +35,6 @@ public class AiCustomServiceImpl implements AiCustomService {
                 .build();
 
         ChatCompletionResult result = openAiService.createChatCompletion(request);
-        return result.getChoices().get(0).getMessage().getContent();
+        return result.getChoices().get(0).getMessage().getContent().toString();
     }
 }
