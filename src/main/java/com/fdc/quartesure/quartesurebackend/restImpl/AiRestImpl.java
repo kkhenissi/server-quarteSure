@@ -4,12 +4,19 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fdc.quartesure.quartesurebackend.rest.AiRest;
 import com.fdc.quartesure.quartesurebackend.service.AiCustomService;
+import com.fdc.quartesure.quartesurebackend.wrapper.CourseData;
+import com.fdc.quartesure.quartesurebackend.wrapper.RegressionResult;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
+@Slf4j
 public class AiRestImpl implements AiRest {
 
     private final AiCustomService aiService;
@@ -51,5 +58,23 @@ public class AiRestImpl implements AiRest {
                     "rawResponse", rawResponse
             ));
         }
+    }
+
+    @Override
+    public RegressionResult trainRegression(List<CourseData> courses) {
+        return aiService.calculateRegression(courses);
+    }
+
+    @Override
+    public Map<String, Object> predict(List<CourseData> courses) {
+        List<CourseData> sorted = aiService.predictAndSort(courses);
+        RegressionResult result = aiService.calculateRegression(courses);
+        log.info("What is in result ==>",result);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("coefficients", result);
+        response.put("classement", sorted);
+
+        return response;
     }
 }
