@@ -26,55 +26,49 @@ public class AiRestImpl implements AiRest {
         this.aiService = aiService;
     }
 
-    @Override
-    public ResponseEntity<Object> ask(Map<String, Object> body) {
-        String prompt = (String) body.get("prompt");
-        String rawResponse = aiService.ask(prompt);
-        String cleanedResponse = rawResponse;
-
-        try {
-            // 🔹 Étape 1 : si la réponse est un JSON avec un champ "response"
-            if (rawResponse.trim().startsWith("{") && rawResponse.contains("\"response\"")) {
-                JsonNode root = mapper.readTree(rawResponse);
-                if (root.has("response")) {
-                    cleanedResponse = root.get("response").asText();
-                }
-            }
-
-            // 🔹 Étape 2 : suppression des balises Markdown ```json ... ```
-            cleanedResponse = cleanedResponse
-                    .replaceAll("(?s).*```json", "")
-                    .replaceAll("```.*", "")
-                    .trim();
-
-            // 🔹 Étape 3 : parse du vrai JSON propre
-            Object json = mapper.readValue(cleanedResponse, Object.class);
-            return ResponseEntity.ok(json);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.badRequest().body(Map.of(
-                    "error", "Invalid JSON from AI",
-                    "rawResponse", rawResponse
-            ));
-        }
-    }
+//    @Override
+//    public ResponseEntity<Object> ask(Map<String, Object> body) {
+//        String prompt = (String) body.get("prompt");
+//        String rawResponse = aiService.ask(prompt);
+//        String cleanedResponse = rawResponse;
+//
+//        try {
+//            // 🔹 Étape 1 : si la réponse est un JSON avec un champ "response"
+//            if (rawResponse.trim().startsWith("{") && rawResponse.contains("\"response\"")) {
+//                JsonNode root = mapper.readTree(rawResponse);
+//                if (root.has("response")) {
+//                    cleanedResponse = root.get("response").asText();
+//                }
+//            }
+//
+//            // 🔹 Étape 2 : suppression des balises Markdown ```json ... ```
+//            cleanedResponse = cleanedResponse
+//                    .replaceAll("(?s).*```json", "")
+//                    .replaceAll("```.*", "")
+//                    .trim();
+//
+//            // 🔹 Étape 3 : parse du vrai JSON propre
+//            Object json = mapper.readValue(cleanedResponse, Object.class);
+//            return ResponseEntity.ok(json);
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return ResponseEntity.badRequest().body(Map.of(
+//                    "error", "Invalid JSON from AI",
+//                    "rawResponse", rawResponse
+//            ));
+//        }
+//    }
 
     @Override
     public RegressionResult trainRegression(List<CourseData> courses) {
         return aiService.calculateRegression(courses);
     }
 
+
     @Override
-    public Map<String, Object> predict(List<CourseData> courses) {
-        List<CourseData> sorted = aiService.predictAndSort(courses);
-        RegressionResult result = aiService.calculateRegression(courses);
-        log.info("What is in result ==>",result);
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("coefficients", result);
-        response.put("classement", sorted);
-
-        return response;
+    public Map<String, Object> predict(@RequestBody List<CourseData> courses) {
+        // On délègue tout le calcul et la construction de la réponse au service
+        return aiService.predictAndSort(courses);
     }
 }

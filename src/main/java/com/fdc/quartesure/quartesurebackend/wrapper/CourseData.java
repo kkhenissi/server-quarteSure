@@ -13,8 +13,10 @@ public class CourseData {
     private int distance;
     private int currentDistance;
     private String currentEtatTerrain;
+    private double perfTendance;
     private int positionArrivee;
     private double predictedSpeed;
+    private int rankPredicted;
 
     // Getters / Setters
 //    public int getNumPmu() { return numPmu; }

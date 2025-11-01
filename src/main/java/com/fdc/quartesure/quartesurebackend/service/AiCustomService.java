@@ -4,11 +4,14 @@ import com.fdc.quartesure.quartesurebackend.wrapper.CourseData;
 import com.fdc.quartesure.quartesurebackend.wrapper.RegressionResult;
 
 import java.util.List;
+import java.util.Map;
 
 public interface AiCustomService {
 
-    public String ask(String prompt);
+  //  public String ask(String prompt);
     RegressionResult calculateRegression(List<CourseData> courses);
 
-    List<CourseData> predictAndSort(List<CourseData> courses);
+    public Map<String, Object> predictAndSort(List<CourseData> courses);
+
+  //  public double calculateSpearman(List<CourseData> courses);
 }

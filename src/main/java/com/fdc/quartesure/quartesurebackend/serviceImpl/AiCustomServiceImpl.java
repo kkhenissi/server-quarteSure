@@ -16,106 +16,130 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 public class AiCustomServiceImpl implements AiCustomService {
 
-    private final OpenAiService openAiService;
-
-    public AiCustomServiceImpl(@Value("${OPENAI_API_KEY}") String apiKey) {
-        this.openAiService = new OpenAiService(apiKey, Duration.ofSeconds(60));
-    }
     @Override
-    public String ask(String prompt) {
-        ChatCompletionRequest request = ChatCompletionRequest.builder()
-                .model("gpt-4o") // ou "gpt-4o"
-                .messages(List.of(
-                        new ChatMessage("system", "Tu es un assistant expert en analyse de performances de chevaux de course."),
-                        new ChatMessage("user", prompt)
-                ))
-                .maxTokens(2000)
-                .temperature(0.2)
-                .build();
+    public RegressionResult calculateRegression(List<CourseData> historique) {
+        if (historique == null || historique.size() < 2)
+            return new RegressionResult(0, 0, 0, 0,0);
 
-        ChatCompletionResult result = openAiService.createChatCompletion(request);
-        return result.getChoices().get(0).getMessage().getContent().toString();
-    }
+        OLSMultipleLinearRegression regression = new OLSMultipleLinearRegression();
 
-    @Override
-    public RegressionResult calculateRegression(List<CourseData> courses) {
-        if (courses == null || courses.size() < 2) {
-            return new RegressionResult(0, 0, 0, 0);
+        double[] y = historique.stream()
+                .mapToDouble(CourseData::getPositionArrivee)
+                .toArray();
+
+        double[][] x = historique.stream()
+                .map(c -> new double[]{c.getSpeedChv(), c.getHandicapPoids(), c.getCorde(), c.getPerfTendance()})
+                .toArray(double[][]::new);
+
+        regression.newSampleData(y, x);
+
+        double[] coefficients;
+        try {
+            coefficients = regression.estimateRegressionParameters();
+        } catch (Exception e) {
+            return new RegressionResult(0, 0, 0, 0,0);
         }
 
-        // --- Construire les matrices X (variables explicatives) et y (résultat = positionArrivee)
-        int n = courses.size();
-        double[][] X = new double[n][4]; // speedChv, poids, corde,currentDistance, currentEtatTerrain
-        double[] y = new double[n];      // positionArrivee
+        double alpha = coefficients[1];
+        double beta = coefficients[2];
+        double gamma = coefficients[3];
+        double lambda = coefficients[4];
+        double r2 = regression.calculateRSquared();
 
-        for (int i = 0; i < n; i++) {
-            CourseData c = courses.get(i);
-            X[i][0] = c.getSpeedChv();
-            X[i][1] = c.getHandicapPoids();
-            X[i][2] = c.getPlaceCorde();
-            X[i][3] = c.getCurrentDistance();
-          //  X[i][4] = c.getCurrentEtatTerrain();
-            y[i] = c.getPositionArrivee();
-        }
-
-//        // --- Régression linéaire multiple
-//        OLSMultipleLinearRegression regression = new OLSMultipleLinearRegression();
-//        regression.newSampleData(y, X);
-//
-//        double[] coefficients = regression.estimateRegressionParameters();
-//        double r2 = regression.calculateRSquared();
-//
-//        // coefficients[0] = intercept (b)
-//        // coefficients[1] = alpha (speedChv)
-//        // coefficients[2] = beta (poids)
-//        // coefficients[3] = gamma (corde)
-//
-//        return new RegressionResult(
-//                coefficients[1],
-//                coefficients[2],
-//                coefficients[3],
-//                r2
-//        );
-
-        MillerUpdatingRegression regression = new MillerUpdatingRegression(4, true);
-        for (int i = 0; i < n; i++) {
-            regression.addObservation(X[i], y[i]);
-        }
-
-        RegressionResults results = regression.regress();
-        double[] coefficients = results.getParameterEstimates();
-        double r2 = results.getRSquared();
-                return new RegressionResult(
-                coefficients[1],
-                coefficients[2],
-                coefficients[3],
-                r2
-        );
+        return new RegressionResult(alpha, beta, gamma,lambda, r2);
     }
 
     @Override
-    public List<CourseData> predictAndSort(List<CourseData> courses) {
-        RegressionResult result = calculateRegression(courses);
+    public Map<String, Object> predictAndSort(List<CourseData> courses) {
+        RegressionResult regression = calculateRegression(courses);
 
+        // Calcul de la vitesse prédite
         for (CourseData c : courses) {
-            double predictedSpeed =
-                    result.getAlpha() * c.getSpeedChv() +
-                            result.getBeta() * c.getHandicapPoids() +
-                            result.getGamma() * c.getPlaceCorde();
+            double predictedSpeed = regression.getAlpha() * c.getSpeedChv()
+                    + regression.getBeta() * c.getHandicapPoids()
+                    + regression.getGamma() * c.getPlaceCorde()
+                    + regression.getLambda() * c.getPerfTendance();
             c.setPredictedSpeed(predictedSpeed);
+//            log.info("valeur de regression.getAlpha() ==> {}",regression.getAlpha());
+//            log.info("valeur de c.getSpeedChv() ==> {}",c.getSpeedChv());
+//
+//            log.info("*******************************************************************");
+//            log.info("valeur de regression.getBeta() ==> {}",regression.getBeta());
+//            log.info("valeur de c.getHandicapPoids() ==> {}",c.getHandicapPoids());
+//
+//            log.info("*******************************************************************");
+//            log.info("valeur de regression.getGamma() ==> {}", regression.getGamma());
+//            log.info("valeur de c.getCorde() ==> {}",c.getPlaceCorde());
+//
+            log.info("*******************************************************************");
+//            log.info("valeur de regression.getLambda() ==> {}",regression.getLambda());
+//            log.info("valeur de c.getPerfTendance() ==> {}",c.getPerfTendance());
+
+            log.info("valeur de predictedSpeed ==> {}",predictedSpeed);
+
+
         }
 
-        // Tri décroissant sur vitesse prédite
-        return courses.stream()
+        // Tri décroissant sur vitesse prédite (le plus rapide en premier)
+        List<CourseData> sorted = courses.stream()
                 .sorted(Comparator.comparingDouble(CourseData::getPredictedSpeed))
                 .collect(Collectors.toList());
+
+        // Attribution des rangs prévus
+        for (int i = 0; i < sorted.size(); i++) {
+            sorted.get(i).setRankPredicted(i + 1);
+        }
+
+        // Calcul du Spearman
+        double spearman = computeSpearmanCorrelation(sorted);
+
+        // Construction de la réponse
+        Map<String, Object> response = new HashMap<>();
+        response.put("coefficients", regression);
+        response.put("spearman", spearman);
+        response.put("classement", sorted);
+
+        return response;
+    }
+
+    /**
+     * Corrélation de Spearman entre classement prédit et arrivée réelle.
+     */
+    private double computeSpearmanCorrelation(List<CourseData> courses) {
+        int n = courses.size();
+        if (n < 2) return 0.0;
+
+        // Rangs réels (1 = meilleur)
+        Map<Integer, Integer> rankReal = new HashMap<>();
+        List<CourseData> sortedByArrival = courses.stream()
+                .sorted(Comparator.comparingInt(CourseData::getPositionArrivee))
+                .toList();
+        for (int i = 0; i < sortedByArrival.size(); i++) {
+            rankReal.put(sortedByArrival.get(i).getNumPmu(), i + 1);
+        }
+
+        // Rangs prédits (1 = meilleur)
+        List<CourseData> sortedByPred = courses.stream()
+                .sorted(Comparator.comparingInt(CourseData::getRankPredicted))
+                .toList();
+
+        double sumDiff2 = 0.0;
+        for (CourseData c : sortedByPred) {
+            int rankPred = c.getRankPredicted();
+            int rankTrue = rankReal.get(c.getNumPmu());
+            double diff = rankPred - rankTrue;
+            sumDiff2 += diff * diff;
+        }
+
+        double spearman = 1 - ((6.0 * sumDiff2) / (n * (n * n - 1)));
+        return Math.max(-1, Math.min(1, spearman)); // sécurité numérique
     }
 }
+
