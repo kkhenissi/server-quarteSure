@@ -1,6 +1,7 @@
 spring:
-  profiles:
-    active: prod
+#  profiles:
+#    active: prod
+  datasource:
     url: ${DB_URL:jdbc:postgresql://postgres:5432/winner_db}
     username: ${DB_USERNAME:username}
     password: ${DB_PASSWORD:password}
@@ -36,10 +37,10 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 465
-  #  username: ${EMAIL_USERNAME}
+    #  username: ${EMAIL_USERNAME}
     username: kkhenissi
-  #  password: ${EMAIL_PASSWORD}
-    password: ybfv kklj sqkh hzxj 
+    #  password: ${EMAIL_PASSWORD}
+    password: ybfv kklj sqkh hzxj
     properties:
       mail:
         smtp:
@@ -51,13 +52,29 @@ spring:
           enabled: true
     protocol: smtp
 
+  # ---------------- HTTPS CONFIGURATION ----------------
+  server:
+    port: 8443
+    ssl:
+      enabled: true
+      key-store: classpath:keystore.p12
+      key-store-password: Eyalena04041968      # Remplace par ton mot de passe du keystore
+      key-store-type: PKCS12
+      key-alias: springboot
+
+  # ---------------- CORS CONFIGURATION ----------------
+  cors:
+    allowed-origins: "https://localhost:4600,https://winner-one-frontend.s3-website.eu-west-3.amazonaws.com"
+    allowed-methods: "GET,POST,PUT,DELETE,OPTIONS"
+    allowed-headers: "*"
+    allow-credentials: true
+
 application:
   mailing:
     frontend:
       activation-url: http://winner-one-frontend.s3-website.eu-west-3.amazonaws.com/#/activate-account
       registration-url: http://winner-one-frontend.s3-website.eu-west-3.amazonaws.com/#/register
-  cors:
-    origins: http://winner-one-frontend.s3-website.eu-west-3.amazonaws.com
+
 paypal:
   client-id: v
   client-secret: EHizbqMq5RghRQ698tKVNpryzbzD3VMc9oV1tTp9MGBkKYBobwBnc9hEje4Pi2jzYTB7K_vAyZ4aNu46

@@ -14,6 +14,7 @@ public class CourseData {
     private int currentDistance;
     private String currentEtatTerrain;
     private double perfTendance;
+    private double scorePerformanceJockey;
     private int positionArrivee;
     private double predictedSpeed;
     private int rankPredicted;

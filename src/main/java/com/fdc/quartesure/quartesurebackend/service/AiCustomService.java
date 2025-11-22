@@ -9,9 +9,11 @@ import java.util.Map;
 public interface AiCustomService {
 
   //  public String ask(String prompt);
-    RegressionResult calculateRegression(List<CourseData> courses);
+  RegressionResult calculateRegression(List<CourseData> historique);
 
-    public Map<String, Object> predictAndSort(List<CourseData> courses);
+  RegressionResult trainBatch(List<List<CourseData>> dataset);
+
+  List<CourseData> predictAndSort(List<CourseData> courses);
 
   //  public double calculateSpearman(List<CourseData> courses);
 }

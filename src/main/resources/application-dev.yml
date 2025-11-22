@@ -1,63 +1,88 @@
-    spring:
-#      profiles:
-#        active: dev
-      datasource:
-        url: ${DB_URL:jdbc:postgresql://localhost:5432/winner_db}
-        username: username
-        password: password
-        driver-class-name: org.postgresql.Driver
-        hikari:
-          maximum-pool-size: 10
-          minimum-idle: 2
-          idle-timeout: 600000
-          max-lifetime: 1800000
-          connection-timeout: 30000
-      jpa:
-        hibernate:
-          ddl-auto: update
-        show-sql: true
-        properties:
-          format_sql: true
-        database: postgresql
-        database-platform: org.hibernate.dialect.PostgreSQLDialect
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/winner_db}
+    username: username
+    password: password
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      connection-timeout: 30000
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      format_sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  application:
+    mailing:
+      frontend:
+        activation-url: http://localhost:4600/#/activate-account
+        registration-url: http://localhost:4600/#/register
+      #activation-url: http://winner-one-frontend.s3-website.eu-west-3.amazonaws.com/#/activate-account
+      #registration-url: http://winner-one-frontend.s3-website.eu-west-3.amazonaws.com/#/register
+# -----------------------------------
+# ---------------- MAIL CONFIG ----------------
+
+
+  mail:
+    host: smtp.gmail.com
+    # smtp.gmail.com ${EMAIL_HOSTNAME}
+    # localhost
+    port: 465
+    # 1025
+    username: kkhenissi
+    # kkhenissi ${EMAIL_USER_NAME}
+    password: ybfv kklj sqkh hzxj
+    # ybfv kklj sqkh hzxj ${EMAIL_PASSWORD}
+    properties:
       mail:
-        host: smtp.gmail.com
-        # smtp.gmail.com  ${EMAIL_HOSTNAME}
-        # localhost
-        port: 465
-        # 1025
-        username: kkhenissi
-        # kkhenissi  ${EMAIL_USER_NAME}
-        password: ybfv kklj sqkh hzxj 
-        # ybfv kklj sqkh hzxj  ${EMAIL_PASSWORD}
-        # 
-        properties:
-          mail:
-            smtp:
-              auth: true
-              ssl:
-                enable: true
-                trust: "*"
-            starttls:
-              enabled: true
-#            connection-timeout: 5000
-#            timeout: 3000
-#            write-timeout: 5000
-        protocol: smtp
-      application:
-        mailing:
-          frontend:
-#            activation-url: http://localhost:4600/#/activate-account
-#            registration-url: http://localhost:4600/#/register
-            #/login
-             activation-url: http://winner-one-frontend.s3-website.eu-west-3.amazonaws.com/#/activate-account
-             registration-url: http://winner-one-frontend.s3-website.eu-west-3.amazonaws.com/#/register
-        cors:
-          origins: http://localhost:4600,http://localhost:8585
-          # add vps ipadresse of the frontend && the bckend to origins key
-      paypal:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+            trust: "*"
+        starttls:
+          enabled: true
+    #            connection-timeout: 5000
+    #            timeout: 3000
+    #            write-timeout: 5000
+    protocol: smtp
+
+# ---------------- HTTPS CONFIGURATION ----------------
+server:
+    port: 8443
+    ssl:
+      enabled: true
+      key-store: classpath:keystore.p12
+      key-store-password: Eyalena04041968      # Remplace par ton mot de passe du keystore
+      key-store-type: PKCS12
+      key-alias: springboot
+      # 🔥 IMPORTANT : forcer TLS modernes
+      enabled-protocols: TLSv1.3,TLSv1.2
+      enabled-ciphers: >
+        TLS_AES_256_GCM_SHA384,
+        TLS_AES_128_GCM_SHA256,
+        TLS_CHACHA20_POLY1305_SHA256,
+        TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
+        TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
+        TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
+        TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+
+# ---------------- CORS CONFIGURATION ----------------
+    cors:
+        allowed-origins: "https://localhost:4600,https://winner-one-frontend.s3-website.eu-west-3.amazonaws.com"
+        allowed-methods: "GET,POST,PUT,DELETE,OPTIONS"
+        allowed-headers: "*"
+        allow-credentials: true
+
+
+
+    paypal:
         client-id: v
         client-secret: EHizbqMq5RghRQ698tKVNpryzbzD3VMc9oV1tTp9MGBkKYBobwBnc9hEje4Pi2jzYTB7K_vAyZ4aNu46
         mode: sandbox # use 'sandbox' for testing and 'live' for production
-
-

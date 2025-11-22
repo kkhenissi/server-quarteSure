@@ -22,6 +22,8 @@ public interface AiRest {
 
         @PostMapping("/train")
         public RegressionResult trainRegression(@RequestBody List<CourseData> courses);
+        @PostMapping("/train-batch")
+        ResponseEntity<RegressionResult> trainBatchRegression(@RequestBody List<List<CourseData>> dataset);
         @PostMapping("/predict")
         public Map<String, Object> predict(@RequestBody List<CourseData> courses);
 

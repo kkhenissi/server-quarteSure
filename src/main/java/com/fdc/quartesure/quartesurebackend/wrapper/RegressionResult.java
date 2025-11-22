@@ -10,11 +10,12 @@ public class RegressionResult {
     private double lambda;
     private double r2;
 
-    public RegressionResult(double alpha, double beta, double gamma, double lambda, double r2) {
+    public RegressionResult(double alpha, double beta, double gamma, double r2) {
+      //  , double gamma, double lambda
         this.alpha = alpha;
         this.beta = beta;
         this.gamma = gamma;
-        this.lambda = lambda;
+//        this.lambda = lambda;
         this.r2 = r2;
     }
 

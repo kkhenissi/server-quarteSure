@@ -9,6 +9,7 @@ import com.theokanning.openai.completion.chat.ChatCompletionResult;
 import com.theokanning.openai.completion.chat.ChatMessage;
 import com.theokanning.openai.service.OpenAiService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.math3.linear.*;
 import org.apache.commons.math3.stat.regression.MillerUpdatingRegression;
 import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;
 import org.apache.commons.math3.stat.regression.RegressionResults;
@@ -25,47 +26,246 @@ public class AiCustomServiceImpl implements AiCustomService {
 
     @Override
     public RegressionResult calculateRegression(List<CourseData> historique) {
-        if (historique == null || historique.size() < 2)
-            return new RegressionResult(0, 0, 0, 0,0);
-
-        OLSMultipleLinearRegression regression = new OLSMultipleLinearRegression();
-
-        double[] y = historique.stream()
-                .mapToDouble(CourseData::getPositionArrivee)
-                .toArray();
-
-        double[][] x = historique.stream()
-                .map(c -> new double[]{c.getSpeedChv(), c.getHandicapPoids(), c.getCorde(), c.getPerfTendance()})
-                .toArray(double[][]::new);
-
-        regression.newSampleData(y, x);
-
-        double[] coefficients;
-        try {
-            coefficients = regression.estimateRegressionParameters();
-        } catch (Exception e) {
-            return new RegressionResult(0, 0, 0, 0,0);
+        if (historique == null || historique.isEmpty()) {
+            return new RegressionResult(0, 0, 0,0);
         }
 
-        double alpha = coefficients[1];
-        double beta = coefficients[2];
-        double gamma = coefficients[3];
-        double lambda = coefficients[4];
-        double r2 = regression.calculateRSquared();
+        try {
+            int n = historique.size();
 
-        return new RegressionResult(alpha, beta, gamma,lambda, r2);
+            // === Variables ===
+            double[] y = new double[n]; // variable dépendante : positionArrivee
+            double[][] X = new double[n][3]; // speed, poids, handicap, distance (par ex.)
+
+            for (int i = 0; i < n; i++) {
+                CourseData c = historique.get(i);
+                y[i] = c.getPositionArrivee();
+                X[i][0] = c.getSpeedChv();
+                X[i][1] = c.getHandicapPoids();
+                X[i][2] = c.getPerfTendance();
+//                X[i][3] = c.getDistance();
+//                X[i][4] = c.getPerfTendance();
+            }
+
+            // === Calcul des variances ===
+            List<Integer> validCols = new ArrayList<>();
+            for (int j = 0; j < X[0].length; j++) {
+                double mean = 0, variance = 0;
+                for (int i = 0; i < n; i++) mean += X[i][j];
+                mean /= n;
+                for (int i = 0; i < n; i++) variance += Math.pow(X[i][j] - mean, 2);
+
+                if (variance > 1e-9) validCols.add(j); // on garde seulement les colonnes utiles
+            }
+
+            if (validCols.isEmpty()) {
+                System.err.println("⚠️ Aucune variable utile (variance nulle).");
+                return new RegressionResult(0, 0, 0,0);
+            }
+
+            // === Réduction du X ===
+            double[][] Xfiltered = new double[n][validCols.size()];
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < validCols.size(); j++) {
+                    Xfiltered[i][j] = X[i][validCols.get(j)];
+                }
+            }
+
+            // === Régression ridge (régularisée) ===
+            RealMatrix Xmat = new Array2DRowRealMatrix(Xfiltered);
+            RealVector Yvec = new ArrayRealVector(y);
+
+            RealMatrix Xt = Xmat.transpose();
+            RealMatrix XtX = Xt.multiply(Xmat);
+
+            // lambda : régularisation
+            double lambda = 1e-6;
+            int p = XtX.getColumnDimension();
+            RealMatrix XtXplusLambda = XtX.add(MatrixUtils.createRealIdentityMatrix(p).scalarMultiply(lambda));
+
+            DecompositionSolver solver = new LUDecomposition(XtXplusLambda).getSolver();
+            RealVector beta = solver.solve(Xt.operate(Yvec));
+
+            double[] coeffs = beta.toArray();
+
+            // === Calcul de R² ===
+            RealVector Ypred = Xmat.operate(beta);
+            double ssTot = 0.0, ssRes = 0.0;
+            double meanY = Arrays.stream(y).average().orElse(0);
+            for (int i = 0; i < n; i++) {
+                ssTot += Math.pow(y[i] - meanY, 2);
+                ssRes += Math.pow(y[i] - Ypred.getEntry(i), 2);
+            }
+            double r2 = 1 - ssRes / ssTot;
+
+            // === Mapping des coefficients ===
+            double alpha = coeffs.length > 0 ? coeffs[0] : 0;
+            double betaCoeff = coeffs.length > 1 ? coeffs[1] : 0;
+            double gamma = coeffs.length > 2 ? coeffs[2] : 0;
+//            double lambdaCoeff = coeffs.length > 2 ? coeffs[3] : 0;
+
+            return new RegressionResult(alpha, betaCoeff,gamma, r2);
+          ///  , gamma,lambdaCoeff
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new RegressionResult(0, 0,0,0);
+        }
     }
 
     @Override
-    public Map<String, Object> predictAndSort(List<CourseData> courses) {
+    public RegressionResult trainBatch(List<List<CourseData>> dataset) {
+//
+//        double totalAlpha = 0;
+//        double totalBeta = 0;
+////        double totalGamma = 0;
+////        double totalLambda = 0;
+//        double totalR2 = 0;
+//        int count = 0;
+//
+//        for (List<CourseData> course : dataset) {
+//            if (course == null || course.isEmpty()) continue;
+//            RegressionResult result = calculateRegression(course);
+//            log.info("What is in result inside trainBatch {}", result);
+//            totalAlpha += result.getAlpha();
+//            totalBeta += result.getBeta();
+////            totalGamma += result.getGamma();
+////            totalLambda += result.getLambda();
+//            totalR2 += result.getR2();
+//            count++;
+//        }
+//
+//        if (count == 0) return new RegressionResult(0, 0,0);
+//    ////  , 0, 0,0);
+//
+//        return new RegressionResult(
+//                totalAlpha / count,
+//                totalBeta / count,
+//
+//                totalR2 / count
+//                );
+        try {
+            // === Étape 1 : Fusionner toutes les courses en un seul bloc ===
+            List<CourseData> allData = dataset.stream()
+                    .flatMap(List::stream)
+                    .collect(Collectors.toList());
+            log.info("What is in allData {}", allData);
+
+            int n = allData.size();
+            if (n < 3) {
+                System.err.println("⚠️ Pas assez de données pour entraîner le modèle (" + n + ")");
+                return new RegressionResult(0, 0, 0,0);
+            }
+
+            // === Étape 2 : Créer X (features) et y (cible) ===
+            double[] y = new double[n]; // position d'arrivée
+            double[][] X = new double[n][4]; // variables explicatives : speed, poids, tendance ...
+
+            for (int i = 0; i < n; i++) {
+                CourseData c = allData.get(i);
+                y[i] = c.getPositionArrivee();
+                X[i][0] = c.getSpeedChv();
+                X[i][1] = c.getHandicapPoids();
+                X[i][2] = c.getPerfTendance();
+                X[i][3] = c.getScorePerformanceJockey();
+            }
+
+            // === Étape 3 : Supprimer les colonnes à variance nulle ===
+            List<Integer> validCols = new ArrayList<>();
+            for (int j = 0; j < X[0].length; j++) {
+                double mean = 0, variance = 0;
+                for (int i = 0; i < n; i++) mean += X[i][j];
+                mean /= n;
+                for (int i = 0; i < n; i++) variance += Math.pow(X[i][j] - mean, 2);
+                if (variance > 1e-9) validCols.add(j);
+            }
+
+            if (validCols.isEmpty()) {
+                System.err.println("⚠️ Aucune variable utile (variance nulle sur toutes les colonnes).");
+                return new RegressionResult(0, 0, 0,0);
+            }
+
+            log.info("What is in allData {} ",allData);
+
+            // === Étape 4 : Construire la matrice filtrée ===
+            double[][] Xfiltered = new double[n][validCols.size()];
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < validCols.size(); j++) {
+                    Xfiltered[i][j] = X[i][validCols.get(j)];
+                }
+            }
+
+            // === Étape 5 : Calcul de la régression Ridge (régularisée) ===
+            RealMatrix Xmat = new Array2DRowRealMatrix(Xfiltered);
+            RealVector Yvec = new ArrayRealVector(y);
+
+            RealMatrix Xt = Xmat.transpose();
+            RealMatrix XtX = Xt.multiply(Xmat);
+
+            double lambda = 1e-6; // régularisation pour éviter la singularité
+            int p = XtX.getColumnDimension();
+            RealMatrix XtXplusLambda = XtX.add(MatrixUtils.createRealIdentityMatrix(p).scalarMultiply(lambda));
+
+            DecompositionSolver solver = new LUDecomposition(XtXplusLambda).getSolver();
+            RealVector beta = solver.solve(Xt.operate(Yvec));
+
+            double[] coeffs = beta.toArray();
+
+            // === Étape 6 : Calcul du coefficient de détermination R² ===
+            RealVector Ypred = Xmat.operate(beta);
+            double ssTot = 0.0, ssRes = 0.0;
+            double meanY = Arrays.stream(y).average().orElse(0);
+            for (int i = 0; i < n; i++) {
+                ssTot += Math.pow(y[i] - meanY, 2);
+                ssRes += Math.pow(y[i] - Ypred.getEntry(i), 2);
+            }
+            double r2 = 1 - ssRes / ssTot;
+
+            // === Étape 7 : Extraire les coefficients ===
+            double alpha = coeffs.length > 0 ? coeffs[0] : 0;
+            double betaCoeff = coeffs.length > 1 ? coeffs[1] : 0;
+            double gamma = coeffs.length > 2 ? coeffs[2] : 0;
+
+            System.out.println("✅ Régression globale calculée avec succès :");
+            System.out.println("   α=" + alpha + ", β=" + betaCoeff + ", γ=" + gamma + ", R²=" + r2);
+
+            return new RegressionResult(alpha, betaCoeff,gamma, r2);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new RegressionResult(0, 0, 0,0);
+        }
+    }
+
+//    totalGamma / count,
+//    totalLambda / count,
+
+//    public List<CourseData> predictAndSort(List<CourseData> courses) {
+//        RegressionResult result = calculateRegression(courses);
+//
+//        for (CourseData c : courses) {
+//            double predicted = result.getAlpha() * c.getSpeedChv()
+//                    + result.getBeta() * c.getPoids()
+//                    + result.getGamma() * c.getCorde();
+//            c.setPredictedSpeed(predicted);
+//        }
+//
+//        // ✅ Tri décroissant (meilleurs en haut)
+//        return courses.stream()
+//                .sorted(Comparator.comparingDouble(CourseData::getPredictedSpeed).reversed())
+//                .collect(Collectors.toList());
+//    }
+    @Override
+    public List<CourseData> predictAndSort(List<CourseData> courses) {
         RegressionResult regression = calculateRegression(courses);
 
         // Calcul de la vitesse prédite
         for (CourseData c : courses) {
             double predictedSpeed = regression.getAlpha() * c.getSpeedChv()
-                    + regression.getBeta() * c.getHandicapPoids()
-                    + regression.getGamma() * c.getPlaceCorde()
-                    + regression.getLambda() * c.getPerfTendance();
+                    + regression.getBeta() * c.getPerfTendance()
+                    + regression.getGamma() * c.getHandicapPoids();
+//                    + regression.getGamma() * c.getPlaceCorde()
+//                    + regression.getLambda() * c.getPerfTendance();
             c.setPredictedSpeed(predictedSpeed);
 //            log.info("valeur de regression.getAlpha() ==> {}",regression.getAlpha());
 //            log.info("valeur de c.getSpeedChv() ==> {}",c.getSpeedChv());
@@ -89,7 +289,7 @@ public class AiCustomServiceImpl implements AiCustomService {
 
         // Tri décroissant sur vitesse prédite (le plus rapide en premier)
         List<CourseData> sorted = courses.stream()
-                .sorted(Comparator.comparingDouble(CourseData::getPredictedSpeed))
+                .sorted(Comparator.comparingDouble(CourseData::getPredictedSpeed).reversed())
                 .collect(Collectors.toList());
 
         // Attribution des rangs prévus
@@ -106,7 +306,8 @@ public class AiCustomServiceImpl implements AiCustomService {
         response.put("spearman", spearman);
         response.put("classement", sorted);
 
-        return response;
+
+        return (List<CourseData>) response;
     }
 
     /**

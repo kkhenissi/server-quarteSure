@@ -61,14 +61,20 @@ public class AiRestImpl implements AiRest {
 //    }
 
     @Override
-    public RegressionResult trainRegression(List<CourseData> courses) {
-        return aiService.calculateRegression(courses);
+    public RegressionResult trainRegression(List<CourseData> dataset) {
+        return aiService.calculateRegression(dataset);
+    }
+
+    @Override
+    public ResponseEntity<RegressionResult> trainBatchRegression(List<List<CourseData>> dataset) {
+        log.info("tawa goully echnouwa fiha {}",dataset);
+        return ResponseEntity.ok(aiService.trainBatch(dataset));
     }
 
 
     @Override
     public Map<String, Object> predict(@RequestBody List<CourseData> courses) {
         // On délègue tout le calcul et la construction de la réponse au service
-        return aiService.predictAndSort(courses);
+        return (Map<String, Object>) aiService.predictAndSort(courses);
     }
 }

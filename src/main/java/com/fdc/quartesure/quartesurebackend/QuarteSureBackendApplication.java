@@ -28,6 +28,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.json.GsonJsonParser;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -68,17 +69,26 @@ public class QuarteSureBackendApplication {
 
 
 	}
-
-
-	@Bean
-	public WebMvcConfigurer configure() {
-		return new WebMvcConfigurer(){
-			public void ddCorsMappings(CorsRegistry reg){
-				reg.addMapping("/*");
-			}
-
-		};
+	@Configuration
+	public class CorsConfig {
+		@Bean
+		public WebMvcConfigurer corsConfigurer() {
+			return new WebMvcConfigurer() {
+				@Override
+				public void addCorsMappings(CorsRegistry registry) {
+					registry.addMapping("/**")
+							.allowedOrigins(
+									"https://localhost:4200",
+									"https://winner-one-frontend.s3-website.eu-west-3.amazonaws.com"
+							)
+							.allowedMethods("GET","POST","PUT","DELETE","OPTIONS")
+							.allowedHeaders("*")
+							.allowCredentials(true);
+				}
+			};
+		}
 	}
+
 
 
 
