@@ -1,25 +1,21 @@
 package com.fdc.quartesure.quartesurebackend.JWT;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.Claims;
-import lombok.extern.slf4j.Slf4j;
+import com.fdc.quartesure.quartesurebackend.JWT.CustomerUsersDetailsService;
+import com.fdc.quartesure.quartesurebackend.JWT.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-@Slf4j
+
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
@@ -27,66 +23,53 @@ public class JwtFilter extends OncePerRequestFilter {
     private JwtUtil jwtUtil;
 
     @Autowired
-    private CustomerUsersDetailsService service;
-
-    Claims claims = null;
-    private  String userName = null;
-
-    public  boolean isAdmin() {
-        log.info("inside isAdmin {}",claims.get("role"));
-        return "admin".equalsIgnoreCase((String) claims.get("role"));
-    }
-
-    public  boolean isUser() {
-        return "user".equalsIgnoreCase((String) claims.get("role"));
-    }
-
-    public String getCurrentUser() {
-        return userName;
-    }
+    private CustomerUsersDetailsService userDetailsService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if(request.getServletPath().matches(("/user/login|/user/activate|/current-programme/today|/api/payment|/currentcourse/participants|/user/forgotPassword|/user/updateSelectedOptions/|/user/signup|/h2-console"))) {
-           //  || request.getServletPath().contains("/user/updateSelectedOptions/")
-            filterChain.doFilter(request,response);
-        } else {
-            String authorizationHeader = request.getHeader("Authorization");
-            String token = null;
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain
+    ) throws ServletException, IOException {
 
-            System.out.println("€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€");
-            System.out.println(authorizationHeader);
-            if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+        String authHeader = request.getHeader("Authorization");
 
-                token = authorizationHeader.substring(7);
-                userName = jwtUtil.extractUserName(token);
-                claims = jwtUtil.extractAllClaims(token);
-                log.info("What is in claims here==>{}",claims);
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
 
-            }
-            if(userName != null && SecurityContextHolder.getContext().getAuthentication()==null) {
-                UserDetails userDetails = service.loadUserByUsername(userName);
+            String token = authHeader.substring(7);
 
-                if(jwtUtil.validateToken(token,userDetails)){
-                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                            new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
-                    usernamePasswordAuthenticationToken.setDetails(
-                            new WebAuthenticationDetailsSource().buildDetails(request)
-                    );
-                    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+            try {
+                String username = jwtUtil.extractUserName(token);
+
+                if (username != null &&
+                        SecurityContextHolder.getContext().getAuthentication() == null) {
+
+                    UserDetails userDetails =
+                            userDetailsService.loadUserByUsername(username);
+
+                    if (jwtUtil.validateToken(token, userDetails)) {
+
+                        UsernamePasswordAuthenticationToken authToken =
+                                new UsernamePasswordAuthenticationToken(
+                                        userDetails,
+                                        null,
+                                        userDetails.getAuthorities()
+                                );
+
+                        authToken.setDetails(
+                                new WebAuthenticationDetailsSource().buildDetails(request)
+                        );
+
+                        SecurityContextHolder.getContext().setAuthentication(authToken);
+                    }
                 }
-                ObjectMapper mapper = new ObjectMapper();
-                //  User localUser = mapper.readValue(request.getInputStream(), User.class);
-                System.out.println("°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°");
-
-                System.out.println(userDetails);
-                System.out.println("°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°");
-
+            } catch (Exception e) {
+                // ⚠️ NE JAMAIS bloquer ici
+                // JWT invalide = utilisateur non authentifié
             }
-            System.out.println("°°°°°°°°°°°°°°°°°°°°°°°°°° +++++++ °°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°");
-            System.out.println(request.toString());
-            System.out.println("°°°°°°°°°°°°°°°°°°°°°°°°°°° ++++++++ °°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°");
-         filterChain.doFilter(request,response);
         }
+
+        // 🔥 TOUJOURS continuer la chaîne
+        filterChain.doFilter(request, response);
     }
 }
