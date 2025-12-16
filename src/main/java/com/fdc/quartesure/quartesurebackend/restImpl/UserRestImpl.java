@@ -1,6 +1,7 @@
 package com.fdc.quartesure.quartesurebackend.restImpl;
 
 import com.fdc.quartesure.quartesurebackend.constants.QuarteSureConstants;
+import com.fdc.quartesure.quartesurebackend.rest.ChangePasswordRequest;
 import com.fdc.quartesure.quartesurebackend.rest.UserRest;
 import com.fdc.quartesure.quartesurebackend.service.UserService;
 import com.fdc.quartesure.quartesurebackend.utils.QuarteSureUtils;
@@ -8,9 +9,13 @@ import com.fdc.quartesure.quartesurebackend.wrapper.UserWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -88,15 +93,26 @@ public class UserRestImpl implements UserRest {
     }
 
     @Override
-    public ResponseEntity<String> changePassword(Map<String, String> requestMap) {
-        try {
-            return userService.changePassword(requestMap);
+    public ResponseEntity<?> changePassword(@AuthenticationPrincipal UserDetails user, @RequestBody ChangePasswordRequest request) {
 
-        }catch (Exception ex) {
-            ex.printStackTrace();
+        if(user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Utilisateur non authentifié");
         }
-        return QuarteSureUtils.getResponseEntity(QuarteSureConstants.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
+        userService.changePassword(request);
+        return ResponseEntity.ok("Mot de passe changé avec succès");
     }
+
+//    @Override
+//    public ResponseEntity<String> changePassword(Map<String, String> requestMap) {
+//        try {
+//            return userService.changePassword(requestMap);
+//
+//        }catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
+//        return QuarteSureUtils.getResponseEntity(QuarteSureConstants.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
 
     @Override
     public ResponseEntity<String> updateSelectedOptions(String id,String request) {

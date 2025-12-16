@@ -54,9 +54,9 @@ spring:
 
   # ---------------- HTTPS CONFIGURATION ----------------
   server:
-    port: 8443
+    port: 8085
     ssl:
-      enabled: true
+      enabled: false
       key-store: classpath:keystore.p12
       key-store-password: Eyalena04041968      # Remplace par ton mot de passe du keystore
       key-store-type: PKCS12

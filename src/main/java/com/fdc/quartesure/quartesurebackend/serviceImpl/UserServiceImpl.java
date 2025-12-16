@@ -6,6 +6,7 @@ import com.fdc.quartesure.quartesurebackend.JWT.JwtUtil;
 import com.fdc.quartesure.quartesurebackend.POJO.*;
 import com.fdc.quartesure.quartesurebackend.constants.QuarteSureConstants;
 import com.fdc.quartesure.quartesurebackend.dao.*;
+import com.fdc.quartesure.quartesurebackend.rest.ChangePasswordRequest;
 import com.fdc.quartesure.quartesurebackend.service.EmailService;
 import com.fdc.quartesure.quartesurebackend.service.UserService;
 import com.fdc.quartesure.quartesurebackend.utils.EmailUtils;
@@ -20,12 +21,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
+import java.security.Principal;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -57,8 +62,6 @@ public class UserServiceImpl implements UserService {
     JwtFilter jwtFilter;
     @Autowired
     EmailUtils emailUtils;
-    @Autowired
-    private PasswordEncoder passwordEncode;
     @Autowired
     private TokenDao tokenDao;
 
@@ -185,11 +188,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<List<UserWrapper>> getAllUser() {
         try {
-         //   if (jwtFilter.isAdmin()){
+            if (jwtFilter.isAdmin()){
                 return new ResponseEntity<>(userDao.getAllUser(),HttpStatus.OK);
-//            }else {
-//                return new ResponseEntity<>(new ArrayList<>(), HttpStatus.UNAUTHORIZED);
-//            }
+            }else {
+                return new ResponseEntity<>(new ArrayList<>(), HttpStatus.UNAUTHORIZED);
+            }
         }catch (Exception ex) {
            ex.printStackTrace();
         }
@@ -230,8 +233,8 @@ public class UserServiceImpl implements UserService {
 
         try {
             User  user = userDao.findByEmail(id);
-           ArrayList<String> selectedOption =  new ArrayList<>();
-           selectedOption.add(request);
+            ArrayList<String> selectedOption =  new ArrayList<>();
+            selectedOption.add(request);
             user.setSelectedOptions(String.valueOf(selectedOption));
             userDao.save(user);
             return QuarteSureUtils.getResponseEntity("SelectedOptions  Updated Successfully.",HttpStatus.OK);
@@ -310,27 +313,68 @@ public class UserServiceImpl implements UserService {
         return QuarteSureUtils.getResponseEntity("true",HttpStatus.OK);
     }
 
+
     @Override
-    public ResponseEntity<String> changePassword(Map<String, String> requestMap) {
-        try {
-           User userObj = userDao.findByEmail(jwtFilter.getCurrentUser());
-           log.info("Inside changePassword {}",userObj);
-           if(userObj!=null) {
-               if(userObj.getPassword().equals(requestMap.get("oldPassword"))) {
-                   userObj.setPassword(requestMap.get("newPassword"));
-                   userDao.save(userObj);
-                   return QuarteSureUtils.getResponseEntity("Password Updated Successfully.",HttpStatus.OK);
+    public void changePassword(ChangePasswordRequest request) {
 
-               }
-               return QuarteSureUtils.getResponseEntity("Incorrect Old Password", HttpStatus.BAD_GATEWAY);
+        Authentication authentication = SecurityContextHolder
+                .getContext()
+                .getAuthentication();
 
-           }
-           return QuarteSureUtils.getResponseEntity(QuarteSureConstants.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
-        }catch (Exception ex) {
-            ex.printStackTrace();
+        log.info("Auth = {}", authentication);
+
+        if (authentication == null
+                || !authentication.isAuthenticated()
+                || authentication.getPrincipal().equals("anonymousUser")) {
+            throw new IllegalStateException("User not authenticated");
         }
-        return QuarteSureUtils.getResponseEntity(QuarteSureConstants.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
+
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String email = userDetails.getUsername();
+
+        // ✅ DAO retourne User directement
+        User user = userDao.findByEmail(email);
+
+        if (user == null) {
+            throw new IllegalStateException("User not found");
+        }
+
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+            throw new IllegalStateException("Wrong current password");
+        }
+
+        if (!request.getNewPassword().equals(request.getConfirmationPassword())) {
+            throw new IllegalStateException("Passwords do not match");
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        log.info("New encoded password = {}", user.getPassword());
+
+        userDao.save(user);
     }
+
+
+//    @Override
+//    public ResponseEntity<String> changePassword(Map<String, String> requestMap) {
+//        try {
+//           User userObj = userDao.findByEmail(jwtFilter.getCurrentUser());
+//           log.info("Inside changePassword {}",userObj);
+//           if(userObj!=null) {
+//               if(userObj.getPassword().equals(requestMap.get("oldPassword"))) {
+//                   userObj.setPassword(requestMap.get("newPassword"));
+//                   userDao.save(userObj);
+//                   return QuarteSureUtils.getResponseEntity("Password Updated Successfully.",HttpStatus.OK);
+//
+//               }
+//               return QuarteSureUtils.getResponseEntity("Incorrect Old Password", HttpStatus.BAD_GATEWAY);
+//
+//           }
+//           return QuarteSureUtils.getResponseEntity(QuarteSureConstants.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
+//        }catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
+//        return QuarteSureUtils.getResponseEntity(QuarteSureConstants.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
 
     @Override
     public ResponseEntity<String> creditAccount(Map<String, String> requestMap) {

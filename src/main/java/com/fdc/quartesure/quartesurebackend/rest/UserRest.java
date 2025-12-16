@@ -3,8 +3,11 @@ package com.fdc.quartesure.quartesurebackend.rest;
 import com.fdc.quartesure.quartesurebackend.wrapper.UserWrapper;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
@@ -33,8 +36,8 @@ public interface UserRest {
     @GetMapping(path = "/checkToken")
     public ResponseEntity<String> checkToken();
 
-    @PostMapping(path = "/changePassword")
-    public ResponseEntity<String> changePassword(@RequestBody(required = true) Map<String,String> requestMap);
+    @PatchMapping(path = "/changePassword")
+    public ResponseEntity<?> changePassword(@AuthenticationPrincipal UserDetails user, @RequestBody  ChangePasswordRequest requestMap);
 
 //    @CrossOrigin(
 //            origins = "*",

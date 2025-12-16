@@ -7,6 +7,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.NamedQuery;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,14 +42,18 @@ public class User implements Serializable {
     @Column(name = "user_id")
     private Integer user_id;
     @Column(name = "first_name")
+    @NotEmpty(message = "firstname is required !!")
     private String firstName;
     @Column(name = "last_name")
+    @NotEmpty
     private String lastName;
     @Column(name = "phoneNumber")
     private String phoneNumber;
     @Column(unique = true, name = "email")
+    @NotEmpty
     private String email;
     @Column(name = "password")
+    @NotEmpty
     private String password;
     @Column(name = "status")
     private String status;
