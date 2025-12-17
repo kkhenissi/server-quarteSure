@@ -274,16 +274,22 @@ public class UserServiceImpl implements UserService {
     }
 
     private User getUserFromMap(Map<String, String> requestMap) {
+        String rawPassword = requestMap.get("password");
+        String hashedPassword = passwordEncoder.encode(rawPassword);
+//        user.setPassword(hashedPassword);
+
         User user = new User();
-        user.setEmail(requestMap.get("email"));
         user.setFirstName(requestMap.get("firstName"));
         user.setLastName(requestMap.get("lastName"));
-        user.setPassword(
-                passwordEncoder.encode(requestMap.get("password")));
-        user.setRole("user");
+        user.setPhoneNumber(requestMap.get("phoneNumber"));
+        user.setEmail(requestMap.get("email"));
+        user.setPassword(hashedPassword); // passwordEncode.encode();
         user.setStatus("false");
         user.setCredit(0);
-        user.setSubscribeDate(Instant.now().toString().substring(0, 10));
+        user.setSelectedOptions(requestMap.get("selectedOptions"));
+        user.setLastConnexion(Instant.now().toString().substring(5,10));
+        user.setSubscribeDate(Instant.now().toString().substring(0,10));
+        user.setRole("user");
         return user;
     }
 
@@ -446,4 +452,6 @@ public class UserServiceImpl implements UserService {
         }
         return QuarteSureUtils.getResponseEntity(QuarteSureConstants.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+
 }
