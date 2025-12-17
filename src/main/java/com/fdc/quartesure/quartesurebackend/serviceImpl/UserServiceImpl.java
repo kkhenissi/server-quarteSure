@@ -284,10 +284,19 @@ public class UserServiceImpl implements UserService {
         return QuarteSureUtils.getResponseEntity(
                 "Account activated", HttpStatus.OK);
     }
-
     @Override
-    public ResponseEntity<String> updateSelectedOptions(String id, String request) {
-        return QuarteSureUtils.getResponseEntity(
-                "Options updated", HttpStatus.OK);
+    public ResponseEntity<String> updateSelectedOptions(String id,String request) {
+
+        try {
+            User  user = userDao.findByEmail(id);
+            ArrayList<String> selectedOption =  new ArrayList<>();
+            selectedOption.add(request);
+            user.setSelectedOptions(String.valueOf(selectedOption));
+            userDao.save(user);
+            return QuarteSureUtils.getResponseEntity("SelectedOptions  Updated Successfully.",HttpStatus.OK);
+        }catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return QuarteSureUtils.getResponseEntity(QuarteSureConstants.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
