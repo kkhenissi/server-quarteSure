@@ -288,13 +288,14 @@ public class UserServiceImpl implements UserService {
     }
 
     private void sendValidationEmail(User user) throws MessagingException {
-        String token = UUID.randomUUID().toString();
+
+        var newToken = generateAndSaveActivationToken(user);
         emailService.sendEmail(
                 user.getEmail(),
                 user.fullName(),
                 EmailTemplateName.ACTIVATE_ACCOUNT,
                 activationUrl,
-                token,
+                newToken,
                 "Account activation"
         );
     }
