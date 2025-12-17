@@ -247,6 +247,8 @@ public class UserServiceImpl implements UserService {
     private User getUserFromMap(Map<String, String> requestMap) {
         User user = new User();
         user.setEmail(requestMap.get("email"));
+        user.setFirstName(requestMap.get("firstName"));
+        user.setLastName(requestMap.get("lastName"));
         user.setPassword(
                 passwordEncoder.encode(requestMap.get("password")));
         user.setRole("user");
@@ -270,7 +272,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<String> checkToken() {
-        return QuarteSureUtils.getResponseEntity("true", HttpStatus.OK);
+//        return Jwts.parser()
+//                .setSigningKey(secretKey)
+//                .parseClaimsJws(token)
+//                .getBody()
+//                .getSubject();  // ou get("email")
+
+        return QuarteSureUtils.getResponseEntity("true",HttpStatus.OK);
     }
 
     @Override
