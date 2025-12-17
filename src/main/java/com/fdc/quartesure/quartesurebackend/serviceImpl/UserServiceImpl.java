@@ -21,6 +21,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -280,9 +281,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public ResponseEntity<String> activateAccount(String token) {
-        return QuarteSureUtils.getResponseEntity(
-                "Account activated", HttpStatus.OK);
+    public ResponseEntity<String> activateAccount(String token) throws MessagingException {
+
+        TokenTable savedToken = tokenDao.findByToken(token)
+                // todo exception has to be defined
+                .orElseThrow(()-> new RuntimeException("Invalid token"));
+        if(LocalDateTime.now().isAfter(savedToken.getExpiresAt())) {
+            sendValidationEmail(savedToken.getUser());
+            throw  new RuntimeException("Activation token has expired, a new token has been sent to the same email address");
+        }
+        var user = userDao.findById(savedToken.getUser().getUser_id())
+                .orElseThrow(()-> new UsernameNotFoundException("User not found"));
+        user.setStatus("true");
+        userDao.save(user);
+        savedToken.setValidatedAt(LocalDateTime.now());
+        tokenDao.save(savedToken);
+        return null;
     }
     @Override
     public ResponseEntity<String> updateSelectedOptions(String id,String request) {
