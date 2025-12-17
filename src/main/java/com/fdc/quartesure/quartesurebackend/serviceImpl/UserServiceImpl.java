@@ -188,7 +188,36 @@ public class UserServiceImpl implements UserService {
     /* ======================================================
        🔑 PASSWORD
        ====================================================== */
+    private String generateAndSaveActivationToken(User user) {
+        // generate a token
+        String generetedToken = generateActivationCode(5);
+        UUID myuuid = UUID.randomUUID();
+        long highbits = myuuid.getMostSignificantBits();
+        long lowbits = myuuid.getLeastSignificantBits();
+        var token = TokenTable.builder()
+                .id((int) (highbits+lowbits))
+                .token(generetedToken)
+                .createdAt(LocalDateTime.now())
+                .expiresAt(LocalDateTime.now().plusMinutes(15))
+                .user(user)
+                .build();
+        log.info("What is in  token inside == {}",token.toString());
+        tokenDao.save(token);
+        return generetedToken;
 
+    }
+
+    private String generateActivationCode(int length) {
+        String characters = "0123456789";
+        StringBuilder codeBuilder = new StringBuilder();
+        SecureRandom secureRandom = new SecureRandom();
+        for (int i = 0; i < length; i++) {
+            int randomIndex = secureRandom.nextInt(characters.length());  // 0..9
+            codeBuilder.append(characters.charAt(randomIndex));
+
+        }
+        return codeBuilder.toString();
+    }
     @Override
     public void changePassword(ChangePasswordRequest request) {
         Authentication auth = getAuth();
