@@ -453,5 +453,70 @@ public class UserServiceImpl implements UserService {
         return QuarteSureUtils.getResponseEntity(QuarteSureConstants.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    /* ======================================================
+   🔑 FORGOT PASSWORD / RESET PASSWORD
+   ====================================================== */
+
+    @Override
+    public ResponseEntity<String> forgotPassword(String email) throws MessagingException {
+        User user = userDao.findByEmail(email);
+        if (user == null) {
+            // Ne pas révéler si l’email existe ou pas
+            return QuarteSureUtils.getResponseEntity(
+                    "If the email exists, a reset link has been sent",
+                    HttpStatus.OK
+            );
+        }
+
+        String token = UUID.randomUUID().toString();
+        user.setResetPasswordToken(token);
+        user.setResetPasswordExpiry(LocalDateTime.now().plusMinutes(30));
+        userDao.save(user);
+
+        // Construire le lien pour Angular
+        String resetLink = "http://localhost:4600/#/reset-password?token=" + token;
+
+        // Envoyer l’email
+        emailService.sendEmail(
+                user.getEmail(),
+                user.fullName(),
+                EmailTemplateName.RESET_PASSWORD,
+                resetLink,
+                token,
+                "Password Reset Request"
+        );
+
+
+        return QuarteSureUtils.getResponseEntity(
+                "If the email exists, a reset link has been sent",
+                HttpStatus.OK
+        );
+    }
+
+    @Override
+    public ResponseEntity<String> resetPassword(String token, String newPassword) {
+        Optional<User> optional = userDao.findByResetPasswordToken(token);
+        if (optional.isEmpty()) {
+            return QuarteSureUtils.getResponseEntity("Invalid token", HttpStatus.BAD_REQUEST);
+        }
+
+        User user = optional.get();
+        if (user.getResetPasswordExpiry() == null || LocalDateTime.now().isAfter(user.getResetPasswordExpiry())) {
+            return QuarteSureUtils.getResponseEntity("Token expired", HttpStatus.BAD_REQUEST);
+        }
+
+        // Mettre à jour le mot de passe
+        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setResetPasswordToken(null);
+        user.setResetPasswordExpiry(null);
+        userDao.save(user);
+
+        return QuarteSureUtils.getResponseEntity(
+                "Password has been successfully reset",
+                HttpStatus.OK
+        );
+    }
+
+
 
 }

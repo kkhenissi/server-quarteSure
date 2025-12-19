@@ -7,44 +7,45 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
 @RequestMapping(path = "/user")
-// @CrossOrigin("*")
-// origins = "*", allowedHeaders = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PATCH, RequestMethod.OPTIONS }
 @CrossOrigin(origins = "http://winner-one-frontend.s3-website.eu-west-3.amazonaws.com")
 public interface UserRest {
+
     @PostMapping(path = "/signup")
-    public ResponseEntity<String> signUp(@RequestBody(required = true)Map<String,String> requestMap);
+    ResponseEntity<String> signUp(@RequestBody Map<String,String> requestMap);
 
     @PostMapping(path = "/login")
-    public ResponseEntity<String> login(@RequestBody(required = true)Map<String,String> requestMap);
+    ResponseEntity<String> login(@RequestBody Map<String,String> requestMap);
 
     @GetMapping(path = "/allUser")
-    public ResponseEntity<List<UserWrapper>> getAllUser();
+    ResponseEntity<List<UserWrapper>> getAllUser();
 
     @PatchMapping(path = "/update/{id}")
-    @CrossOrigin(origins = "http://winner-one-frontend.s3-website.eu-west-3.amazonaws.com")
-    public ResponseEntity<String> update(@RequestBody(required = true) Map<String,String> requestMap);
-
-
+    ResponseEntity<String> update(@RequestBody Map<String,String> requestMap);
 
     @GetMapping(path = "/activate")
-    public ResponseEntity<String> confirm(@RequestParam(required = true) String token );
+    ResponseEntity<String> confirm(@RequestParam String token );
+
     @GetMapping(path = "/checkToken")
-    public ResponseEntity<String> checkToken();
+    ResponseEntity<String> checkToken();
 
     @PatchMapping(path = "/changePassword")
-    public ResponseEntity<?> changePassword(@AuthenticationPrincipal UserDetails user, @RequestBody  ChangePasswordRequest requestMap);
+    ResponseEntity<?> changePassword(@AuthenticationPrincipal UserDetails user, @RequestBody ChangePasswordRequest requestMap);
 
-//    @CrossOrigin(
-//            origins = "*",
-//            methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.PATCH, RequestMethod.OPTIONS}
-//    )
     @PatchMapping(value = "/updateSelectedOptions/{id}", consumes = MediaType.TEXT_PLAIN_VALUE)
+    ResponseEntity<String> updateSelectedOptions(@PathVariable String id, @RequestBody String request);
 
-    public ResponseEntity<String> updateSelectedOptions(@PathVariable String id, @RequestBody(required = true) String request);
+    // ===================== FORGOT PASSWORD / RESET PASSWORD =====================
 
+    @PostMapping(path = "/forgot-password")
+    ResponseEntity<String> forgotPassword(@RequestParam String email);
+
+    @PostMapping(path = "/reset-password")
+    ResponseEntity<String> resetPassword(
+            @RequestParam String token,
+            @RequestParam String password
+    );
 }

@@ -123,6 +123,8 @@ public class SecurityConfig {
                         .requestMatchers(
                                 new AntPathRequestMatcher("/user/login"),
                                 new AntPathRequestMatcher("/user/signup"),
+                                new AntPathRequestMatcher("/user/forgot-password"),
+                                new AntPathRequestMatcher("/user/reset-password"),
                                 new AntPathRequestMatcher("/user/activate"),
                                 new AntPathRequestMatcher("/user/forgotPassword"),
                                 new AntPathRequestMatcher("/swagger-ui/**"),

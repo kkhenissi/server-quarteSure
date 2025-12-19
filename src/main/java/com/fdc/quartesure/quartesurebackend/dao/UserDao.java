@@ -18,6 +18,7 @@ public interface UserDao extends JpaRepository<User,Integer> {
     User findByEmail(@Param("email") String email);
 
     List<UserWrapper> getAllUser();
+
     @Transactional
     @Modifying
     Integer updateStatus(@Param("status") String status, @Param("id") Integer id);
@@ -28,5 +29,7 @@ public interface UserDao extends JpaRepository<User,Integer> {
 
     List<String> getAllAdmin();
 
-  //  User findByEmail(String email);
+    // ===================== FORGOT PASSWORD =====================
+    Optional<User> findByResetPasswordToken(String resetPasswordToken);
+
 }

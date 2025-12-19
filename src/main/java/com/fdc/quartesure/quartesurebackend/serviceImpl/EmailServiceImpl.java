@@ -124,4 +124,5 @@ public class EmailServiceImpl implements EmailService {
         helper.setText(template, true);
         javaMailSender.send(mimeMessage);
     }
+
 }

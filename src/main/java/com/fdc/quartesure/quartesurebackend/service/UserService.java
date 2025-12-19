@@ -27,4 +27,9 @@ public interface UserService {
     void changePassword(ChangePasswordRequest request);
 
     ResponseEntity<String> creditAccount(Map<String, String> requestMap);
+
+    // ===================== FORGOT PASSWORD =====================
+    ResponseEntity<String> forgotPassword(String email) throws MessagingException;
+
+    ResponseEntity<String> resetPassword(String token, String newPassword);
 }
