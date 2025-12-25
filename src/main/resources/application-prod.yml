@@ -1,10 +1,8 @@
 spring:
-#  profiles:
-#    active: prod
   datasource:
-    url: ${DB_URL:jdbc:postgresql://postgres:5432/winner_db}
-    username: ${DB_USERNAME:username}
-    password: ${DB_PASSWORD:password}
+    url: ${DATABASE_URL}
+    username: ${PGUSER}
+    password: ${PGPASSWORD}
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 10
@@ -12,8 +10,10 @@ spring:
       idle-timeout: 600000
       max-lifetime: 1800000
       connection-timeout: 30000
+
   mvc:
     dispatch-options-request: true
+
   management:
     endpoints:
       web:
@@ -27,55 +27,46 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: false
-    properties:
-      format_sql: false
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+
   openai:
     api:
-      key: "${OPENAI_API_KEY}"
+      key: ${OPENAI_API_KEY}
+
   mail:
     host: smtp.gmail.com
     port: 465
-    #  username: ${EMAIL_USERNAME}
-    username: kkhenissi
-    #  password: ${EMAIL_PASSWORD}
-    password: ybfv kklj sqkh hzxj
+    username: ${EMAIL_USERNAME}
+    password: ${EMAIL_PASSWORD}
     properties:
       mail:
         smtp:
           auth: true
           ssl:
             enable: true
-            trust: "*"
         starttls:
           enabled: true
     protocol: smtp
 
-  # ---------------- HTTPS CONFIGURATION ----------------
-  server:
-    port: 8085
-    ssl:
-      enabled: false
-      key-store: classpath:keystore.p12
-      key-store-password: Eyalena04041968      # Remplace par ton mot de passe du keystore
-      key-store-type: PKCS12
-      key-alias: springboot
+server:
+  port: ${PORT:8080}
+  ssl:
+    enabled: false
 
-  # ---------------- CORS CONFIGURATION ----------------
-  cors:
-    allowed-origins: "https://localhost:4600,https://winner-one-frontend.s3-website.eu-west-3.amazonaws.com"
-    allowed-methods: "GET,POST,PUT,DELETE,OPTIONS"
-    allowed-headers: "*"
-    allow-credentials: true
+cors:
+  allowed-origins: ${CORS_ALLOWED_ORIGINS}
+  allowed-methods: "GET,POST,PUT,DELETE,OPTIONS"
+  allowed-headers: "*"
+  allow-credentials: true
 
 application:
   mailing:
     frontend:
-      activation-url: http://winner-one-frontend.s3-website.eu-west-3.amazonaws.com/#/activate-account
-      registration-url: http://winner-one-frontend.s3-website.eu-west-3.amazonaws.com/#/register
+      activation-url: ${FRONTEND_ACTIVATION_URL}#/activate-account
+      registration-url: ${FRONTEND_REGISTRATION_URL}#/register
 
 paypal:
-  client-id: v
-  client-secret: EHizbqMq5RghRQ698tKVNpryzbzD3VMc9oV1tTp9MGBkKYBobwBnc9hEje4Pi2jzYTB7K_vAyZ4aNu46
-  mode: sandbox # use 'sandbox' for testing and 'live' for production
+  client-id: ${PAYPAL_CLIENT_ID}
+  client-secret: ${PAYPAL_CLIENT_SECRET}
+  mode: sandbox

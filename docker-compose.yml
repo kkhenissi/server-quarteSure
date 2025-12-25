@@ -25,7 +25,7 @@
 #          - '1025:1025'
 
       winner-back:
-      #  build: ../docker/backend/Dockerfile .
+      #  build: ../docker/backend/Old-Dockerfile .
         container_name: winner_backend_container
         image: kkhenissi/winner-back-image:latest
 
