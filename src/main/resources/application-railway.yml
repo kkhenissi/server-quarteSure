@@ -1,10 +1,9 @@
 spring:
-  datasource:
-    # ✅ PRIORITÉ À DATABASE_URL (Railway-native)
-    # ❗ si DATABASE_URL n’existe pas, Spring utilise l’URL PG*
+datasource:
     url: ${DATABASE_URL:jdbc:postgresql://${PGHOST}:${PGPORT}/${PGDATABASE}?sslmode=require}
 
-    username: ${PGUSER:${DB_USERNAME:}}
+    # ⚠️ NE PAS écraser les creds si DATABASE_URL est utilisé
+    username: ${PGUSER:}
     password: ${PGPASSWORD:}
     driver-class-name: org.postgresql.Driver
 
