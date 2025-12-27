@@ -1,12 +1,9 @@
 spring:
-datasource:
+  datasource:
     url: ${DATABASE_URL:jdbc:postgresql://${PGHOST}:${PGPORT}/${PGDATABASE}?sslmode=require}
-
-    # ⚠️ NE PAS écraser les creds si DATABASE_URL est utilisé
     username: ${PGUSER:}
     password: ${PGPASSWORD:}
     driver-class-name: org.postgresql.Driver
-
     hikari:
       maximum-pool-size: 10
       minimum-idle: 2
