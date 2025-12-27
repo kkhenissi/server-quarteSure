@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: ${DATABASE_URL:jdbc:postgresql://${PGHOST}:${PGPORT}/${PGDATABASE}?sslmode=require}
+    url: jdbc:${DATABASE_URL:postgresql://${PGHOST}:${PGPORT}/${PGDATABASE}?sslmode=require}
     username: ${PGUSER:}
     password: ${PGPASSWORD:}
     driver-class-name: org.postgresql.Driver
@@ -10,6 +10,7 @@ spring:
       idle-timeout: 600000
       max-lifetime: 1800000
       connection-timeout: 30000
+
 
   jpa:
     hibernate:
