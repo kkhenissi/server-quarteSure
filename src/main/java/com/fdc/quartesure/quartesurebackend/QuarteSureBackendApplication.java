@@ -24,6 +24,7 @@ import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.io.ClassPathResource;
 import org.nd4j.linalg.learning.config.Adam;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.json.GsonJsonParser;
@@ -35,6 +36,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -89,7 +91,14 @@ public class QuarteSureBackendApplication {
 		}
 	}
 
+	@Value("${app.profile}")
 
+	private String profile;
+
+	@PostConstruct
+	public void init() {
+		System.out.println("Active profile: " + profile);
+	}
 
 
 }
