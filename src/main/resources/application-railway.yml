@@ -1,9 +1,13 @@
 spring:
   datasource:
-    url: jdbc:postgresql://${PGHOST}:${PGPORT}/${PGDATABASE}?sslmode=require
-    username: ${PGUSER}
-    password: ${PGPASSWORD}
+    # ✅ PRIORITÉ À DATABASE_URL (Railway-native)
+    # ❗ si DATABASE_URL n’existe pas, Spring utilise l’URL PG*
+    url: ${DATABASE_URL:jdbc:postgresql://${PGHOST}:${PGPORT}/${PGDATABASE}?sslmode=require}
+
+    username: ${PGUSER:${DB_USERNAME:}}
+    password: ${PGPASSWORD:}
     driver-class-name: org.postgresql.Driver
+
     hikari:
       maximum-pool-size: 10
       minimum-idle: 2
@@ -57,5 +61,6 @@ paypal:
   client-id: ${PAYPAL_CLIENT_ID}
   client-secret: ${PAYPAL_CLIENT_SECRET}
   mode: sandbox
+
 app:
   profile: railway
