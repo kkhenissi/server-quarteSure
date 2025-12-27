@@ -98,7 +98,12 @@ public class QuarteSureBackendApplication {
 	@PostConstruct
 	public void init() {
 		System.out.println("Active profile: " + profile);
+		System.out.println("PGHOST=" + System.getenv("PGHOST"));
+		System.out.println("PGPORT=" + System.getenv("PGPORT"));
+		System.out.println("PGDATABASE=" + System.getenv("PGDATABASE"));
 	}
+
+
 
 
 }
