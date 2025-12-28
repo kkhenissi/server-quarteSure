@@ -54,10 +54,10 @@ cors:
   allowed-headers: "*"
   allow-credentials: true
 
-paypal:
-  client-id: ${PAYPAL_CLIENT_ID}
-  client-secret: ${PAYPAL_CLIENT_SECRET}
-  mode: sandbox
+#paypal:
+#  client-id: ${PAYPAL_CLIENT_ID}
+#  client-secret: ${PAYPAL_CLIENT_SECRET}
+#  mode: sandbox
 
 app:
   profile: railway
