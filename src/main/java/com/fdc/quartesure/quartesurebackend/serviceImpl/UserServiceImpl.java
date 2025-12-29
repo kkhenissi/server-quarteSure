@@ -228,7 +228,10 @@ public class UserServiceImpl implements UserService {
 
         UserDetails userDetails = (UserDetails) auth.getPrincipal();
         User user = userDao.findByEmail(userDetails.getUsername());
-
+        System.out.println("***********************************");
+        System.out.println(request.getCurrentPassword());
+        System.out.println(user.getPassword());
+        System.out.println("**************************************");
         if (!passwordEncoder.matches(
                 request.getCurrentPassword(), user.getPassword())) {
             throw new IllegalStateException("Wrong current password");

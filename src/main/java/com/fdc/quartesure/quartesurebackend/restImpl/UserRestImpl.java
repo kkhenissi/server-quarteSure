@@ -96,7 +96,9 @@ public class UserRestImpl implements UserRest {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Utilisateur non authentifié");
         }
         userService.changePassword(request);
-        return ResponseEntity.ok("Mot de passe changé avec succès");
+        return ResponseEntity.ok(
+                Map.of("message", "Mot de passe changé avec succès")
+        );
     }
 
     @Override
