@@ -22,16 +22,27 @@ spring:
         registration-url: ${FRONTEND_REGISTRATION_URL}#/register
 
   mail:
-    host: smtp.gmail.com
+    host: smtp-relay.sendinblue.com
     port: 587
-    username: ${MAIL_USERNAME}
-    password: ${MAIL_PASSWORD}
+    username: contact@monapp.com
+    password: ${BREVO_SMTP_KEY}
     properties:
       mail:
         smtp:
           auth: true
           starttls:
             enable: true
+            required: true
+#    host: smtp.gmail.com
+#    port: 587
+#    username: ${MAIL_USERNAME}
+#    password: ${MAIL_PASSWORD}
+#    properties:
+#      mail:
+#        smtp:
+#          auth: true
+#          starttls:
+#            enable: true
 
 server:
   port: ${PORT:8080}
