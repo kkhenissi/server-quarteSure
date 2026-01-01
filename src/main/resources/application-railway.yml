@@ -29,7 +29,7 @@ spring:
         registration-url: ${FRONTEND_REGISTRATION_URL}#/register
 
   mail:
-    host: smtp-relay.brevo.com
+    host: smtp-relay.sendinblue.com
     port: 587
     username: lineyatech@yahoo.com
     password: ${BREVO_SMTP_KEY}
@@ -41,8 +41,8 @@ spring:
           starttls:
             enable: true
             required: true
-          connectiontimeout: 20000
-          timeout: 20000
+          connectiontimeout: 10000
+          timeout: 10000
 #    host: smtp.gmail.com
 #    port: 587
 #    username: ${MAIL_USERNAME}
