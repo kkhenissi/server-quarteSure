@@ -48,6 +48,11 @@
 			<artifactId>service</artifactId>
 			<version>0.18.2</version>
 		</dependency>
+		<!-- Flyway -->
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+		</dependency>
 <!--		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>

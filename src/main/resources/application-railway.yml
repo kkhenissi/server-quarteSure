@@ -7,13 +7,19 @@ spring:
 
 
   jpa:
-    hibernate:
-      ddl-auto: create
-    show-sql: false
+    show-sql: true
     properties:
-      format_sql: false
-    database: postgresql
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate  # En prod, on valide seulement
+  flyway:
+    enabled: true
+    baseline-on-migrate: true  # si la base n'est pas vide
+    locations: classpath:db/migration
+
+
+
 
   application:
     mailing:
