@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:${DATABASE_URL}?sslmode=require
+    url: jdbc:postgresql://postgres:BxRNPyEEhQzUVJvEZSpsOxuWYOLgdAzt@postgres.railway.internal:5432/winner_db?sslmode=require
     driver-class-name: org.postgresql.Driver
 #  datasource:
 #    url: jdbc:postgresql://${PGHOST}:${PGPORT}/${PGDATABASE}?sslmode=require
