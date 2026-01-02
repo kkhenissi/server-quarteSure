@@ -15,7 +15,7 @@ spring:
       ddl-auto: validate  # En prod, on valide seulement
   flyway:
     enabled: true
-    baseline-on-migrate: false  # si la base n'est pas vide
+    baseline-on-migrate: true  # si la base n'est pas vide
     locations: classpath:db/migration
 
 
