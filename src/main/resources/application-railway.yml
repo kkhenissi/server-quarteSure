@@ -29,7 +29,7 @@ spring:
         registration-url: ${FRONTEND_REGISTRATION_URL}#/register
 
   mail:
-    host: smtp-relay.sendinblue.com
+    host: smtp-relay.brevo.com
     port: 587
     username: lineyatech@yahoo.com
     password: ${BREVO_SMTP_KEY}
