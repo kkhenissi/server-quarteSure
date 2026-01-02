@@ -41,4 +41,8 @@ public class SmtpDebug {
             logger.error("[SMTP DEBUG] Connection failed", e);
         }
     }
+    @PostConstruct
+    public void checkBrevoConfig() {
+       // System.out.println("BREVO sender = " + senderEmail);
+    }
 }
