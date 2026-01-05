@@ -19,24 +19,21 @@ import java.util.Map;
 
 @Slf4j
 @Service
+@AllArgsConstructor
 public class EmailServiceImpl implements EmailService {
 
     private final TemplateEngine templateEngine;
 
-    @Value("${BREVO_API_KEY}")
+    @Value("${brevo.api-key}")
     private String apiKey;
 
-    @Value("${BREVO_SENDER_EMAIL}")
+    @Value("${brevo.sender-email}")
     private String senderEmail;
 
-    @Value("${BREVO_SENDER_NAME}")
+    @Value("${brevo.sender-name}")
     private String senderName;
 
     private static final String BREVO_URL = "https://api.sendinblue.com/v3/smtp/email";
-
-    public EmailServiceImpl(TemplateEngine templateEngine) {
-        this.templateEngine = templateEngine;
-    }
 
     /* =========================
        EMAIL CONFIRMATION
