@@ -19,7 +19,7 @@ import java.util.Map;
 
 @Slf4j
 @Service
-@AllArgsConstructor
+
 public class EmailServiceImpl implements EmailService {
 
     private final TemplateEngine templateEngine;
@@ -34,7 +34,9 @@ public class EmailServiceImpl implements EmailService {
     private String senderName;
 
     private static final String BREVO_URL = "https://api.sendinblue.com/v3/smtp/email";
-
+    public EmailServiceImpl(TemplateEngine templateEngine) {
+        this.templateEngine = templateEngine;
+    }
     /* =========================
        EMAIL CONFIRMATION
        ========================= */
