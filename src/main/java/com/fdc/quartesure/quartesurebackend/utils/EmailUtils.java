@@ -1,37 +1,46 @@
 package com.fdc.quartesure.quartesurebackend.utils;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
+import com.fdc.quartesure.quartesurebackend.POJO.EmailTemplateName;
+import com.fdc.quartesure.quartesurebackend.service.EmailService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class EmailUtils {
 
-    @Autowired
-    private JavaMailSender emailSender;
+    private final EmailService emailService;
 
-    public void sendSimpleMessage(String to, String subject, String text, List<String> list) {
-
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("kkhenissi@gmail.com");
-        message.setTo(to);
-        message.setSubject(subject);
-        message.setText(text);
-        if(list!=null && list.size()>0)
-        message.setCc(getCcArray(list));
-        emailSender.send(message);
-
-    }
-
-    private String[] getCcArray(List<String> ccList) {
-        String[] cc = new String[ccList.size()];
-        for (int i=0; i<ccList.size();i++) {
-            cc[i] = ccList.get(i);
-
+    /**
+     * Envoi d’un message simple (admins, notifications, etc.)
+     */
+    public void sendSimpleMessage(
+            String fromUser,
+            String subject,
+            String text,
+            List<String> ccList
+    ) {
+        if (ccList == null || ccList.isEmpty()) {
+            return;
         }
-        return  cc;
+
+        for (String to : ccList) {
+            try {
+                emailService.sendEmail(
+                        to,
+                        fromUser,
+                        EmailTemplateName.SIMPLE_MESSAGE,
+                        "",          // pas de lien
+                        text,        // message libre
+                        subject
+                );
+            } catch (Exception e) {
+                log.error("Erreur envoi email vers {}", to, e);
+            }
+        }
     }
 }
