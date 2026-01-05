@@ -28,7 +28,6 @@ spring:
 # -----------------------------------
 # ---------------- MAIL CONFIG ----------------
 
-
   mail:
     host: smtp.gmail.com
     # smtp.gmail.com ${EMAIL_HOSTNAME}

@@ -23,13 +23,13 @@ public class EmailServiceImpl implements EmailService {
 
     private final TemplateEngine templateEngine;
 
-    @Value("${brevo.api-key}")
+    @Value("${BREVO_API_KEY}")
     private String apiKey;
 
-    @Value("${brevo.sender-email}")
+    @Value("${BREVO_SENDER_EMAIL}")
     private String senderEmail;
 
-    @Value("${brevo.sender-name}")
+    @Value("${BREVO_SENDER_NAME}")
     private String senderName;
 
     private static final String BREVO_URL = "https://api.sendinblue.com/v3/smtp/email";
