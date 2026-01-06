@@ -1,5 +1,3 @@
-
-
 package com.fdc.quartesure.quartesurebackend.restImpl;
 
 import com.fdc.quartesure.quartesurebackend.constants.QuarteSureConstants;
@@ -17,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.mail.MessagingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +32,10 @@ public class UserRestImpl implements UserRest {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return QuarteSureUtils.getResponseEntity(QuarteSureConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+        return QuarteSureUtils.getResponseEntity(
+                QuarteSureConstants.SOMETHING_WENT_WRONG,
+                HttpStatus.INTERNAL_SERVER_ERROR
+        );
     }
 
     @Override
@@ -45,7 +45,10 @@ public class UserRestImpl implements UserRest {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return QuarteSureUtils.getResponseEntity(QuarteSureConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+        return QuarteSureUtils.getResponseEntity(
+                QuarteSureConstants.SOMETHING_WENT_WRONG,
+                HttpStatus.INTERNAL_SERVER_ERROR
+        );
     }
 
     @Override
@@ -55,29 +58,44 @@ public class UserRestImpl implements UserRest {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(
+                new ArrayList<>(),
+                HttpStatus.INTERNAL_SERVER_ERROR
+        );
     }
 
     @Override
     public ResponseEntity<String> update(Map<String, String> requestMap) {
         try {
             userService.update(requestMap);
-            return QuarteSureUtils.getResponseEntity("User status update successfully", HttpStatus.OK);
+            return QuarteSureUtils.getResponseEntity(
+                    "User status update successfully",
+                    HttpStatus.OK
+            );
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return QuarteSureUtils.getResponseEntity(QuarteSureConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+        return QuarteSureUtils.getResponseEntity(
+                QuarteSureConstants.SOMETHING_WENT_WRONG,
+                HttpStatus.INTERNAL_SERVER_ERROR
+        );
     }
 
     @Override
     public ResponseEntity<String> confirm(@RequestParam String token) {
         try {
             userService.activateAccount(token);
-            return QuarteSureUtils.getResponseEntity("User status update successfully", HttpStatus.OK);
+            return QuarteSureUtils.getResponseEntity(
+                    "User status update successfully",
+                    HttpStatus.OK
+            );
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return QuarteSureUtils.getResponseEntity(QuarteSureConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+        return QuarteSureUtils.getResponseEntity(
+                QuarteSureConstants.SOMETHING_WENT_WRONG,
+                HttpStatus.INTERNAL_SERVER_ERROR
+        );
     }
 
     @Override
@@ -87,15 +105,25 @@ public class UserRestImpl implements UserRest {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return QuarteSureUtils.getResponseEntity(QuarteSureConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+        return QuarteSureUtils.getResponseEntity(
+                QuarteSureConstants.SOMETHING_WENT_WRONG,
+                HttpStatus.INTERNAL_SERVER_ERROR
+        );
     }
 
     @Override
-    public ResponseEntity<?> changePassword(@AuthenticationPrincipal UserDetails user, @RequestBody ChangePasswordRequest request) {
+    public ResponseEntity<?> changePassword(
+            @AuthenticationPrincipal UserDetails user,
+            @RequestBody ChangePasswordRequest request
+    ) {
         if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Utilisateur non authentifié");
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body("Utilisateur non authentifié");
         }
+
         userService.changePassword(request);
+
         return ResponseEntity.ok(
                 Map.of("message", "Mot de passe changé avec succès")
         );
@@ -108,7 +136,10 @@ public class UserRestImpl implements UserRest {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return QuarteSureUtils.getResponseEntity(QuarteSureConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+        return QuarteSureUtils.getResponseEntity(
+                QuarteSureConstants.SOMETHING_WENT_WRONG,
+                HttpStatus.INTERNAL_SERVER_ERROR
+        );
     }
 
     // ===================== FORGOT PASSWORD =====================
@@ -116,23 +147,29 @@ public class UserRestImpl implements UserRest {
     public ResponseEntity<String> forgotPassword(@RequestParam String email) {
         try {
             return userService.forgotPassword(email);
-        } catch (MessagingException ex) {
-            ex.printStackTrace();
-            return QuarteSureUtils.getResponseEntity("Failed to send reset email", HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (Exception ex) {
             ex.printStackTrace();
-            return QuarteSureUtils.getResponseEntity(QuarteSureConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+            return QuarteSureUtils.getResponseEntity(
+                    QuarteSureConstants.SOMETHING_WENT_WRONG,
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            );
         }
     }
 
     // ===================== RESET PASSWORD =====================
     @Override
-    public ResponseEntity<String> resetPassword(@RequestParam String token, @RequestParam String password) {
+    public ResponseEntity<String> resetPassword(
+            @RequestParam String token,
+            @RequestParam String password
+    ) {
         try {
             return userService.resetPassword(token, password);
         } catch (Exception ex) {
             ex.printStackTrace();
-            return QuarteSureUtils.getResponseEntity(QuarteSureConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+            return QuarteSureUtils.getResponseEntity(
+                    QuarteSureConstants.SOMETHING_WENT_WRONG,
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            );
         }
     }
 }

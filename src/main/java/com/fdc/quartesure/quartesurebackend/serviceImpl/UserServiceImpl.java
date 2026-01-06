@@ -25,7 +25,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 import java.security.SecureRandom;
 import java.time.Instant;
@@ -296,8 +295,7 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
-    private void sendValidationEmail(User user) throws MessagingException {
-
+    private void sendValidationEmail(User user) {
         var newToken = generateAndSaveActivationToken(user);
         emailService.sendEmail(
                 user.getEmail(),
@@ -308,6 +306,7 @@ public class UserServiceImpl implements UserService {
                 "Account activation"
         );
     }
+
 
     @Override
     public ResponseEntity<String> checkToken() {
@@ -423,23 +422,33 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public ResponseEntity<String> activateAccount(String token) throws MessagingException {
+    public ResponseEntity<String> activateAccount(String token) {
 
         TokenTable savedToken = tokenDao.findByToken(token)
-                // todo exception has to be defined
-                .orElseThrow(()-> new RuntimeException("Invalid token"));
-        if(LocalDateTime.now().isAfter(savedToken.getExpiresAt())) {
+                .orElseThrow(() -> new RuntimeException("Invalid token"));
+
+        if (LocalDateTime.now().isAfter(savedToken.getExpiresAt())) {
             sendValidationEmail(savedToken.getUser());
-            throw  new RuntimeException("Activation token has expired, a new token has been sent to the same email address");
+            throw new RuntimeException(
+                    "Activation token has expired, a new token has been sent"
+            );
         }
+
         var user = userDao.findById(savedToken.getUser().getUser_id())
-                .orElseThrow(()-> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
         user.setStatus("true");
         userDao.save(user);
+
         savedToken.setValidatedAt(LocalDateTime.now());
         tokenDao.save(savedToken);
-        return null;
+
+        return QuarteSureUtils.getResponseEntity(
+                "Account activated successfully",
+                HttpStatus.OK
+        );
     }
+
     @Override
     public ResponseEntity<String> updateSelectedOptions(String id,String request) {
 
@@ -461,10 +470,10 @@ public class UserServiceImpl implements UserService {
    ====================================================== */
 
     @Override
-    public ResponseEntity<String> forgotPassword(String email) throws MessagingException {
+    public ResponseEntity<String> forgotPassword(String email) {
+
         User user = userDao.findByEmail(email);
         if (user == null) {
-            // Ne pas révéler si l’email existe ou pas
             return QuarteSureUtils.getResponseEntity(
                     "If the email exists, a reset link has been sent",
                     HttpStatus.OK
@@ -476,10 +485,9 @@ public class UserServiceImpl implements UserService {
         user.setResetPasswordExpiry(LocalDateTime.now().plusMinutes(30));
         userDao.save(user);
 
-        // Construire le lien pour Angular
-        String resetLink = "http://localhost:4600/#/reset-password?token=" + token;
+        String resetLink =
+                "http://localhost:4600/#/reset-password?token=" + token;
 
-        // Envoyer l’email
         emailService.sendEmail(
                 user.getEmail(),
                 user.fullName(),
@@ -489,12 +497,13 @@ public class UserServiceImpl implements UserService {
                 "Password Reset Request"
         );
 
-
         return QuarteSureUtils.getResponseEntity(
                 "If the email exists, a reset link has been sent",
                 HttpStatus.OK
         );
     }
+
+
 
     @Override
     public ResponseEntity<String> resetPassword(String token, String newPassword) {

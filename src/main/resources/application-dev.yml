@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/winner_db}
+    url: jdbc:postgresql://localhost:5432/winner_db
     username: username
     password: password
     driver-class-name: org.postgresql.Driver
@@ -27,30 +27,34 @@ spring:
       #registration-url: http://winner-one-frontend.s3-website.eu-west-3.amazonaws.com/#/register
 # -----------------------------------
 # ---------------- MAIL CONFIG ----------------
-
-  mail:
-    host: smtp.gmail.com
-    # smtp.gmail.com ${EMAIL_HOSTNAME}
-    # localhost
-    port: 465
-    # 1025
-    username: kkhenissi
-    # kkhenissi ${EMAIL_USER_NAME}
-    password: ybfv kklj sqkh hzxj
-    # ybfv kklj sqkh hzxj ${EMAIL_PASSWORD}
-    properties:
-      mail:
-        smtp:
-          auth: true
-          ssl:
-            enable: true
-            trust: "*"
-        starttls:
-          enabled: true
-    #            connection-timeout: 5000
-    #            timeout: 3000
-    #            write-timeout: 5000
-    protocol: smtp
+# 👉 CONFIG BREVO API UNIQUEMENT
+brevo:
+  api-key: "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"
+  sender-email: "lineyatech@yahoo.com"
+  sender-name: "triturf"
+#  mail:
+#    host: smtp.gmail.com
+#    # smtp.gmail.com ${EMAIL_HOSTNAME}
+#    # localhost
+#    port: 465
+#    # 1025
+#    username: kkhenissi
+#    # kkhenissi ${EMAIL_USER_NAME}
+#    password: ybfv kklj sqkh hzxj
+#    # ybfv kklj sqkh hzxj ${EMAIL_PASSWORD}
+#    properties:
+#      mail:
+#        smtp:
+#          auth: true
+#          ssl:
+#            enable: true
+#            trust: "*"
+#        starttls:
+#          enabled: true
+#    #            connection-timeout: 5000
+#    #            timeout: 3000
+#    #            write-timeout: 5000
+#    protocol: smtp
 
 # ---------------- HTTPS CONFIGURATION ----------------
 server:

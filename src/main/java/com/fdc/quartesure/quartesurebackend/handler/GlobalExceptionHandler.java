@@ -9,8 +9,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import javax.mail.MessagingException;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,9 +16,9 @@ import static com.fdc.quartesure.quartesurebackend.handler.BusinessErrorCodes.*;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
     @ExceptionHandler(LockedException.class)
     public ResponseEntity<ExceptionResponse> handleException(LockedException exp) {
-
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(
                         ExceptionResponse.builder()
@@ -29,12 +27,10 @@ public class GlobalExceptionHandler {
                                 .error(exp.getMessage())
                                 .build()
                 );
-
     }
 
     @ExceptionHandler(DisabledException.class)
     public ResponseEntity<ExceptionResponse> handleException(DisabledException exp) {
-
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(
                         ExceptionResponse.builder()
@@ -43,12 +39,10 @@ public class GlobalExceptionHandler {
                                 .error(exp.getMessage())
                                 .build()
                 );
-
     }
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ExceptionResponse> handleException(BadCredentialsException exp) {
-
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(
                         ExceptionResponse.builder()
@@ -57,41 +51,24 @@ public class GlobalExceptionHandler {
                                 .error(BAD_CREDENTIALS.getDescription())
                                 .build()
                 );
-
-    }
-
-    @ExceptionHandler(MessagingException.class)
-    public ResponseEntity<ExceptionResponse> handleException(MessagingException exp) {
-
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(
-                        ExceptionResponse.builder()
-                                .error(exp.getMessage())
-                                .build()
-                );
-
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ExceptionResponse> handleException(MethodArgumentNotValidException exp) {
         Set<String> errors = new HashSet<>();
         exp.getBindingResult().getAllErrors()
-                .forEach(error -> {
-                    var errorMessage =error.getDefaultMessage();
-                    errors.add(errorMessage);
-                });
+                .forEach(error -> errors.add(error.getDefaultMessage()));
+
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(
                         ExceptionResponse.builder()
                                 .validationErrors(errors)
                                 .build()
                 );
-
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionResponse> handleException(Exception exp) {
-        // log the exception
         exp.printStackTrace();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(
@@ -100,6 +77,5 @@ public class GlobalExceptionHandler {
                                 .error(exp.getMessage())
                                 .build()
                 );
-
     }
 }

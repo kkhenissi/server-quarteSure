@@ -4,7 +4,6 @@ import com.fdc.quartesure.quartesurebackend.rest.ChangePasswordRequest;
 import com.fdc.quartesure.quartesurebackend.wrapper.UserWrapper;
 import org.springframework.http.ResponseEntity;
 
-import javax.mail.MessagingException;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +19,7 @@ public interface UserService {
 
     ResponseEntity<String> updateSelectedOptions(String id, String request);
 
-    ResponseEntity<String> activateAccount(String token) throws MessagingException;
+    ResponseEntity<String> activateAccount(String token);
 
     ResponseEntity<String> checkToken();
 
@@ -29,7 +28,7 @@ public interface UserService {
     ResponseEntity<String> creditAccount(Map<String, String> requestMap);
 
     // ===================== FORGOT PASSWORD =====================
-    ResponseEntity<String> forgotPassword(String email) throws MessagingException;
+    ResponseEntity<String> forgotPassword(String email);
 
     ResponseEntity<String> resetPassword(String token, String newPassword);
 }
