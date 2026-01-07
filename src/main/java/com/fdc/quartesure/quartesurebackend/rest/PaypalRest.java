@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Map;
-@CrossOrigin(origins = "http://winner-one-frontend.s3-website.eu-west-3.amazonaws.com")
+// @CrossOrigin(origins = "http://winner-one-frontend.s3-website.eu-west-3.amazonaws.com")
 @RequestMapping(path = "/payByPaypal")
 public interface PaypalRest {
 
