@@ -14,7 +14,7 @@ public class WebConfig implements WebMvcConfigurer {
                         "http://winner-front.s3-website.eu-west-3.amazonaws.com",
                         "http://localhost:4600" // si Angular en local
                 )
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedMethods("GET", "POST","PATCH", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true)
                 .maxAge(3600);
