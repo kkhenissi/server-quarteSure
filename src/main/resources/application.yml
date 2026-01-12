@@ -1,6 +1,6 @@
       spring:
         profiles:
-          active: railway
+          active: raiway
         servlet:
           multipart:
             max-file-size: 50MB
