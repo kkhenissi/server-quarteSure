@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/winner_db
+    url: jdbc:postgresql://localhost:5432/postgres
     username: username
     password: password
     driver-class-name: org.postgresql.Driver
