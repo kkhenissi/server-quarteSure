@@ -1,7 +1,6 @@
 spring:
   datasource:
-    url: ${DATABASE_URL}
-#    url: jdbc:postgresql://${PGHOST}:${PGPORT}/winner_db?sslmode=require
+    url: jdbc:postgresql://${PGHOST}:${PGPORT}/winner_db?sslmode=require
     username: ${PGUSER}
     password: ${PGPASSWORD}
     driver-class-name: org.postgresql.Driver
@@ -15,7 +14,7 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
   flyway:
-    enabled: false
+    enabled: true
     baseline-on-migrate: true
     locations: classpath:db/migration
 
