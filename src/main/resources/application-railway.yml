@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://${PGHOST}:${PGPORT}/triturf_db?sslmode=require
+    url: jdbc:postgresql://${PGHOST}:${PGPORT}/winner_db?sslmode=require
     username: ${PGUSER}
     password: ${PGPASSWORD}
     driver-class-name: org.postgresql.Driver
