@@ -10,6 +10,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import javax.annotation.PostConstruct;
+
 @SpringBootApplication
 @EnableAsync
 public class QuarteSureBackendApplication {
@@ -54,5 +57,12 @@ public class QuarteSureBackendApplication {
 				}
 			};
 		}
+	}
+	@PostConstruct
+	public void checkDbEnv() {
+		System.out.println("PGHOST=" + System.getenv("PGHOST"));
+		System.out.println("PGPORT=" + System.getenv("PGPORT"));
+		System.out.println("PGDATABASE=" + System.getenv("PGDATABASE"));
+		System.out.println("PGUSER=" + System.getenv("PGUSER"));
 	}
 }
