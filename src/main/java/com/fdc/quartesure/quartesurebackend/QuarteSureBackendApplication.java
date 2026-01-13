@@ -21,7 +21,7 @@ public class QuarteSureBackendApplication {
 		System.out.println("PGPORT=" + System.getenv("PGPORT"));
 		System.out.println("PGDATABASE=" + System.getenv("PGDATABASE"));
 		System.out.println("PGUSER=" + System.getenv("PGUSER"));
-		System.out.println("PGPASSWORD=" + (System.getenv("PGPASSWORD") != null));
+		System.out.println("PGPASSWORD=" + (System.getenv("PGPASSWORD"));
 
 		SpringApplication.run(QuarteSureBackendApplication.class, args);
 /*
