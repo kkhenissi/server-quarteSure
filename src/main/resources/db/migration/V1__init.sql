@@ -70,3 +70,8 @@ CREATE TABLE traffic_log (
     ip_address VARCHAR(50),
     timestamp TIMESTAMP
 );
+CREATE TABLE casaque (
+    id BIGSERIAL PRIMARY KEY,
+    couleur VARCHAR(50) NOT NULL,
+    created_at TIMESTAMP DEFAULT now()
+);
