@@ -14,7 +14,7 @@ import javax.persistence.Table;
 @Setter
 @Builder
 @ToString
-@Entity
+// @Entity
 @DynamicUpdate
 @DynamicInsert
 @AllArgsConstructor
