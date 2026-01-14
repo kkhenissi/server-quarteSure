@@ -24,5 +24,5 @@ public class Casaque  {
     @Id
     String casaqueId;
     @Lob
-    private Byte[] casaque;
+    private byte[] casaque;
 }
