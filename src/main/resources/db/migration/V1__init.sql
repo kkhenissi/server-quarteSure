@@ -20,12 +20,6 @@ CREATE TABLE winner_user (
     reset_password_expiry TIMESTAMP
 );
 
--- ===================== casaque =====================
-CREATE TABLE casaque (
-    casaque_id VARCHAR(255) PRIMARY KEY,
-    casaque BYTEA
-);
-
 -- ===================== fillol =====================
 CREATE TABLE fillol (
     id SERIAL PRIMARY KEY,
