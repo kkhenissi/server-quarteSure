@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @RequestMapping(path = "/user")
-// @CrossOrigin(origins = "http://winner-one-frontend.s3-website.eu-west-3.amazonaws.com")
+// @CrossOrigin(origins = "http://winner-front.s3-website.eu-west-3.amazonaws.com/")
 public interface UserRest {
 
     @PostMapping(path = "/signup")

@@ -23,8 +23,8 @@ spring:
       frontend:
         activation-url: http://localhost:4600/#/activate-account
         registration-url: http://localhost:4600/#/register
-      #activation-url: http://winner-one-frontend.s3-website.eu-west-3.amazonaws.com/#/activate-account
-      #registration-url: http://winner-one-frontend.s3-website.eu-west-3.amazonaws.com/#/register
+      #activation-url: http://winner-front.s3-website.eu-west-3.amazonaws.com//#/activate-account
+      #registration-url: http://winner-front.s3-website.eu-west-3.amazonaws.com//#/register
 # -----------------------------------
 # ---------------- MAIL CONFIG ----------------
 # 👉 CONFIG BREVO API UNIQUEMENT
@@ -78,7 +78,7 @@ server:
 
 # ---------------- CORS CONFIGURATION ----------------
     cors:
-        allowed-origins: "https://localhost:4600,https://winner-one-frontend.s3-website.eu-west-3.amazonaws.com"
+        allowed-origins: "https://localhost:4600,https://winner-front.s3-website.eu-west-3.amazonaws.com/"
         allowed-methods: "GET,POST,PUT,DELETE,OPTIONS"
         allowed-headers: "*"
         allow-credentials: true

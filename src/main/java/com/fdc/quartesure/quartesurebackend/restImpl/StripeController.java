@@ -148,7 +148,7 @@ public class StripeController {
 //     *
 //     * @throws StripeException
 //     */
-//    @CrossOrigin(origins = "http://winner-one-frontend.s3-website.eu-west-3.amazonaws.com")
+//    @CrossOrigin(origins = "http://winner-front.s3-website.eu-west-3.amazonaws.com/")
 //    public String creditUserAccount(HttpServletRequest request, @RequestBody CheckoutPayment payment) {
 //        String authorizationHeader = request.getHeader("Authorization");
 //        String token = null;

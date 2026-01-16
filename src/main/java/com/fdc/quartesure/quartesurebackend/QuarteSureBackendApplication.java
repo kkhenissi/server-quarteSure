@@ -54,7 +54,7 @@ public class QuarteSureBackendApplication {
 					registry.addMapping("/**")
 							.allowedOrigins(
 									"https://localhost:4600",
-									"https://winner-one-frontend.s3-website.eu-west-3.amazonaws.com"
+									"http://winner-front.s3-website.eu-west-3.amazonaws.com/"
 							)
 							.allowedMethods("GET","POST","PUT","DELETE","OPTIONS")
 							.allowedHeaders("*")
