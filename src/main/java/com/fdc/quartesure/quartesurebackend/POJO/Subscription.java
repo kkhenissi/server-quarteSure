@@ -10,6 +10,8 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
+
 // @NamedQuery(name = "User.findByEmail",query = "select u from User u where u.email =:email")
 @NamedQuery (name = "Subscription.findByUser_id", query = "SELECT s FROM Subscription s WHERE s.user.user_id = :user_Id")
 @Entity
@@ -21,7 +23,7 @@ public class Subscription {
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
-    private String id;
+    private UUID id;
 
     // private String plan;
 
