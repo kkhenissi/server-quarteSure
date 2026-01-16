@@ -320,6 +320,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public ResponseEntity<String> creditAccount(Map<String, String> requestMap) {
 
         try {
