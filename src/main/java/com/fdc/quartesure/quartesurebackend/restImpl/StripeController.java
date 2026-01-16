@@ -19,6 +19,7 @@ import com.stripe.param.checkout.SessionCreateParams;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +35,9 @@ import java.util.Map;
 @Slf4j
 public class StripeController {
     // create a Gson object
+
+    @Value("${STRIPE_SECRET_KEY}")
+    private String stripeSecretKey;
     private static Gson gson = new Gson();
     @Autowired
     UserService userService;
@@ -57,6 +61,7 @@ public class StripeController {
             @RequestBody CheckoutRequest req,
             @AuthenticationPrincipal UserDetails user // <- ici
     ) throws StripeException {
+        Stripe.apiKey = stripeSecretKey;
 
         String userId = user.getUsername(); // ou user.getId() selon ta classe
         Integer amount = req.getAmount();
