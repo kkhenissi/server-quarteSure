@@ -8,6 +8,8 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
+
 @NamedQuery (name = "Payment.findById", query = "SELECT p FROM Payment p WHERE p.user.user_id = :userId")
 @Entity
 @Table(name = "payments")
@@ -18,7 +20,7 @@ public class Payment {
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
-    private String id;
+    private UUID id;
 
     private Double amount;
 
