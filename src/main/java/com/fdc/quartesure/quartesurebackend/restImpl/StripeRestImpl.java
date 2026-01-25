@@ -37,6 +37,12 @@ public class StripeRestImpl implements StripeRest {
 
 
     private long paymentchoice;
+
+    @Override
+    public ResponseEntity<Map<String, Boolean>> getPaymentStatus(String sessionId)  {
+     //   boolean success = stripePaymentService.paymentAlreadyProcessed(sessionId);
+        return ResponseEntity.ok(Map.of("success", true));
+    }
 // //   @Override
 //    public ResponseEntity<String> creditUserAccount(Map<String, String> requestMap) {
 //
