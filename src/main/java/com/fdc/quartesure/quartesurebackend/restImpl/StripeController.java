@@ -36,7 +36,7 @@ import java.util.Map;
 public class StripeController {
     // create a Gson object
 
-    @Value("${STRIPE_SECRET_KEY}")
+    @Value("${STRIPE_SECRET_KEY:}")
     private String stripeSecretKey;
     private static Gson gson = new Gson();
     @Autowired
@@ -59,11 +59,11 @@ public class StripeController {
     @PostMapping("/stripe/checkout")
     public Map<String, String> checkout(
             @RequestBody CheckoutRequest req,
-            @AuthenticationPrincipal UserDetails user // <- ici
+            @AuthenticationPrincipal UserDetails user
     ) throws StripeException {
         Stripe.apiKey = stripeSecretKey;
 
-        String userId = user.getUsername(); // ou user.getId() selon ta classe
+        String userId = user.getUsername(); 
         Integer amount = req.getAmount();
 
         String priceId = switch (amount) {

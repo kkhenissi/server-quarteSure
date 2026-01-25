@@ -330,16 +330,21 @@ public class UserServiceImpl implements UserService {
             log.info("Inside requestMap ==> {}",requestMap.get("amount"));
             if(userObj!=null) {
                 switch (requestMap.get("amount")) {
-                    case "10":
-                        userObj.setCredit(userObj.getCredit()+Integer.valueOf(requestMap.get("amount")));
-                        log.info("Inside creditAccount case 10 {}",userObj.getCredit());
-                        break;
                     case "20":
-                        userObj.setCredit((int) (userObj.getCredit()+(Integer.valueOf(requestMap.get("amount"))/.75)));
+                        userObj.setCredit(userObj.getCredit()+Integer.valueOf(requestMap.get("amount")));
+                        log.info("Inside creditAccount case 20 {}",userObj.getCredit());
                         break;
-                    case "30":
+                    case "50":
+                        userObj.setCredit((int) (userObj.getCredit()+(Integer.valueOf(requestMap.get("amount"))/.75)));
+                        log.info("Inside creditAccount case 50 {}",userObj.getCredit());
+                        break;
+                    case "100":
                         userObj.setCredit((int) (userObj.getCredit()+(Integer.valueOf(requestMap.get("amount"))/.5)));
-                        log.info("Inside creditAccount case 30 {}",userObj);
+                        log.info("Inside creditAccount case 100 {}",userObj);
+                        break;
+                    case "150":
+                        userObj.setCredit((int) (userObj.getCredit()+(Integer.valueOf(requestMap.get("amount"))/.3)));
+                        log.info("Inside creditAccount case 150 {}",userObj);
                         break;
                 }
                 userDao.save(userObj);
@@ -419,6 +424,7 @@ public class UserServiceImpl implements UserService {
             ex.printStackTrace();
         }
         return QuarteSureUtils.getResponseEntity(QuarteSureConstants.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
+
     }
 
     @Override
