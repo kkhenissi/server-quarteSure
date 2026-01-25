@@ -76,8 +76,8 @@ public class StripeController {
         SessionCreateParams params =
                 SessionCreateParams.builder()
                         .setMode(SessionCreateParams.Mode.PAYMENT)
-                        .setSuccessUrl("http://winner-front.s3-website.eu-west-3.amazonaws.com/#/success")
-                        .setCancelUrl("http://winner-front.s3-website.eu-west-3.amazonaws.com/#/cancel")
+                        .setSuccessUrl("https://d2umkbr9haiwq5.cloudfront.net/#/success")
+                        .setCancelUrl("https://d2umkbr9haiwq5.cloudfront.net/#/cancel")
                         .addLineItem(
                                 SessionCreateParams.LineItem.builder()
                                         .setPrice(priceId)
