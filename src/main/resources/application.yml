@@ -18,9 +18,8 @@
         client-secret: EHizbqMq5RghRQ698tKVNpryzbzD3VMc9oV1tTp9MGBkKYBobwBnc9hEje4Pi2jzYTB7K_vAyZ4aNu46
         mode: sandbox # use 'sandbox' for testing and 'live' for production
       stripe:
-        stripe:
-          secret:
-            key: sk_test_51MaipqFzoKzk6dX5bqCUklrZxdyoqv9nxMYelFlS0QAN5u7GCphDmA7zJlzDmdwTtk1FacrT2LHJIZmA3i2zby0I00VHgJTqGt
+        secret:
+            key: sk_test_51ROgY6FvDONqspWdYGdIbde679lt3XlW7O9gODkYtg9JEdsTQRLZxz0H7hE1NaGMDEZiSnSJuGb5M1l576HMKXlR00jkdFoisl
            # key: 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
         webhook:
             secret: whsec_hJaJ3Y6TvmxRhO4xx4SGmkPH09BAfSPx          # secret de ton webhook (Stripe Dashboard)

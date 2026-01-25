@@ -36,8 +36,8 @@ import java.util.Map;
 public class StripeController {
     // create a Gson object
 
-    @Value("${STRIPE_SECRET_KEY:}")
-    private String stripeSecretKey;
+//    @Value("${STRIPE_SECRET_KEY:${stripe.secret.key:}}")
+//    private String stripeSecretKey;
     private static Gson gson = new Gson();
     @Autowired
     UserService userService;
@@ -61,7 +61,7 @@ public class StripeController {
             @RequestBody CheckoutRequest req,
             @AuthenticationPrincipal UserDetails user
     ) throws StripeException {
-        Stripe.apiKey = stripeSecretKey;
+     //   Stripe.apiKey = stripeSecretKey;
 
         String userId = user.getUsername(); 
         Integer amount = req.getAmount();
