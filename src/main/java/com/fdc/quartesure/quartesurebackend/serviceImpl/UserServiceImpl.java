@@ -319,113 +319,211 @@ public class UserServiceImpl implements UserService {
         return QuarteSureUtils.getResponseEntity("true",HttpStatus.OK);
     }
 
+//    @Override
+//    @Transactional
+//    public ResponseEntity<String> creditAccount(Map<String, String> requestMap) {
+//
+//        try {
+//            User userObj = userDao.findByEmail(requestMap.get("email"));
+//            // jwtFilter.getCurrentUser()
+//            log.info("Inside changePassword {}",userObj);
+//            log.info("Inside requestMap ==> {}",requestMap.get("amount"));
+//            if(userObj!=null) {
+//                switch (requestMap.get("amount")) {
+//                    case "20":
+//                        userObj.setCredit(userObj.getCredit()+Integer.valueOf(requestMap.get("amount")));
+//                        log.info("Inside creditAccount case 20 {}",userObj.getCredit());
+//                        break;
+//                    case "50":
+//                        userObj.setCredit((int) (userObj.getCredit()+(Integer.valueOf(requestMap.get("amount"))/.75)));
+//                        log.info("Inside creditAccount case 50 {}",userObj.getCredit());
+//                        break;
+//                    case "100":
+//                        userObj.setCredit((int) (userObj.getCredit()+(Integer.valueOf(requestMap.get("amount"))/.5)));
+//                        log.info("Inside creditAccount case 100 {}",userObj);
+//                        break;
+//                    case "150":
+//                        userObj.setCredit((int) (userObj.getCredit()+(Integer.valueOf(requestMap.get("amount"))/.3)));
+//                        log.info("Inside creditAccount case 150 {}",userObj);
+//                        break;
+//                }
+//                userDao.save(userObj);
+//                log.info("Inside switcase {}",userObj.getCredit());
+//                Fillol fillol = fillolDao.findByEmail(requestMap.get("email"));
+//                if(fillol!=null) {
+//                    Subscription fromFillolToParrainSubscription = subscriptionDao.findByUser_id(fillol.getUser().getUser_id());
+//                    User parrain = userDao.getById(fillol.getUser().getUser_id());
+//
+//                    parrain.setCredit(parrain.getCredit()+Integer.valueOf(requestMap.get("amount"))/2);
+//                    userDao.save(parrain);
+//                    fillol.setStatus("validé");
+//                    fillolDao.saveAndFlush(fillol);
+//                    fromFillolToParrainSubscription.setAmountPaid(Double.valueOf(parrain.getCredit()));
+//                    subscriptionDao.saveAndFlush(fromFillolToParrainSubscription);
+//                    Payment payment = new Payment();
+//                    //   payment.setTransactionId(id);
+//                    payment.setAmount(Double.valueOf(Integer.valueOf(requestMap.get("amount"))/10));
+//                    payment.setUser(userObj);
+//                    payment.setCurrency("Jour(s)");
+//                    payment.setPaidAt(LocalDateTime.now());
+//                    payment.setSubscription(fromFillolToParrainSubscription);
+//                    // payment.set
+//                    paymentDao.save(payment);
+//                }
+//
+//
+//                Subscription subscription = new Subscription();
+//                subscription = subscriptionDao.findByUser_id(userObj.getUser_id());
+//                log.info("Inside subscription   {}",subscription);
+//                if(subscription != null) {
+//                    subscription.setAmountPaid(Double.valueOf(userObj.getCredit()));
+//                    subscription.setUser(userObj);
+//                    subscription.setPaymentMethod("Stripe");
+//                    subscription.setCreatedAt(LocalDateTime.now());
+//                    //   subscription.setTransactionId(id);
+//                    subscriptionDao.save(subscription);
+//
+//                    Payment payment = new Payment();
+//                    //    payment.setTransactionId(id);
+//                    payment.setAmount(Double.valueOf(Integer.valueOf(requestMap.get("amount"))));
+//                    payment.setUser(userObj);
+//                    payment.setCurrency("Eur");
+//                    payment.setPaidAt(LocalDateTime.now());
+//                    payment.setSubscription(subscription);
+//                    // payment.set
+//                    paymentDao.save(payment);
+//                    log.info("Inside creditAccount  updated user {}",userObj);
+//                    return QuarteSureUtils.getResponseEntity("account Credited Successfully.",HttpStatus.OK);
+//
+//                } else {
+//                    subscription = new Subscription();
+//                    subscription.setAmountPaid(Double.valueOf(userObj.getCredit()));
+//                    subscription.setUser(userObj);
+//                    subscription.setPaymentMethod("Stripe");
+//                    subscription.setCreatedAt(LocalDateTime.now());
+//                    //    subscription.setTransactionId(id);
+//                    subscriptionDao.save(subscription);
+//
+//                    Payment payment = new Payment();
+//                    //    payment.setTransactionId(id);
+//                    payment.setAmount(Double.valueOf(Integer.valueOf(requestMap.get("amount"))));
+//                    payment.setUser(userObj);
+//                    payment.setCurrency("Eur");
+//                    payment.setPaidAt(LocalDateTime.now());
+//                    payment.setSubscription(subscription);
+//                    // payment.set
+//                    paymentDao.save(payment);
+//                    log.info("Inside creditAccount  updated user {}",userObj);
+//                    return QuarteSureUtils.getResponseEntity("account Credited Successfully.",HttpStatus.OK);
+//
+//                }
+//
+//            }
+//            return QuarteSureUtils.getResponseEntity(QuarteSureConstants.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
+//        }catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
+//        return QuarteSureUtils.getResponseEntity(QuarteSureConstants.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
+//
+//    }
+
     @Override
     @Transactional
-    public ResponseEntity<String> creditAccount(Map<String, String> requestMap) {
+    public void creditAccount(String email, int amount) {
 
         try {
-            User userObj = userDao.findByEmail(requestMap.get("email"));
-            // jwtFilter.getCurrentUser()
-            log.info("Inside changePassword {}",userObj);
-            log.info("Inside requestMap ==> {}",requestMap.get("amount"));
-            if(userObj!=null) {
-                switch (requestMap.get("amount")) {
-                    case "20":
-                        userObj.setCredit(userObj.getCredit()+Integer.valueOf(requestMap.get("amount")));
-                        log.info("Inside creditAccount case 20 {}",userObj.getCredit());
-                        break;
-                    case "50":
-                        userObj.setCredit((int) (userObj.getCredit()+(Integer.valueOf(requestMap.get("amount"))/.75)));
-                        log.info("Inside creditAccount case 50 {}",userObj.getCredit());
-                        break;
-                    case "100":
-                        userObj.setCredit((int) (userObj.getCredit()+(Integer.valueOf(requestMap.get("amount"))/.5)));
-                        log.info("Inside creditAccount case 100 {}",userObj);
-                        break;
-                    case "150":
-                        userObj.setCredit((int) (userObj.getCredit()+(Integer.valueOf(requestMap.get("amount"))/.3)));
-                        log.info("Inside creditAccount case 150 {}",userObj);
-                        break;
-                }
-                userDao.save(userObj);
-                log.info("Inside switcase {}",userObj.getCredit());
-                Fillol fillol = fillolDao.findByEmail(requestMap.get("email"));
-                if(fillol!=null) {
-                    Subscription fromFillolToParrainSubscription = subscriptionDao.findByUser_id(fillol.getUser().getUser_id());
-                    User parrain = userDao.getById(fillol.getUser().getUser_id());
+            User userObj = userDao.findByEmail(email);
 
-                    parrain.setCredit(parrain.getCredit()+Integer.valueOf(requestMap.get("amount"))/2);
-                    userDao.save(parrain);
-                    fillol.setStatus("validé");
-                    fillolDao.saveAndFlush(fillol);
-                    fromFillolToParrainSubscription.setAmountPaid(Double.valueOf(parrain.getCredit()));
-                    subscriptionDao.saveAndFlush(fromFillolToParrainSubscription);
-                    Payment payment = new Payment();
-                    //   payment.setTransactionId(id);
-                    payment.setAmount(Double.valueOf(Integer.valueOf(requestMap.get("amount"))/10));
-                    payment.setUser(userObj);
-                    payment.setCurrency("Jour(s)");
-                    payment.setPaidAt(LocalDateTime.now());
-                    payment.setSubscription(fromFillolToParrainSubscription);
-                    // payment.set
-                    paymentDao.save(payment);
-                }
-
-
-                Subscription subscription = new Subscription();
-                subscription = subscriptionDao.findByUser_id(userObj.getUser_id());
-                log.info("Inside subscription   {}",subscription);
-                if(subscription != null) {
-                    subscription.setAmountPaid(Double.valueOf(userObj.getCredit()));
-                    subscription.setUser(userObj);
-                    subscription.setPaymentMethod("Stripe");
-                    subscription.setCreatedAt(LocalDateTime.now());
-                    //   subscription.setTransactionId(id);
-                    subscriptionDao.save(subscription);
-
-                    Payment payment = new Payment();
-                    //    payment.setTransactionId(id);
-                    payment.setAmount(Double.valueOf(Integer.valueOf(requestMap.get("amount"))));
-                    payment.setUser(userObj);
-                    payment.setCurrency("Eur");
-                    payment.setPaidAt(LocalDateTime.now());
-                    payment.setSubscription(subscription);
-                    // payment.set
-                    paymentDao.save(payment);
-                    log.info("Inside creditAccount  updated user {}",userObj);
-                    return QuarteSureUtils.getResponseEntity("account Credited Successfully.",HttpStatus.OK);
-
-                } else {
-                    subscription = new Subscription();
-                    subscription.setAmountPaid(Double.valueOf(userObj.getCredit()));
-                    subscription.setUser(userObj);
-                    subscription.setPaymentMethod("Stripe");
-                    subscription.setCreatedAt(LocalDateTime.now());
-                    //    subscription.setTransactionId(id);
-                    subscriptionDao.save(subscription);
-
-                    Payment payment = new Payment();
-                    //    payment.setTransactionId(id);
-                    payment.setAmount(Double.valueOf(Integer.valueOf(requestMap.get("amount"))));
-                    payment.setUser(userObj);
-                    payment.setCurrency("Eur");
-                    payment.setPaidAt(LocalDateTime.now());
-                    payment.setSubscription(subscription);
-                    // payment.set
-                    paymentDao.save(payment);
-                    log.info("Inside creditAccount  updated user {}",userObj);
-                    return QuarteSureUtils.getResponseEntity("account Credited Successfully.",HttpStatus.OK);
-
-                }
-
+            if (userObj == null) {
+                throw new RuntimeException("User not found with email: " + email);
             }
-            return QuarteSureUtils.getResponseEntity(QuarteSureConstants.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
-        }catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return QuarteSureUtils.getResponseEntity(QuarteSureConstants.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
 
+            log.info("Inside creditAccount - email={}, amount={}", email, amount);
+
+            // 🔥 CREDIT LOGIC
+            switch (amount) {
+                case 20:
+                    userObj.setCredit(userObj.getCredit() + 20);
+                    break;
+
+                case 50:
+                    userObj.setCredit((int) (userObj.getCredit() + (50 / 0.75)));
+                    break;
+
+                case 100:
+                    userObj.setCredit((int) (userObj.getCredit() + (100 / 0.5)));
+                    break;
+
+                case 150:
+                    userObj.setCredit((int) (userObj.getCredit() + (150 / 0.3)));
+                    break;
+
+                default:
+                    throw new IllegalArgumentException("Invalid amount: " + amount);
+            }
+
+            userDao.save(userObj);
+
+            // 🔁 FILLEUL / PARRAIN
+            Fillol fillol = fillolDao.findByEmail(email);
+
+            if (fillol != null) {
+
+                User parrain = userDao.getById(fillol.getUser().getUser_id());
+                parrain.setCredit(parrain.getCredit() + amount / 2);
+                userDao.save(parrain);
+
+                fillol.setStatus("validé");
+                fillolDao.saveAndFlush(fillol);
+
+                Subscription parrainSubscription =
+                        subscriptionDao.findByUser_id(parrain.getUser_id());
+
+                if (parrainSubscription != null) {
+                    parrainSubscription.setAmountPaid((double) parrain.getCredit());
+                    subscriptionDao.saveAndFlush(parrainSubscription);
+                }
+
+                Payment fillolPayment = new Payment();
+                fillolPayment.setAmount(amount / 10.0);
+                fillolPayment.setUser(userObj);
+                fillolPayment.setCurrency("Jour(s)");
+                fillolPayment.setPaidAt(LocalDateTime.now());
+                fillolPayment.setSubscription(parrainSubscription);
+                paymentDao.save(fillolPayment);
+            }
+
+            // 🔁 SUBSCRIPTION UTILISATEUR
+            Subscription subscription =
+                    subscriptionDao.findByUser_id(userObj.getUser_id());
+
+            if (subscription == null) {
+                subscription = new Subscription();
+                subscription.setUser(userObj);
+                subscription.setCreatedAt(LocalDateTime.now());
+                subscription.setPaymentMethod("Stripe");
+            }
+
+            subscription.setAmountPaid((double) userObj.getCredit());
+            subscriptionDao.save(subscription);
+
+            Payment payment = new Payment();
+            payment.setAmount((double) amount);
+            payment.setUser(userObj);
+            payment.setCurrency("EUR");
+            payment.setPaidAt(LocalDateTime.now());
+            payment.setSubscription(subscription);
+            paymentDao.save(payment);
+
+            log.info("✅ Account credited successfully for {}", email);
+
+        } catch (Exception ex) {
+            log.error("❌ Error while crediting account for {}", email, ex);
+            throw ex; // IMPORTANT pour rollback transaction
+        }
     }
+
+
 
     @Override
     @Transactional

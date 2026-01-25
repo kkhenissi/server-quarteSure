@@ -84,6 +84,7 @@ public class StripeController {
                                         .setQuantity(1L)
                                         .build()
                         )
+                        .setCustomerEmail(user.getUsername())
                         .putMetadata("userId", userId) // ✅ stocke l'ID utilisateur
                         .build();
 

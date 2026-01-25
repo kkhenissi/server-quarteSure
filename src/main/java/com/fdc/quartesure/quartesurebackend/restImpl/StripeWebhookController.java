@@ -38,7 +38,7 @@ public class StripeWebhookController {
             );
         } catch (SignatureVerificationException e) {
             // Signature invalide → possible fraude
-            return "";
+            return "Signature invalide → possible fraude";
         }
 
         // Identifier le type d’événement
@@ -48,10 +48,9 @@ public class StripeWebhookController {
                 if (session != null) {
                     String paymentIntentId = session.getPaymentIntent();
                     System.out.println("✅ Paiement réussi, PaymentIntent ID: " + paymentIntentId);
-
-                    userService.creditAccount(session.getMetadata());
-
-                    // Ici : sauvegarder en BDD, envoyer un email, mettre à jour une commande, etc.
+                    String email = session.getCustomerEmail();
+                    int amount = Integer.parseInt(session.getMetadata().get("credits"));
+                    userService.creditAccount(email, amount);
                 }
                 break;
 
