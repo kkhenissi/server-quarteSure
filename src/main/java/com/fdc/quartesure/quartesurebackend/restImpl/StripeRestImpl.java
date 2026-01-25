@@ -65,14 +65,14 @@ public class StripeRestImpl implements StripeRest {
 //
 //    }
 
-    @Override
-    public ResponseEntity<String> creditUserAccount(Map<String, String> requestMap) {
-
-        try {
-            return userService.creditAccount(requestMap);
-        }catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return QuarteSureUtils.getResponseEntity(QuarteSureConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+//    @Override
+//    public ResponseEntity<String> creditUserAccount(Map<String, String> requestMap) {
+//
+//        try {
+//            return userService.creditAccount(requestMap);
+//        }catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
+//        return QuarteSureUtils.getResponseEntity(QuarteSureConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
 }
