@@ -19,7 +19,7 @@ public class CorsConfig {
                 "http://localhost:4600",
                 "http://winner-front.s3-website.eu-west-3.amazonaws.com",
                 "https://winner-front.s3-website.eu-west-3.amazonaws.com",
-                "https://d2umkbr9haiwq5.cloudfront.net/",
+                "https://d2umkbr9haiwq5.cloudfront.net",
                 "http://192.168.1.15:4600"
         ));
 
