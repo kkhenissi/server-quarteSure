@@ -31,7 +31,7 @@ import java.util.Map;
 
 
 @RestController
-@RequestMapping(value = "/api")
+@RequestMapping()
 @Slf4j
 public class StripeController {
     // create a Gson object
