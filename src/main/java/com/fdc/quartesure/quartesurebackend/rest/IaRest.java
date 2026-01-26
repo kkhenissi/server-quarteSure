@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.io.IOException;
 import java.util.Map;
-@RequestMapping(path = "/iaprediction")
+@RequestMapping(path = "/api/iaprediction")
 public interface IaRest {
     @PostMapping(path = "/predict")
     public ResponseEntity<String[]> getPrediction(@RequestBody(required = true) String requestMap) throws IOException, InterruptedException;

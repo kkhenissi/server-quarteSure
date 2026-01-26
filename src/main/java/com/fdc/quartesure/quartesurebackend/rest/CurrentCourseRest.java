@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
-@RequestMapping(path = "/currentcourse")
+@RequestMapping(path = "/api/currentcourse")
 public interface CurrentCourseRest {
 
 

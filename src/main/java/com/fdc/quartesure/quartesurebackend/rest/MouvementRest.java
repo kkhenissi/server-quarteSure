@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RequestMapping(path = "/mouvement")
+@RequestMapping(path = "/api/mouvement")
 public interface MouvementRest {
 
     @GetMapping(path = "/allMouvements")

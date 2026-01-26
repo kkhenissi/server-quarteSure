@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Map;
 // @CrossOrigin(origins = "http://winner-front.s3-website.eu-west-3.amazonaws.com/")
-@RequestMapping(path = "/payByPaypal")
+@RequestMapping(path = "/api/payByPaypal")
 public interface PaypalRest {
 
     @PostMapping(path = "/payment")
