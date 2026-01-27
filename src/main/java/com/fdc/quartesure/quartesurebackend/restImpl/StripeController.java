@@ -56,7 +56,7 @@ public class StripeController {
     private long paymentchoice;
     private String authorizationHeader;
 
-    @PostMapping("/stripe/checkouta")
+    @PostMapping("/stripe/checkout")
     public Map<String, String> checkout(
             @RequestBody CheckoutRequest req,
             @AuthenticationPrincipal UserDetails user
