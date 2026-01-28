@@ -40,7 +40,8 @@ public class StripeRestImpl implements StripeRest {
 
     @Override
     public ResponseEntity<Map<String, Boolean>> getPaymentStatus(String sessionId)  {
-     //   boolean success = stripePaymentService.paymentAlreadyProcessed(sessionId);
+        // Vérifie si le paiement a été traité
+        boolean success = userService.isPaymentProcessed(sessionId);
         return ResponseEntity.ok(Map.of("success", true));
     }
 // //   @Override
