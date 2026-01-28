@@ -9,28 +9,31 @@ import java.util.Map;
 
 public interface UserService {
 
+    // Authentification et création de compte
     ResponseEntity<String> signup(Map<String, String> requestMap);
-
     ResponseEntity<String> login(Map<String, String> requestMap);
 
+    // Gestion des utilisateurs
     ResponseEntity<List<UserWrapper>> getAllUser();
-
     ResponseEntity<String> update(Map<String, String> requestMap);
-
     ResponseEntity<String> updateSelectedOptions(String id, String request);
-
     ResponseEntity<String> activateAccount(String token);
-
     ResponseEntity<String> checkToken();
 
+    // Changement de mot de passe
     void changePassword(ChangePasswordRequest request);
 
-    // ResponseEntity<String> creditAccount(Map<String, String> requestMap);
+    // Gestion des crédits après paiement Stripe avec idempotence
+    void creditAccount(String email, int credits, String paymentIntentId);
 
-    public void creditAccount(String email, int credits);
+    // Idempotence : vérifier si le paiement a déjà été traité
+    boolean isPaymentProcessed(String paymentIntentId);
 
     // ===================== FORGOT PASSWORD =====================
     ResponseEntity<String> forgotPassword(String email);
-
     ResponseEntity<String> resetPassword(String token, String newPassword);
+
+    void processStripePayment(String email, int credits, String paymentIntentId);
+    void markPaymentProcessed(String email, int credits, String paymentIntentId);
+
 }

@@ -24,6 +24,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import java.util.concurrent.ConcurrentHashMap;
+
 
 import javax.transaction.Transactional;
 import java.security.SecureRandom;
@@ -41,15 +43,19 @@ public class UserServiceImpl implements UserService {
     @Autowired private PaymentDao paymentDao;
     @Autowired private TokenDao tokenDao;
 
+
     @Autowired private PasswordEncoder passwordEncoder;
     @Autowired private AuthenticationManager authenticationManager;
     @Autowired private CustomerUsersDetailsService customerUsersDetailsService;
     @Autowired private JwtUtil jwtUtil;
     @Autowired private EmailUtils emailUtils;
     @Autowired private EmailService emailService;
+    @Autowired
+    private ProcessedPaymentDao processedPaymentDao;
 
     @Value("${spring.application.mailing.frontend.activation-url}")
     private String activationUrl;
+    private final ConcurrentHashMap<String, Boolean> processedPayments = new ConcurrentHashMap<>();
 
     /* ======================================================
        🔐 MÉTHODES UTILITAIRES SÉCURITÉ (PROPRE)
@@ -429,7 +435,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void creditAccount(String email, int amount) {
+    public void creditAccount(String email, int amount,String paymentIntentId) {
+        if (isPaymentProcessed(paymentIntentId)) {
+            log.info("⚠️ Paiement déjà traité : {}", paymentIntentId);
+            return;
+        }
 
         try {
             User userObj = userDao.findByEmail(email);
@@ -523,7 +533,39 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    @Transactional
+    public void processStripePayment(String email, int credits, String paymentIntentId) {
 
+        if (isPaymentProcessed(paymentIntentId)) {
+            log.info("⏭️ Paiement Stripe déjà traité : {}", paymentIntentId);
+            return;
+        }
+
+        creditAccount(email, credits, paymentIntentId);
+        markPaymentProcessed(email, credits, paymentIntentId);
+
+        log.info("✅ Paiement Stripe traité définitivement : {}", paymentIntentId);
+    }
+
+    @Override
+    public void markPaymentProcessed(String email, int credits, String paymentIntentId) {
+
+        ProcessedPayment payment = ProcessedPayment.builder()
+                .paymentIntentId(paymentIntentId)
+                .email(email)
+                .credits(credits)
+                .processedAt(LocalDateTime.now())
+                .build();
+
+        processedPaymentDao.save(payment);
+    }
+
+
+    @Override
+    public boolean isPaymentProcessed(String paymentIntentId) {
+        return processedPaymentDao.existsByPaymentIntentId(paymentIntentId);
+    }
 
     @Override
     @Transactional
@@ -633,7 +675,4 @@ public class UserServiceImpl implements UserService {
                 HttpStatus.OK
         );
     }
-
-
-
 }
