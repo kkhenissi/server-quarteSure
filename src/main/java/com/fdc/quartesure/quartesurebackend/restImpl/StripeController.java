@@ -76,7 +76,7 @@ public class StripeController {
         SessionCreateParams params =
                 SessionCreateParams.builder()
                         .setMode(SessionCreateParams.Mode.PAYMENT)
-                        .setSuccessUrl("https://d2umkbr9haiwq5.cloudfront.net/#/success")
+                        .setSuccessUrl("https://d2umkbr9haiwq5.cloudfront.net/#/success?session_id={CHECKOUT_SESSION_ID}")
                         .setCancelUrl("https://d2umkbr9haiwq5.cloudfront.net/#/cancel")
                         .addLineItem(
                                 SessionCreateParams.LineItem.builder()
