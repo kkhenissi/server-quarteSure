@@ -34,6 +34,6 @@ public interface UserService {
     ResponseEntity<String> resetPassword(String token, String newPassword);
 
     void processStripePayment(String email, int credits, String paymentIntentId);
-    void markPaymentProcessed(String email, int credits, String paymentIntentId);
+    void markPaymentProcessed(String paymentIntentId);
 
 }

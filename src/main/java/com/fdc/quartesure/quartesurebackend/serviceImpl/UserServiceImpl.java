@@ -543,18 +543,16 @@ public class UserServiceImpl implements UserService {
         }
 
         creditAccount(email, credits, paymentIntentId);
-        markPaymentProcessed(email, credits, paymentIntentId);
+        markPaymentProcessed(paymentIntentId);
 
         log.info("✅ Paiement Stripe traité définitivement : {}", paymentIntentId);
     }
 
-    @Override
-    public void markPaymentProcessed(String email, int credits, String paymentIntentId) {
 
+    @Override
+    public void markPaymentProcessed(String paymentIntentId) {
         ProcessedPayment payment = ProcessedPayment.builder()
                 .paymentIntentId(paymentIntentId)
-                .email(email)
-                .credits(credits)
                 .processedAt(LocalDateTime.now())
                 .build();
 

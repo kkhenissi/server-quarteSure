@@ -9,10 +9,10 @@ import com.stripe.net.Webhook;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/stripe")
@@ -25,22 +25,27 @@ public class StripeWebhookController {
     @Autowired
     private UserService userService;
 
+    /**
+     * 🔔 Webhook Stripe
+     */
     @PostMapping("/webhook")
-    public String handleStripeEvent(HttpServletRequest request, @RequestBody String payload,
-                                    @RequestHeader("Stripe-Signature") String sigHeader) throws IOException {
+    public ResponseEntity<String> handleStripeEvent(
+            @RequestBody String payload,
+            @RequestHeader("Stripe-Signature") String sigHeader
+    ) {
         Event event;
 
         try {
-            // Vérification de la signature Stripe
             event = Webhook.constructEvent(payload, sigHeader, endpointSecret);
         } catch (SignatureVerificationException e) {
             log.error("⚠️ Signature Stripe invalide", e);
-            return "Signature invalide → possible fraude";
+            return ResponseEntity.badRequest().body("Invalid signature");
         }
 
-        log.info("🔔 Stripe webhook reçu : event={}", event.getType());
+        log.info("🔔 Stripe webhook reçu : {}", event.getType());
 
         switch (event.getType()) {
+
             case "checkout.session.completed":
                 Session session = (Session) event.getDataObjectDeserializer()
                         .getObject().orElse(null);
@@ -51,40 +56,57 @@ public class StripeWebhookController {
                 }
 
                 String paymentIntentId = session.getPaymentIntent();
+                String sessionId = session.getId();
                 String email = session.getCustomerEmail();
                 String creditsStr = session.getMetadata() != null
                         ? session.getMetadata().get("credits")
                         : null;
 
-                if (paymentIntentId == null || email == null || creditsStr == null) {
-                    log.warn("⚠️ Données Stripe incomplètes (paymentIntent={}, email={}, credits={})",
-                            paymentIntentId, email, creditsStr);
+                int credits = creditsStr != null ? Integer.parseInt(creditsStr) : 0;
+
+                if (email == null || credits <= 0) {
+                    log.warn("⚠️ Données Stripe invalides : email={}, credits={}", email, creditsStr);
                     break;
                 }
 
-                int credits = Integer.parseInt(creditsStr);
+                // ✅ Idempotence PROD
+                if (!userService.isPaymentProcessed(paymentIntentId)) {
+                    userService.creditAccount(email, credits, paymentIntentId);
 
-                try {
-                    userService.processStripePayment(email, credits, paymentIntentId);
-                    log.info("✅ Paiement Stripe traité avec succès : {}", paymentIntentId);
-                } catch (Exception ex) {
-                    log.error("❌ Erreur traitement paiement Stripe {}", paymentIntentId, ex);
-                    throw ex; // Stripe réessaiera → OK
+                    // Marquer paiement traité (on marque les 2 IDs)
+                    userService.markPaymentProcessed(paymentIntentId);
+                    userService.markPaymentProcessed(sessionId);
+
+                    log.info("✅ Paiement traité : email={}, credits={}, PI={}",
+                            email, credits, paymentIntentId);
+                } else {
+                    log.info("ℹ️ Paiement déjà traité : {}", paymentIntentId);
                 }
                 break;
 
-
             case "payment_intent.succeeded":
-                PaymentIntent intent = (PaymentIntent) event.getDataObjectDeserializer().getObject().orElse(null);
+                PaymentIntent intent = (PaymentIntent) event.getDataObjectDeserializer()
+                        .getObject().orElse(null);
                 if (intent != null) {
-                    log.info("✅ PaymentIntent direct réussi : {}", intent.getId());
+                    log.info("✅ PaymentIntent succeeded : {}", intent.getId());
                 }
                 break;
 
             default:
-                log.info("ℹ️ Event Stripe non géré : {}", event.getType());
+                log.info("ℹ️ Event Stripe ignoré : {}", event.getType());
         }
 
-        return "";
+        return ResponseEntity.ok("ok");
+    }
+
+    /**
+     * 🔎 Vérification du paiement côté FRONT
+     */
+    @GetMapping("/payment/status/{sessionId}")
+    public ResponseEntity<Map<String, Boolean>> getPaymentStatus(
+            @PathVariable String sessionId
+    ) {
+        boolean success = userService.isPaymentProcessed(sessionId);
+        return ResponseEntity.ok(Map.of("success", success));
     }
 }
