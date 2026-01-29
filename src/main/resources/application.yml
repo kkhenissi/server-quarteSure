@@ -22,4 +22,4 @@
             key: sk_test_51ROgY6FvDONqspWdYGdIbde679lt3XlW7O9gODkYtg9JEdsTQRLZxz0H7hE1NaGMDEZiSnSJuGb5M1l576HMKXlR00jkdFoisl
            # key: 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
         webhook:
-            secret: whsec_hJaJ3Y6TvmxRhO4xx4SGmkPH09BAfSPx          # secret de ton webhook (Stripe Dashboard)
+            secret: whsec_kgQXirsV9e3qxkrsKZ1hEk05I4bqUIlv          # secret de ton webhook (Stripe Dashboard)
