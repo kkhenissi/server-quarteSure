@@ -23,6 +23,10 @@ public class CustomerUsersDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.info("Inside loadUserByUsername{} ",username.toString());
         userDetail = userDao.findByEmail(username);
+        if (userDetail == null) {
+            // Toujours lancer une exception si l'utilisateur n'existe pas
+            throw new UsernameNotFoundException("Utilisateur non trouvé : " + username);
+        }
         log.info("userDetail==>{} ",userDetail.toString());
         if(!Objects.isNull(userDetail))
 
