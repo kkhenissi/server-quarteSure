@@ -98,15 +98,4 @@ public class StripeWebhookController {
 
         return ResponseEntity.ok("ok");
     }
-
-    /**
-     * 🔎 Vérification du paiement côté FRONT
-     */
-    @GetMapping("/payment/status/{sessionId}")
-    public ResponseEntity<Map<String, Boolean>> getPaymentStatus(
-            @PathVariable String sessionId
-    ) {
-        boolean success = userService.isPaymentProcessed(sessionId);
-        return ResponseEntity.ok(Map.of("success", success));
-    }
 }

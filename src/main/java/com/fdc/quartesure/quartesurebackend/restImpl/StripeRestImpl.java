@@ -13,6 +13,8 @@ import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,11 +40,22 @@ public class StripeRestImpl implements StripeRest {
 
     private long paymentchoice;
 
-    @Override
-    public ResponseEntity<Map<String, Boolean>> getPaymentStatus(String sessionId)  {
-        // Vérifie si le paiement a été traité
+//    @Override
+//    public ResponseEntity<Map<String, Boolean>> getPaymentStatus(String sessionId)  {
+//        // Vérifie si le paiement a été traité
+//        boolean success = userService.isPaymentProcessed(sessionId);
+//        return ResponseEntity.ok(Map.of("success", true));
+//    }
+
+    /**
+     * 🔎 Vérification du paiement côté FRONT
+     */
+    @GetMapping("/payment/status/{sessionId}")
+    public ResponseEntity<Map<String, Boolean>> getPaymentStatus(
+            @PathVariable String sessionId
+    ) {
         boolean success = userService.isPaymentProcessed(sessionId);
-        return ResponseEntity.ok(Map.of("success", true));
+        return ResponseEntity.ok(Map.of("success", success));
     }
 // //   @Override
 //    public ResponseEntity<String> creditUserAccount(Map<String, String> requestMap) {
