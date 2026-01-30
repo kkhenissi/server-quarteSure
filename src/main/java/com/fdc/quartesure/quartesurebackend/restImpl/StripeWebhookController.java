@@ -65,15 +65,15 @@ public class StripeWebhookController {
                 Map<String, String> metadata = paymentIntent.getMetadata();
 
                 int credits = 0;
-             //   if (metadata != null && metadata.get("credits") != null) {
+                if (session != null && session.getAmountSubtotal() != null) {
                     try {
-                        credits = Math.toIntExact(session.getAmountSubtotal());
+                        credits = Math.toIntExact(session.getAmountSubtotal()/100);
                         log.info("⚠️ Crédits dans metadata: {}", metadata.get("credits"));
                                 //Integer.parseInt(metadata.get("credits"));
                     } catch (NumberFormatException e) {
                         log.warn("⚠️ Crédits invalides dans metadata: {}", metadata.get("credits"));
                     }
-             //   }
+                }
 
                 if (email == null || credits <= 0 || paymentIntentId == null) {
                     log.warn("⚠️ Données Stripe invalides : email={}, credits={}, PI={}", email, credits, paymentIntentId);
