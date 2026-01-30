@@ -68,6 +68,7 @@ public class StripeWebhookController {
                 if (metadata != null && metadata.get("credits") != null) {
                     try {
                         credits = Math.toIntExact(session.getAmountSubtotal());
+                        log.info("⚠️ Crédits dans metadata: {}", metadata.get("credits"));
                                 //Integer.parseInt(metadata.get("credits"));
                     } catch (NumberFormatException e) {
                         log.warn("⚠️ Crédits invalides dans metadata: {}", metadata.get("credits"));
