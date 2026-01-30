@@ -47,6 +47,12 @@ public class StripeWebhookController {
         switch (event.getType()) {
 
             case "checkout.session.completed":
+
+                event.getDataObjectDeserializer().getObject().ifPresentOrElse(obj -> {
+                    log.info("Objet désérialisé : {}", obj);
+                }, () -> {
+                    log.warn("Impossible de désérialiser l'objet Stripe, raw: {}", event.getData().getObject());
+                });
                 Session session = (Session) event.getDataObjectDeserializer()
                         .getObject().orElse(null);
 
