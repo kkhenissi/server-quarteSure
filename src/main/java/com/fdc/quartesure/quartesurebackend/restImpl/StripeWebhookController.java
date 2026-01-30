@@ -2,6 +2,7 @@ package com.fdc.quartesure.quartesurebackend.restImpl;
 
 import com.fdc.quartesure.quartesurebackend.service.UserService;
 import com.stripe.exception.SignatureVerificationException;
+import com.stripe.exception.StripeException;
 import com.stripe.model.Event;
 import com.stripe.model.PaymentIntent;
 import com.stripe.model.StripeObject;
@@ -33,7 +34,7 @@ public class StripeWebhookController {
     public ResponseEntity<String> handleStripeEvent(
             @RequestBody String payload,
             @RequestHeader("Stripe-Signature") String sigHeader
-    ) {
+    ) throws StripeException {
         Event event;
 
         try {
@@ -48,21 +49,21 @@ public class StripeWebhookController {
         switch (event.getType()) {
 
             case "checkout.session.completed":
-                // Récupérer le raw object
-                StripeObject sessionData = event.getData().getObject();
-                // On cast en Session pour pouvoir utiliser les getters
-                Session session = (Session) sessionData;
-                // Récupérer les attributs via les getters
-                String paymentIntentId = session.getPaymentIntent();   // identifiant du PaymentIntent
-                String sessionId = session.getId();                   // identifiant de la session
+                Session session = (Session) event.getData().getObject();
+
+                String paymentIntentId = session.getPaymentIntent();
+                String sessionId = session.getId();
                 String email = session.getCustomerEmail();
-                if (sessionData == null) {
+
+                if (session == null) {
                     log.warn("⚠️ Session Stripe null ou payload incomplet");
                     break;
                 }
 
-                // Metadata pour les crédits
-                Map<String, String> metadata = (Map<String, String>) session.getMetadata();
+                // 🔥 RÉCUPÉRATION DES METADATA DEPUIS LE PAYMENT INTENT
+                PaymentIntent paymentIntent = PaymentIntent.retrieve(paymentIntentId);
+                Map<String, String> metadata = paymentIntent.getMetadata();
+
                 int credits = 0;
                 if (metadata != null && metadata.get("credits") != null) {
                     try {
@@ -77,7 +78,6 @@ public class StripeWebhookController {
                     break;
                 }
 
-                // ✅ Idempotence PROD
                 if (!userService.isPaymentProcessed(paymentIntentId)) {
                     userService.creditAccount(email, credits, paymentIntentId);
                     userService.markPaymentProcessed(paymentIntentId);
