@@ -85,7 +85,14 @@ public class StripeController {
                                         .build()
                         )
                         .setCustomerEmail(user.getUsername())
-                        .putMetadata("userId", userId) // ✅ stocke l'ID utilisateur
+
+                        // -----------------------------------------------
+                        //  j' ENVOIES LES CRÉDITS À STRIPE !!!
+                        // -----------------------------------------------
+                        .putMetadata("userId", userId)
+                        .putMetadata("credits", amount.toString())
+                        // -----------------------------------------------
+
                         .build();
 
         Session session = Session.create(params);
