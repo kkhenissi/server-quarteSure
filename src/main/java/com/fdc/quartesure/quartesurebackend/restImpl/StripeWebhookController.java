@@ -4,6 +4,7 @@ import com.fdc.quartesure.quartesurebackend.service.UserService;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.model.Event;
 import com.stripe.model.PaymentIntent;
+import com.stripe.model.StripeObject;
 import com.stripe.model.checkout.Session;
 import com.stripe.net.Webhook;
 import lombok.extern.slf4j.Slf4j;
@@ -48,18 +49,20 @@ public class StripeWebhookController {
 
             case "checkout.session.completed":
                 // Récupérer le raw object
-                Map<String, Object> sessionData = (Map<String, Object>) event.getData().getObject();
+                StripeObject sessionData = event.getData().getObject();
+                // On cast en Session pour pouvoir utiliser les getters
+                Session session = (Session) sessionData;
+                // Récupérer les attributs via les getters
+                String paymentIntentId = session.getPaymentIntent();   // identifiant du PaymentIntent
+                String sessionId = session.getId();                   // identifiant de la session
+                String email = session.getCustomerEmail();
                 if (sessionData == null) {
                     log.warn("⚠️ Session Stripe null ou payload incomplet");
                     break;
                 }
 
-                String paymentIntentId = (String) sessionData.get("payment_intent");
-                String sessionId = (String) sessionData.get("id");
-                String email = (String) sessionData.get("customer_email");
-
                 // Metadata pour les crédits
-                Map<String, String> metadata = (Map<String, String>) sessionData.get("metadata");
+                Map<String, String> metadata = (Map<String, String>) session.getMetadata();
                 int credits = 0;
                 if (metadata != null && metadata.get("credits") != null) {
                     try {
