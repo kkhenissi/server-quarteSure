@@ -25,15 +25,22 @@ public class JwtFilter extends OncePerRequestFilter {
     @Autowired
     private CustomerUsersDetailsService userDetailsService;
 
-
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain
     ) throws ServletException, IOException {
+
         String path = request.getServletPath();
 
+        // 🚨 AJOUT ESSENTIEL : exclure les webhooks Stripe
+        if (path.equals("/stripe/webhook")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        // 🔓 Laisse passer tes routes publiques actuelles (inchangées)
         if (path.equals("/user/login")
                 || path.equals("/user/signup")
                 || path.startsWith("/swagger-ui")
@@ -42,23 +49,22 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
+        // 🔐 Vérification du JWT
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
-
             String token = authHeader.substring(7);
 
             try {
                 String username = jwtUtil.extractUserName(token);
 
-                if (username != null &&
-                        SecurityContextHolder.getContext().getAuthentication() == null) {
+                if (username != null
+                        && SecurityContextHolder.getContext().getAuthentication() == null) {
 
                     UserDetails userDetails =
                             userDetailsService.loadUserByUsername(username);
 
                     if (jwtUtil.validateToken(token, userDetails)) {
-
                         UsernamePasswordAuthenticationToken authToken =
                                 new UsernamePasswordAuthenticationToken(
                                         userDetails,
@@ -73,13 +79,12 @@ public class JwtFilter extends OncePerRequestFilter {
                         SecurityContextHolder.getContext().setAuthentication(authToken);
                     }
                 }
-            } catch (Exception e) {
-                // ⚠️ NE JAMAIS bloquer ici
-                // JWT invalide = utilisateur non authentifié
+            } catch (Exception ignored) {
+                // Ne jamais bloquer un JWT invalide
             }
         }
 
-        // 🔥 TOUJOURS continuer la chaîne
+        // ➜ Toujours continuer
         filterChain.doFilter(request, response);
     }
 }
