@@ -47,55 +47,50 @@ public class StripeWebhookController {
         switch (event.getType()) {
 
             case "checkout.session.completed":
-
-                event.getDataObjectDeserializer().getObject().ifPresentOrElse(obj -> {
-                    log.info("Objet désérialisé : {}", obj);
-                }, () -> {
-                    log.warn("Impossible de désérialiser l'objet Stripe, raw: {}", event.getData().getObject());
-                });
-                Session session = (Session) event.getDataObjectDeserializer()
-                        .getObject().orElse(null);
-
-                if (session == null) {
-                    log.warn("⚠️ Session Stripe null");
+                // Récupérer le raw object
+                Map<String, Object> sessionData = (Map<String, Object>) event.getData().getObject();
+                if (sessionData == null) {
+                    log.warn("⚠️ Session Stripe null ou payload incomplet");
                     break;
                 }
 
-                String paymentIntentId = session.getPaymentIntent();
-                String sessionId = session.getId();
-                String email = session.getCustomerEmail();
-                String creditsStr = session.getMetadata() != null
-                        ? session.getMetadata().get("credits")
-                        : null;
+                String paymentIntentId = (String) sessionData.get("payment_intent");
+                String sessionId = (String) sessionData.get("id");
+                String email = (String) sessionData.get("customer_email");
 
-                int credits = creditsStr != null ? Integer.parseInt(creditsStr) : 0;
+                // Metadata pour les crédits
+                Map<String, String> metadata = (Map<String, String>) sessionData.get("metadata");
+                int credits = 0;
+                if (metadata != null && metadata.get("credits") != null) {
+                    try {
+                        credits = Integer.parseInt(metadata.get("credits"));
+                    } catch (NumberFormatException e) {
+                        log.warn("⚠️ Crédits invalides dans metadata: {}", metadata.get("credits"));
+                    }
+                }
 
-                if (email == null || credits <= 0) {
-                    log.warn("⚠️ Données Stripe invalides : email={}, credits={}", email, creditsStr);
+                if (email == null || credits <= 0 || paymentIntentId == null) {
+                    log.warn("⚠️ Données Stripe invalides : email={}, credits={}, PI={}", email, credits, paymentIntentId);
                     break;
                 }
 
                 // ✅ Idempotence PROD
                 if (!userService.isPaymentProcessed(paymentIntentId)) {
                     userService.creditAccount(email, credits, paymentIntentId);
-
-                    // Marquer paiement traité (on marque les 2 IDs)
                     userService.markPaymentProcessed(paymentIntentId);
                     userService.markPaymentProcessed(sessionId);
 
-                    log.info("✅ Paiement traité : email={}, credits={}, PI={}",
-                            email, credits, paymentIntentId);
+                    log.info("✅ Paiement traité : email={}, credits={}, PI={}", email, credits, paymentIntentId);
                 } else {
                     log.info("ℹ️ Paiement déjà traité : {}", paymentIntentId);
                 }
+
                 break;
 
             case "payment_intent.succeeded":
-                PaymentIntent intent = (PaymentIntent) event.getDataObjectDeserializer()
-                        .getObject().orElse(null);
-                if (intent != null) {
-                    log.info("✅ PaymentIntent succeeded : {}", intent.getId());
-                }
+                Map<String, Object> intentData = (Map<String, Object>) event.getData().getObject();
+                String piId = intentData != null ? (String) intentData.get("id") : null;
+                log.info("✅ PaymentIntent succeeded : {}", piId);
                 break;
 
             default:
