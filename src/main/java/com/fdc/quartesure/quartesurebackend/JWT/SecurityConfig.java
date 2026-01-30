@@ -35,13 +35,19 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 new AntPathRequestMatcher("/api/user/login"),
+                                new AntPathRequestMatcher("/user/login"),
                                 new AntPathRequestMatcher("/api/user/signup"),
+                                new AntPathRequestMatcher("/user/signup"),
                                 new AntPathRequestMatcher("/api/user/forgot-password"),
+                                new AntPathRequestMatcher("/user/forgot-password"),
                                 new AntPathRequestMatcher("/api/user/reset-password"),
+                                new AntPathRequestMatcher("/user/reset-password"),
                                 new AntPathRequestMatcher("/api/user/activate"),
+                                new AntPathRequestMatcher("/user/activate"),
                                 new AntPathRequestMatcher("/swagger-ui/**"),
                                 new AntPathRequestMatcher("/v3/api-docs/**"),
-                                new AntPathRequestMatcher("/api/stripe/**")
+                                new AntPathRequestMatcher("/api/stripe/**"),
+                                new AntPathRequestMatcher("/stripe/**")
                         ).permitAll()
                          .anyRequest().authenticated()
                 );
