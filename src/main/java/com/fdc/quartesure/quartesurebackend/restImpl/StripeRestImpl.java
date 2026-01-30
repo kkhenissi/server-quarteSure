@@ -50,7 +50,7 @@ public class StripeRestImpl implements StripeRest {
     /**
      * 🔎 Vérification du paiement côté FRONT
      */
-    @GetMapping("/payment/status/{sessionId}")
+    @GetMapping("/stripe/payment/status/{sessionId}")
     public ResponseEntity<Map<String, Boolean>> getPaymentStatus(
             @PathVariable String sessionId
     ) {
