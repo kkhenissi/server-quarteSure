@@ -452,15 +452,15 @@ public class UserServiceImpl implements UserService {
 
             // 🔥 CREDIT LOGIC
             switch (amount) {
-                case 20:
+                case 10:
                     userObj.setCredit(userObj.getCredit() + 20);
                     break;
 
-                case 50:
+                case 20:
                     userObj.setCredit((int) (userObj.getCredit() + (50 / 0.75)));
                     break;
 
-                case 100:
+                case 30:
                     userObj.setCredit((int) (userObj.getCredit() + (100 / 0.5)));
                     break;
 
