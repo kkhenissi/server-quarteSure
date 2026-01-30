@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Map;
 
-@RequestMapping(path = "/api/currentprogramme")
+@RequestMapping(path = "/currentprogramme")
 public interface CurrentProgrammeRest {
 
     @PostMapping(path = "/today")

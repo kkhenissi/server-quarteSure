@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 @PreAuthorize("hasRole('ADMIN')")
-@RequestMapping("/api/traffic/stats")
+@RequestMapping("/traffic/stats")
 public interface TrafficController {
     @PostMapping("/redirect")
     ResponseEntity redirect(@RequestBody Map<String, String> requestMap, Map<String, String> response) throws IOException;

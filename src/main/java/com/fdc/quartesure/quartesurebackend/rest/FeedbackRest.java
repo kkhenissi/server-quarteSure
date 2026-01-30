@@ -7,7 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@RequestMapping("/api/feedback")
+@RequestMapping("/feedback")
 public interface FeedbackRest {
     @PostMapping(consumes = "multipart/form-data")
     ResponseEntity<Feedback> createFeedback(String type, String description, MultipartFile screenshot);
