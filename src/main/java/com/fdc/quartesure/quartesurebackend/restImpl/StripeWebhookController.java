@@ -88,9 +88,13 @@ public class StripeWebhookController {
                 break;
 
             case "payment_intent.succeeded":
-                Map<String, Object> intentData = (Map<String, Object>) event.getData().getObject();
-                String piId = intentData != null ? (String) intentData.get("id") : null;
-                log.info("✅ PaymentIntent succeeded : {}", piId);
+                event.getDataObjectDeserializer().getObject().ifPresentOrElse(obj -> {
+                    PaymentIntent intent = (PaymentIntent) obj;
+                    String succeededPaymentIntentId = intent.getId(); // <- nouveau nom
+                    log.info("✅ PaymentIntent succeeded : {}", succeededPaymentIntentId);
+                }, () -> {
+                    log.warn("Impossible de désérialiser le PaymentIntent, raw: {}", event.getData().getObject());
+                });
                 break;
 
             default:
