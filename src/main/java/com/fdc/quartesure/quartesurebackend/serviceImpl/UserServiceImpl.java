@@ -583,6 +583,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         user.setStatus("true");
+        user.setCredit(15);
         userDao.save(user);
 
         savedToken.setValidatedAt(LocalDateTime.now());
