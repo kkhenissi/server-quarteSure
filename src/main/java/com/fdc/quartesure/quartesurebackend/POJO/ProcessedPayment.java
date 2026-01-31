@@ -22,13 +22,6 @@ public class ProcessedPayment {
 
     @Column(name = "payment_intent_id", nullable = false, unique = true)
     private String paymentIntentId;
-
-    @Column(nullable = false)
-    private String email;
-
-    @Column(nullable = false)
-    private int credits;
-
     @Column(nullable = false)
     private LocalDateTime processedAt;
 }
