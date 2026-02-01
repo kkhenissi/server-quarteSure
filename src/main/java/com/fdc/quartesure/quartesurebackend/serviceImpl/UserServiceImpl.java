@@ -55,6 +55,9 @@ public class UserServiceImpl implements UserService {
 
     @Value("${spring.application.mailing.frontend.activation-url}")
     private String activationUrl;
+
+    @Value("${spring.application.mailing.frontend.reset-link-url}")
+    private String resetLinkUrl;
     private final ConcurrentHashMap<String, Boolean> processedPayments = new ConcurrentHashMap<>();
 
     /* ======================================================
@@ -196,11 +199,7 @@ public class UserServiceImpl implements UserService {
     private String generateAndSaveActivationToken(User user) {
         // generate a token
         String generetedToken = generateActivationCode(5);
-        UUID myuuid = UUID.randomUUID();
-        long highbits = myuuid.getMostSignificantBits();
-        long lowbits = myuuid.getLeastSignificantBits();
         var token = TokenTable.builder()
-                .id((int) (highbits+lowbits))
                 .token(generetedToken)
                 .createdAt(LocalDateTime.now())
                 .expiresAt(LocalDateTime.now().plusMinutes(15))
@@ -278,7 +277,10 @@ public class UserServiceImpl implements UserService {
 
     private boolean validateSignUpMap(Map<String, String> requestMap) {
         return requestMap.containsKey("email")
-                && requestMap.containsKey("password");
+                && requestMap.containsKey("password")
+                && requestMap.containsKey("phoneNumber")
+                && requestMap.containsKey("firstName")
+                && requestMap.containsKey("lastName");
     }
 
     private User getUserFromMap(Map<String, String> requestMap) {
@@ -293,7 +295,7 @@ public class UserServiceImpl implements UserService {
         user.setEmail(requestMap.get("email"));
         user.setPassword(hashedPassword); // passwordEncode.encode();
         user.setStatus("false");
-        user.setCredit(0);
+        user.setCredit(15);
         user.setSelectedOptions(requestMap.get("selectedOptions"));
         user.setLastConnexion(Instant.now().toString().substring(5,10));
         user.setSubscribeDate(Instant.now().toString().substring(0,10));
@@ -464,9 +466,9 @@ public class UserServiceImpl implements UserService {
                     userObj.setCredit((int) (userObj.getCredit() + (30 / 0.5)));
                     break;
 
-                case 150:
-                    userObj.setCredit((int) (userObj.getCredit() + (150 / 0.3)));
-                    break;
+//                case 150:
+//                    userObj.setCredit((int) (userObj.getCredit() + (150 / 0.3)));
+//                    break;
 
                 default:
                     throw new IllegalArgumentException("Invalid amount: " + amount);
@@ -583,7 +585,6 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         user.setStatus("true");
-        user.setCredit(15);
         userDao.save(user);
 
         savedToken.setValidatedAt(LocalDateTime.now());
@@ -631,8 +632,9 @@ public class UserServiceImpl implements UserService {
         user.setResetPasswordExpiry(LocalDateTime.now().plusMinutes(30));
         userDao.save(user);
 
-        String resetLink =
-                "http://localhost:4600/#/reset-password?token=" + token;
+        String resetLink = resetLinkUrl + token;
+          //"http://localhost:4600/#/reset-password?token="
+
 
         emailService.sendEmail(
                 user.getEmail(),
