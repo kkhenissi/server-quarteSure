@@ -631,8 +631,9 @@ public class UserServiceImpl implements UserService {
         user.setResetPasswordToken(token);
         user.setResetPasswordExpiry(LocalDateTime.now().plusMinutes(30));
         userDao.save(user);
-
-        String resetLink = resetLinkUrl+"/#/reset-password?token="+token;
+        log.info("c'est quoi ça ===, {}",resetLinkUrl);
+      //  String resetLink = resetLinkUrl+"/#/reset-password?token="+token;
+        String resetLink = "https://d2umkbr9haiwq5.cloudfront.net/#/reset-password?token="+token;
           //      "http://localhost:4600/#/reset-password?token="
          //  resetLinkUrl;
                    //+ user.getResetPasswordToken();
