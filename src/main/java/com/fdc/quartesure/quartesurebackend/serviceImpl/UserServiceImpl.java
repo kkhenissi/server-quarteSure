@@ -59,7 +59,6 @@ public class UserServiceImpl implements UserService {
     @Value("${spring.application.mailing.frontend.reset-link-url}")
     private String resetLinkUrl;
     private final ConcurrentHashMap<String, Boolean> processedPayments = new ConcurrentHashMap<>();
-    private String resetLink;
 
     /* ======================================================
        🔐 MÉTHODES UTILITAIRES SÉCURITÉ (PROPRE)
@@ -633,15 +632,15 @@ public class UserServiceImpl implements UserService {
         user.setResetPasswordExpiry(LocalDateTime.now().plusMinutes(30));
         userDao.save(user);
 
-        String resetLink = resetLinkUrl;
-          //"http://localhost:4600/#/reset-password?token="
-           
+        String resetLink =
+          //      "http://localhost:4600/#/reset-password?token="
+           resetLinkUrl + user.getResetPasswordToken();
 
         emailService.sendEmail(
                 user.getEmail(),
                 user.fullName(),
                 EmailTemplateName.RESET_PASSWORD,
-                resetLinkUrl,
+                resetLink,
                 token,
                 "Password Reset Request"
         );
