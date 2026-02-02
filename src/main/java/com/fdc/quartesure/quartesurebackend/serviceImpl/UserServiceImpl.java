@@ -632,7 +632,7 @@ public class UserServiceImpl implements UserService {
         user.setResetPasswordExpiry(LocalDateTime.now().plusMinutes(30));
         userDao.save(user);
 
-        String resetLink =
+        String resetLink = resetLinkUrl+"/#/reset-password?token="+token;
           //      "http://localhost:4600/#/reset-password?token="
            resetLinkUrl;
                    //+ user.getResetPasswordToken();
