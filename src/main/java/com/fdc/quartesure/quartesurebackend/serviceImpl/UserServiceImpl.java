@@ -634,7 +634,8 @@ public class UserServiceImpl implements UserService {
 
         String resetLink =
           //      "http://localhost:4600/#/reset-password?token="
-           resetLinkUrl + user.getResetPasswordToken();
+           resetLinkUrl;
+                   //+ user.getResetPasswordToken();
 
         emailService.sendEmail(
                 user.getEmail(),
