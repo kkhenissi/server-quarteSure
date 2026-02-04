@@ -115,40 +115,42 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<String> login(Map<String, String> requestMap) {
+        log.info("inside login {}",requestMap);
         try {
             Authentication auth = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            requestMap.get("email"),
-                            requestMap.get("password"))
-            );
+                    new UsernamePasswordAuthenticationToken(requestMap.get("email"),requestMap.get("password")));
+            log.info("inside isAuthenticated ",auth.isAuthenticated());
+            if(auth.isAuthenticated()) {
 
-            if (auth.isAuthenticated()) {
-                var userDetails = customerUsersDetailsService.getUserDetail();
+                if(customerUsersDetailsService.getUserDetail().getStatus().equalsIgnoreCase("true")) {
+                    User user = userDao.findByEmail(requestMap.get("email"));
+                    if(user.getLastConnexion().equals(Instant.now().toString().substring(0,10))) {
+                        // do noThing
+                    } else {
+                        if(user.getCredit() > 0) {
+                            user.setCredit(user.getCredit() - 1);
+                        }
+                        user.setLastConnexion(Instant.now().toString().substring(0,10));
+                        log.info("What is in user when connected ==> {}",user);
+                        userDao.save(user);
+                    }
 
-                if (!"true".equalsIgnoreCase(userDetails.getStatus())) {
-                    return new ResponseEntity<>(
-                            "{\"message\":\"Wait for admin approval\"}",
-                            HttpStatus.BAD_REQUEST);
+
+
+                    return new ResponseEntity<String>("{\"token\":\""+jwtUtil.generateTocken(
+                            customerUsersDetailsService.getUserDetail().getEmail(),
+                            customerUsersDetailsService.getUserDetail().getRole(),
+                            customerUsersDetailsService.getUserDetail().getCredit().toString(),
+                            customerUsersDetailsService.getUserDetail().getSelectedOptions().toString())+"\"}", HttpStatus.OK);
+
+                } else {
+                    return new ResponseEntity<String>("{\"message\":\""+"Wait for admin approval."+"\"}",HttpStatus.BAD_REQUEST);
                 }
-
-                String token = jwtUtil.generateTocken(
-                        userDetails.getEmail(),
-                        userDetails.getRole(),
-                        userDetails.getCredit().toString(),
-                        userDetails.getSelectedOptions().toString()
-                );
-
-                return new ResponseEntity<>(
-                        "{\"token\":\"" + token + "\"}",
-                        HttpStatus.OK);
             }
-        } catch (Exception e) {
-            log.error("Login error", e);
+        }catch (Exception ex) {
+            log.error("{}",ex);
         }
-
-        return new ResponseEntity<>(
-                "{\"message\":\"Bad Credentials\"}",
-                HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<String>("{\"message\":\""+"Bad Credentials."+"\"}",HttpStatus.BAD_REQUEST);
     }
 
     /* ======================================================
