@@ -613,7 +613,7 @@ public class UserServiceImpl implements UserService {
     }
 
     /* ======================================================
-   🔑 FORGOT PASSWORD / RESET PASSWORD
+    FORGOT PASSWORD / RESET PASSWORD
    ====================================================== */
 
     @Override
