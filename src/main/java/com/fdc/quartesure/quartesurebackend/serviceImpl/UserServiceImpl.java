@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
         return auth.getName();
     }
 
-    private boolean isAdmin() {
+    public boolean isAdmin() {
         Authentication auth = getAuth();
         if (auth == null) return false;
 

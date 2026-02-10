@@ -5,6 +5,7 @@ import com.fdc.quartesure.quartesurebackend.POJO.CurrentCourseStringFormat;
 import com.fdc.quartesure.quartesurebackend.POJO.PerformanceStringFormat;
 import com.fdc.quartesure.quartesurebackend.rest.CurrentCourseRest;
 import com.fdc.quartesure.quartesurebackend.service.CurrentCourseService;
+import com.fdc.quartesure.quartesurebackend.serviceImpl.UserServiceImpl;
 import com.fdc.quartesure.quartesurebackend.utils.QuarteSureUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +22,21 @@ public class CurrentCourseRestImpl implements CurrentCourseRest {
 
     @Autowired
     CurrentCourseService currentCourseService;
+    @Autowired
+    UserServiceImpl userService;
 
 
     @Override
     public Object getCourse(Map<String, String> requestMap) {
+
         try {
             Optional<CurrentCourseStringFormat> currentCourse = currentCourseService.getCourseFromLocalDB(requestMap);
+            boolean isAdmin = userService.isAdmin();
+            //  ADMIN → ignorer la DB et recharger depuis PMU
+            if (isAdmin) {
+                log.info(" ADMIN connecté → rechargement forcé depuis PMU");
+                return currentCourseService.getCourse(requestMap);
+            }
             if(!currentCourse.isEmpty()) {
                 System.out.println("8888888888888888888888888888888888");
                 System.out.println(requestMap);

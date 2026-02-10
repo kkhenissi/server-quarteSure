@@ -77,7 +77,6 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
                     scanner.close();
 
                     JsonObject dataObject = new JsonParser().parse((informationRetrived.toString())).getAsJsonObject();
-
                     JsonElement bruteParticipants = dataObject;
                     CurrentCourseStringFormat courseToSave = new CurrentCourseStringFormat();
                     courseToSave.setId(currentCurseStringFormatId);
@@ -85,46 +84,7 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
                     log.info("courseToSave {}", courseToSave);
                     currentCourseStringFormatDao.save(courseToSave);
                     log.info("bruteParticipants {}", bruteParticipants);
-//                    Type listType = new TypeToken<List<Participant>>() {
-//                    }.getType();
-//                    Type allureType = new TypeToken<String>() {
-//                    }.getType();
-//                    // List<InfosParticipant> jsonParticipants = (List<InfosParticipant>) bruteParticipants;
-//                    String jsonAllure = new Gson().fromJson(dataObject.get("allure"), allureType);
 
-                //    System.out.println(informationRetrived);
-//                    try {
-//                        JsonNode jsonTree = new ObjectMapper().readTree(String.valueOf(dataObject));
-//                        System.out.println("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK");
-//
-//                        CsvSchema.Builder csvSchemaBuilder = CsvSchema.builder();
-//                        System.out.println(csvSchemaBuilder);
-//                        JsonNode firstObject = jsonTree.elements().next();
-//                        csvSchemaBuilder.addColumn(String.valueOf(firstObject));
-//
-//                        firstObject.fieldNames().forEachRemaining(fieldName -> {
-//                            System.out.println("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
-//                            System.out.println(firstObject);
-//                            System.out.println("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
-//                         //   csvSchemaBuilder.addColumn(fieldName);
-//                        });
-//                        CsvSchema csvSchema = csvSchemaBuilder.build().withHeader();
-//                        CsvMapper csvMapper = new CsvMapper();
-////                        csvMapper.writerFor(JsonNode.class)
-////                                .with(csvSchema)
-////                                .writeValue(new File("src/main/resources/lmsget.csv"), jsonTree);
-//
-//                    } catch (Exception ex) {
-//                        throw ex;
-//                    }
-
-
-
-//                    System.out.println(jsonParticipants);
-//                    CurrentCourse translateCurrentCourse = new CurrentCourse();
-//
-//                    translateCurrentCourse.setParticipants((ArrayList<Participant>) jsonParticipants);
-//                    translateCurrentCourse.setAllure(jsonAllure);
                     Gson gson = new Gson();
 
 
@@ -159,7 +119,7 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
                 String aujourdhui = new SimpleDateFormat("ddMMyyyy").format(new Date());
                 // "07/05/2024"
                 String currentUrl="";
-                currentUrl = "https://online.turfinfo.api.pmu.fr/rest/client/61/programme/"+requestMap.get("date")+"/"+requestMap.get("R")+"/"+requestMap.get("C")+"/performances-detaillees/pretty";
+                currentUrl = "https://online.turfinfo.api.pmu.fr/rest/client/61/programme/"+requestMap.get("date")+"/"+requestMap.get("R")+"/"+requestMap.get("C")+" ";
                 URL url = new URL(currentUrl);
                 log.info("CurrentUrl {}",currentUrl);
                 String performanceStringFrmatId = requestMap.get("date")+"-"+requestMap.get("R")+"-"+requestMap.get("C");
