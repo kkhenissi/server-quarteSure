@@ -76,6 +76,7 @@ public class UserServiceImpl implements UserService {
 
     public boolean isAdmin() {
         Authentication auth = getAuth();
+        auth.getAuthorities().forEach(a -> System.out.println("ROLE = " + a.getAuthority()));
         if (auth == null) return false;
 
         return auth.getAuthorities().stream()
