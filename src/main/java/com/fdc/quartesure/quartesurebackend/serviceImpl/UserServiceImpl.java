@@ -79,9 +79,8 @@ public class UserServiceImpl implements UserService {
         if (auth == null) return false;
 
         return auth.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("admin"));
+                .anyMatch(a -> a.getAuthority().toUpperCase().contains("ADMIN"));
     }
-
     /* ======================================================
        👤 AUTHENTIFICATION
        ====================================================== */
