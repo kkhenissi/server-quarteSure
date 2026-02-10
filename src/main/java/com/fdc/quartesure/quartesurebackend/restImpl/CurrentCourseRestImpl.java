@@ -32,6 +32,7 @@ public class CurrentCourseRestImpl implements CurrentCourseRest {
         try {
             Optional<CurrentCourseStringFormat> currentCourse = currentCourseService.getCourseFromLocalDB(requestMap);
             boolean isAdmin = userService.isAdmin();
+            log.info(" quelle rolz is ==, {}", isAdmin);
             //  ADMIN → ignorer la DB et recharger depuis PMU
             if (isAdmin) {
                 log.info(" ADMIN connecté → rechargement forcé depuis PMU");
