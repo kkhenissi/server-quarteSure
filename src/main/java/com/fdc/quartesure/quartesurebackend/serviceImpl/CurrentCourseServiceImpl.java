@@ -121,7 +121,7 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
                 String currentUrl="";
                 currentUrl = "https://online.turfinfo.api.pmu.fr/rest/client/61/programme/"+requestMap.get("date")+"/"+requestMap.get("R")+"/"+requestMap.get("C")+" ";
                 log.info("What is in performanceUrl , {}",currentUrl);
-               URL url = new URL(currentUrl);
+               URL url = new URL(currentUrl+"/performances-detaillees/pretty");
                 log.info("CurrentUrl {}",currentUrl);
                 String performanceStringFrmatId = requestMap.get("date")+"-"+requestMap.get("R")+"-"+requestMap.get("C");
 
