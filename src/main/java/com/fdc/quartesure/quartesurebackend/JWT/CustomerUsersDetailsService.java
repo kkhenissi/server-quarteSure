@@ -5,12 +5,14 @@ import com.fdc.quartesure.quartesurebackend.POJO.User;
 import com.fdc.quartesure.quartesurebackend.dao.UserDao;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 @Slf4j
 @Service
@@ -30,7 +32,7 @@ public class CustomerUsersDetailsService implements UserDetailsService {
         log.info("userDetail==>{} ",userDetail.toString());
         if(!Objects.isNull(userDetail))
 
-            return new org.springframework.security.core.userdetails.User(userDetail.getEmail(), userDetail.getPassword(), new ArrayList<>());
+            return new org.springframework.security.core.userdetails.User(userDetail.getEmail(), userDetail.getPassword(), List.of(new SimpleGrantedAuthority("ROLE_" + userDetail.getRole())));
         else
             throw new UsernameNotFoundException("User not found.");
     }
