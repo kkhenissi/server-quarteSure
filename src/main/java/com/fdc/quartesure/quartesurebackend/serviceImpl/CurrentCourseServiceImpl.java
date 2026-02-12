@@ -119,7 +119,7 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
                 String aujourdhui = new SimpleDateFormat("ddMMyyyy").format(new Date());
                 // "07/05/2024"
                 String currentUrl="";
-                currentUrl = "https://online.turfinfo.api.pmu.fr/rest/client/61/programme/"+requestMap.get("date")+"/"+requestMap.get("R")+"/"+requestMap.get("C")+" ";
+                currentUrl = "https://online.turfinfo.api.pmu.fr/rest/client/61/programme/"+requestMap.get("date")+"/"+requestMap.get("R")+"/"+requestMap.get("C");
                 log.info("What is in performanceUrl , {}",currentUrl);
                URL url = new URL(currentUrl+"/performances-detaillees/pretty");
                 log.info("CurrentUrl {}",currentUrl);
