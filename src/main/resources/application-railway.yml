@@ -8,11 +8,11 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
         hbm2ddl:
-          auto: update
+          auto: create
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
   flyway:
