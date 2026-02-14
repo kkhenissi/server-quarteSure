@@ -1,5 +1,6 @@
 package com.fdc.quartesure.quartesurebackend.rest;
 
+import com.fdc.quartesure.quartesurebackend.dto.LightPerfRequest;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -24,7 +25,7 @@ public interface CurrentCourseRest {
                                   @RequestBody(required = true) Map<String, String> requestMap);
 
     @PostMapping(path = "/participants/lightperf")
-    public Object getLightPerformances(@RequestBody(required = true) Map<Object, String> requestMap);
+    public Object getLightPerformances(@RequestBody(required = true) LightPerfRequest reques);
 
 
 }

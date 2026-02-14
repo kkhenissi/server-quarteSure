@@ -8,6 +8,7 @@ import com.fdc.quartesure.quartesurebackend.POJO.PerformanceStringFormat;
 import com.fdc.quartesure.quartesurebackend.dao.CurrentCourseStringFormatDao;
 import com.fdc.quartesure.quartesurebackend.dao.LightPerformanceStringFormatDao;
 import com.fdc.quartesure.quartesurebackend.dao.PerformanceStringFormatDao;
+import com.fdc.quartesure.quartesurebackend.dto.LightPerfRequest;
 import com.fdc.quartesure.quartesurebackend.dto.RefCourse;
 import com.fdc.quartesure.quartesurebackend.service.CurrentCourseService;
 import com.fdc.quartesure.quartesurebackend.utils.QuarteSureUtils;
@@ -336,14 +337,14 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
     }
 
     @Override
-    public ResponseEntity<String> getLightPerf(Map<Object, String> requestMap) {
+    public ResponseEntity<String> getLightPerf(LightPerfRequest reques) {
         try {
-            log.info("Inside signup {}",requestMap);
+            log.info("Inside signup {}",reques);
         //    if(validateRefCourse(requestMap)) {
                // String aujourdhui = new SimpleDateFormat("ddMMyyyy").format(new Date());
                 // "07/05/2024"
                 String currentUrl="";
-                String encodedNom = encode(requestMap.get("nomCheval"));
+                String encodedNom = encode(reques.getNomCheval());
                 currentUrl = "https://online.turfinfo.api.pmu.fr/rest/client/1/program/"+encodedNom;
                 log.info("What is in performanceUrl , {}",currentUrl);
                 URL url = new URL(currentUrl+"/light-performances");

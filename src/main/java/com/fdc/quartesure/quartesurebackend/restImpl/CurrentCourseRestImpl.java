@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fdc.quartesure.quartesurebackend.POJO.CurrentCourseStringFormat;
 import com.fdc.quartesure.quartesurebackend.POJO.PerformanceStringFormat;
+import com.fdc.quartesure.quartesurebackend.dto.LightPerfRequest;
 import com.fdc.quartesure.quartesurebackend.dto.RefCourse;
 import com.fdc.quartesure.quartesurebackend.rest.CurrentCourseRest;
 import com.fdc.quartesure.quartesurebackend.service.CurrentCourseService;
@@ -100,17 +101,17 @@ public class CurrentCourseRestImpl implements CurrentCourseRest {
     }
 
     @Override
-    public Object getLightPerformances(Map<Object, String> requestMap) {
+    public Object getLightPerformances(LightPerfRequest reques) {
 
-        String nomCheval = requestMap.get("nomCheval");
+        String nomCheval = reques.getNomCheval();
 
         // refCourse n’est pas un String → il faut le récupérer comme un sous-objet
-        Object refCourseObj = requestMap.get("refCourse");
+        Object refCourseObj = reques.getRefCourse();
 
         // convertir refCourse → RefCourse
         RefCourse refCourse = new ObjectMapper().convertValue(refCourseObj, RefCourse.class);
 
-        return currentCourseService.getLightPerf(requestMap);
+        return currentCourseService.getLightPerf(reques);
     }
 
 
