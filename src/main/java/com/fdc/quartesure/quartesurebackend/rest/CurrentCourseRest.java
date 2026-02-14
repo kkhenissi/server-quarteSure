@@ -24,7 +24,7 @@ public interface CurrentCourseRest {
                                   @RequestBody(required = true) Map<String, String> requestMap);
 
     @PostMapping(path = "/participants/lightperf")
-    public Object getLightPerformances(@RequestBody(required = true) Map<String, String> requestMap);
+    public Object getLightPerformances(@RequestBody(required = true) Map<Object, String> requestMap);
 
 
 }

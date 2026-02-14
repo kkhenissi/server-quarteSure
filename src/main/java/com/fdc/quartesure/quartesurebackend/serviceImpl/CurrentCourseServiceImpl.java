@@ -336,10 +336,10 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
     }
 
     @Override
-    public ResponseEntity<String> getLightPerf(Map<String, String> requestMap) {
+    public ResponseEntity<String> getLightPerf(Map<Object, String> requestMap) {
         try {
             log.info("Inside signup {}",requestMap);
-            if(validateRefCourse(requestMap)) {
+        //    if(validateRefCourse(requestMap)) {
                // String aujourdhui = new SimpleDateFormat("ddMMyyyy").format(new Date());
                 // "07/05/2024"
                 String currentUrl="";
@@ -397,7 +397,7 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
                     //     log.info("What is in translateCurrentCourse {}",gson.toJson(translateCurrentCourse));
 
                     return new ResponseEntity<>(bruteParticipants.toString() ,HttpStatus.OK);
-                }
+             //   }
             }
 
 

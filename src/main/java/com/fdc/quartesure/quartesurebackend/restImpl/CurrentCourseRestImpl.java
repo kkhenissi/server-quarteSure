@@ -100,7 +100,7 @@ public class CurrentCourseRestImpl implements CurrentCourseRest {
     }
 
     @Override
-    public Object getLightPerformances(Map<String, String> requestMap) {
+    public Object getLightPerformances(Map<Object, String> requestMap) {
 
         String nomCheval = requestMap.get("nomCheval");
 

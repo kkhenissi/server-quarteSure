@@ -28,7 +28,7 @@ public interface CurrentCourseService {
 
     ResponseEntity<String> getOrdreArriveeByNumOrdre(Map<String, String> requestMap, int numOrdreTarget);
 
-    ResponseEntity<String> getLightPerf(Map<String, String> requestMap);
+    ResponseEntity<String> getLightPerf(Map<Object, String> requestMap);
 
     Optional<LightPerfStringFormat> getLightPerfFromLocalDB(Map<String, String> requestMap) throws IOException;
 }
