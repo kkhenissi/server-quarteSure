@@ -38,7 +38,7 @@ public class CurrentProgrammeServiceImpl implements CurrentProgrammeService {
             //    String aujourdhui = new SimpleDateFormat("ddMMyyyy").format(new Date());
                 // "07/07/2024"
                 String currentUrl="";
-                currentUrl = "https://online.turfinfo.api.pmu.fr/rest/client/61/programme/"+requestMap.get("date")+"?meteo=true&specialisation=INTERNET";
+                currentUrl = "https://online.turfinfo.api.pmu.fr/rest/client/1/programme/"+requestMap.get("date")+"?meteo=true&specialisation=INTERNET";
                 String currentProgrammeStringFormatId = "PRG-"+requestMap.get("date");
                 System.out.println("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
                 System.out.println(currentProgrammeStringFormatId);
@@ -120,7 +120,7 @@ public class CurrentProgrammeServiceImpl implements CurrentProgrammeService {
             //    String aujourdhui = new SimpleDateFormat("ddMMyyyy").format(new Date());
             // "07/07/2024"
             String currentUrl="";
-            currentUrl = "https://online.turfinfo.api.pmu.fr/rest/client/61/programme/"+requestMap.get("date")+"?meteo=true&specialisation=INTERNET";
+            currentUrl = "https://online.turfinfo.api.pmu.fr/rest/client/1/programme/"+requestMap.get("date")+"?meteo=true&specialisation=INTERNET";
             String currentProgrammeStringFormatId = "PRG-"+requestMap.get("date");
             System.out.println("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
             System.out.println(currentProgrammeStringFormatId);

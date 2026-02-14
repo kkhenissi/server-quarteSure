@@ -1,12 +1,14 @@
 package com.fdc.quartesure.quartesurebackend.serviceImpl;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fdc.quartesure.quartesurebackend.POJO.CurrentCourseStringFormat;
+import com.fdc.quartesure.quartesurebackend.POJO.LightPerfStringFormat;
 import com.fdc.quartesure.quartesurebackend.POJO.Participant;
 import com.fdc.quartesure.quartesurebackend.POJO.PerformanceStringFormat;
 import com.fdc.quartesure.quartesurebackend.dao.CurrentCourseStringFormatDao;
+import com.fdc.quartesure.quartesurebackend.dao.LightPerformanceStringFormatDao;
 import com.fdc.quartesure.quartesurebackend.dao.PerformanceStringFormatDao;
+import com.fdc.quartesure.quartesurebackend.dto.RefCourse;
 import com.fdc.quartesure.quartesurebackend.service.CurrentCourseService;
 import com.fdc.quartesure.quartesurebackend.utils.QuarteSureUtils;
 import com.google.gson.*;
@@ -21,6 +23,8 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -33,6 +37,9 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
 
     @Autowired
     PerformanceStringFormatDao performanceStringFormatDao;
+
+    @Autowired
+    LightPerformanceStringFormatDao lightPerformanceStringFormatDao;
     @Override
     public ResponseEntity<String> getCourse(Map<String, String> requestMap) throws IOException {
 
@@ -119,7 +126,7 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
                 String aujourdhui = new SimpleDateFormat("ddMMyyyy").format(new Date());
                 // "07/05/2024"
                 String currentUrl="";
-                currentUrl = "https://online.turfinfo.api.pmu.fr/rest/client/61/programme/"+requestMap.get("date")+"/"+requestMap.get("R")+"/"+requestMap.get("C");
+                currentUrl = "https://online.turfinfo.api.pmu.fr/rest/client/1/programme/"+requestMap.get("date")+"/"+requestMap.get("R")+"/"+requestMap.get("C");
                 log.info("What is in performanceUrl , {}",currentUrl);
                URL url = new URL(currentUrl+"/performances-detaillees/pretty");
                 log.info("CurrentUrl {}",currentUrl);
@@ -197,7 +204,7 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
                 String aujourdhui = new SimpleDateFormat("ddMMyyyy").format(new Date());
                 // "07/05/2024"
                 String currentUrl="";
-                currentUrl = "https://online.turfinfo.api.pmu.fr/rest/client/61/programme/"+requestMap.get("date")+"/"+requestMap.get("R")+"/"+"?specialisation=INTERNET";
+                currentUrl = "https://online.turfinfo.api.pmu.fr/rest/client/1/programme/"+requestMap.get("date")+"/"+requestMap.get("R")+"/"+"?specialisation=INTERNET";
                 URL url = new URL(currentUrl);
                 log.info("CurrentUrl {}",currentUrl);
              //   String performanceStringFrmatId = requestMap.get("date")+"-"+requestMap.get("R")+"-"+requestMap.get("C");
@@ -272,7 +279,7 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
 
             if (validateRefCourse(requestMap)) {
                 String currentUrl = String.format(
-                        "https://online.turfinfo.api.pmu.fr/rest/client/61/programme/%s/%s?specialisation=INTERNET",
+                        "https://online.turfinfo.api.pmu.fr/rest/client/1/programme/%s/%s?specialisation=INTERNET",
                         requestMap.get("date"), requestMap.get("R")
                 );
 
@@ -328,9 +335,93 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
         return QuarteSureUtils.getResponseEntity("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @Override
+    public ResponseEntity<String> getLightPerf(Map<String, String> requestMap) {
+        try {
+            log.info("Inside signup {}",requestMap);
+            if(validateRefCourse(requestMap)) {
+               // String aujourdhui = new SimpleDateFormat("ddMMyyyy").format(new Date());
+                // "07/05/2024"
+                String currentUrl="";
+                String encodedNom = encode(requestMap.get("nomCheval"));
+                currentUrl = "https://online.turfinfo.api.pmu.fr/rest/client/1/program/"+encodedNom;
+                log.info("What is in performanceUrl , {}",currentUrl);
+                URL url = new URL(currentUrl+"/light-performances");
+                log.info("CurrentUrl {}",currentUrl);
+                String lightPerformanceStringFormatId = encodedNom;
+
+                // https://online.turfinfo.api.pmu.fr/rest/client/1/programme/09052024/R1/C7/participants?specialisation=INTERNET
+                //   this.urlParticipants="/"+dateCourse.toISOString().split('-')[2].substring(0,2)+dateCourse.toISOString().split('-')[1]+dateCourse.toISOString().split('-')[0]+"/"+this.refCourse.R+"/"+this.refCourse.C+"/participants?specialisation=INTERNET"
+                // "https://online.turfinfo.api.pmu.fr/rest/client/61/programme/09022024/R7/C5/performances-detaillees/pretty"
+
+                // "https://online.turfinfo.api.pmu.fr/rest/client/61/programme/"+aujourdhui+"/"+requestMap.get("R")+"/"+requestMap.get("C")+"/performances-detaillees/pretty";
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                conn.connect();
+
+                // Check if Connect is made
+                int responseCode = conn.getResponseCode();
+
+                // 200 Ok
+                if(responseCode != 200) {
+                    throw new RuntimeException("HttpResponseCode:"+responseCode);
+                } else {
+                    StringBuilder informationRetrived = new StringBuilder();
+                    Scanner scanner = new Scanner(url.openStream());
+                    while (scanner.hasNext()){
+                        informationRetrived.append(scanner.nextLine());
+                    }
+                    // close the scanner
+                    scanner.close();
+
+                    JsonObject dataObject = new JsonParser().parse((informationRetrived.toString())).getAsJsonObject();
+
+                    JsonElement bruteParticipants = dataObject;
+                    log.info("bruteParticipants {}",bruteParticipants);
+                    Type listType = new TypeToken<List<Participant>>() {}.getType();
+                    Type allureType = new TypeToken<String>() {}.getType();
+                    // List<InfosParticipant> jsonParticipants = (List<InfosParticipant>) bruteParticipants;
+                    String jsonAllure = new Gson().fromJson(dataObject.get("allure"),allureType);
+
+
+                    //      JsonElement bruteParticipants = dataObject;
+                    LightPerfStringFormat lightPerfToSave = new LightPerfStringFormat();
+                    lightPerfToSave.setId(lightPerformanceStringFormatId);
+                    lightPerfToSave.setContent(bruteParticipants.toString());
+                    lightPerformanceStringFormatDao.save(lightPerfToSave);
+
+
+                    Gson gson = new Gson();
+
+
+                    //     log.info("What is in translateCurrentCourse {}",gson.toJson(translateCurrentCourse));
+
+                    return new ResponseEntity<>(bruteParticipants.toString() ,HttpStatus.OK);
+                }
+            }
+
+
+        }catch(Exception ex) {
+            ex.printStackTrace();
+        }
+        return  QuarteSureUtils.getResponseEntity("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+
+    @Override
+    public Optional<LightPerfStringFormat> getLightPerfFromLocalDB(Map<String, String> requestMap) throws IOException {
+
+        String lightPerformanceStringFormatId = requestMap.get("nomCheval");
+        return this.lightPerformanceStringFormatDao.findById(lightPerformanceStringFormatId);
+    }
+
 
     private boolean validateRefCourse(Map<String,String> requestMap) {
         return requestMap.containsKey("R") && requestMap.containsKey("C") && requestMap.containsKey("specialite");
 
+    }
+    String encode(String s) {
+        return URLEncoder.encode(s, StandardCharsets.UTF_8)
+                .replace("+", "%20"); // URLEncoder met + au lieu de %20
     }
 }
