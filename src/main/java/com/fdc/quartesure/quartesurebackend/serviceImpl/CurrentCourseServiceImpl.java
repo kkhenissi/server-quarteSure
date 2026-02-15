@@ -345,7 +345,7 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
                // String aujourdhui = new SimpleDateFormat("ddMMyyyy").format(new Date());
                 // "07/05/2024"
                 String currentUrl="";
-                String encodedNom = encodeNomCheval(reques.getNomCheval());
+                String encodedNom = encodeChevalFromHashString(reques.getNomCheval());
                 currentUrl = "https://online.turfinfo.api.pmu.fr/rest/client/1/program/"+encodedNom;
                 log.info("What is in performanceUrl , {}",currentUrl);
                 URL url = new URL(currentUrl+"/light-performances");
@@ -426,11 +426,18 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
         return URLEncoder.encode(s, StandardCharsets.UTF_8)
                 .replace("+", "%20"); // URLEncoder met + au lieu de %20
     }
-    public String encodeNomCheval(String input) {
+//    public String encodeNomCheval(String input) {
+//
+//        return Arrays.stream(input.split("#"))
+//                .map(String::trim)
+//                .map(s -> s.replaceAll("\\s+", "%20"))
+//                .collect(Collectors.joining("-"));
+//    }
+    public String encodeChevalFromHashString(String input) {
+        String[] parts = input.split("#");
 
-        return Arrays.stream(input.split("#"))
-                .map(String::trim)
-                .map(s -> s.replaceAll("\\s+", "%20"))
-                .collect(Collectors.joining("-"));
+        return parts[0].trim().replace(" ", "%20") + "-" +
+                parts[1].trim().replace(" ", "%20") + "-" +
+                parts[2].trim().replace(" ", "%20");
     }
 }
