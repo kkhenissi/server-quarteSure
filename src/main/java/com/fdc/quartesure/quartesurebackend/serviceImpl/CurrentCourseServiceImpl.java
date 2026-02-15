@@ -348,7 +348,7 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
                 currentUrl = "https://online.turfinfo.api.pmu.fr/rest/client/1/program/"+encodedNom;
                 log.info("What is in performanceUrl , {}",currentUrl);
                 URL url = new URL(currentUrl+"/light-performances");
-                log.info("CurrentUrl {}",currentUrl);
+                log.info("CurrentUrl {}",url);
                 String lightPerformanceStringFormatId = encodedNom;
 
                 // https://online.turfinfo.api.pmu.fr/rest/client/1/programme/09052024/R1/C7/participants?specialisation=INTERNET
