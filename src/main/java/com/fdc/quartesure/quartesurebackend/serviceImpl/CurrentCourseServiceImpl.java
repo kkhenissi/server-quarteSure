@@ -443,7 +443,7 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
                     + "&racecourseCode=" + racecourseCode
                     + "&raceNumber=" + raceNumber
                     + "&language=" + language;;
-            System.out.println("FULL URL = " + currentUrl);;
+            System.out.println("FULL URL naw = " + currentUrl);;
 
 
             URL url = new URL(currentUrl);
