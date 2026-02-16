@@ -431,7 +431,7 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
             LocalDate date = Instant.ofEpochSecond(timestamp).atZone(ZoneId.systemDefault()).toLocalDate();
             String formattedDate = date.toString(); // yyyy-MM-dd
             String racecourseCode = (String) metaDa.get("racecourseCode");
-            Integer raceNumber = (Integer) metaDa.get("raceNumber");
+            String raceNumber = metaDa.get("raceNumber").toString();
             String language = (String) metaDa.get("language");
             String currentUrl="";
             String encodedNom = encodeChevalFromHashString(reques.getNomCheval());
