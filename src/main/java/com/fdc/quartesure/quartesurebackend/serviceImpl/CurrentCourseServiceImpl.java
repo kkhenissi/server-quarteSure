@@ -430,9 +430,13 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
             long timestamp = Long.parseLong(metaDa.get("date").toString());
             LocalDate date = Instant.ofEpochSecond(timestamp).atZone(ZoneId.systemDefault()).toLocalDate();
             String formattedDate = date.toString(); // yyyy-MM-dd
+            log.info("What is in formattedDate , {}",formattedDate);
             String racecourseCode = (String) metaDa.get("racecourseCode");
+            log.info("What is in racecourseCode , {}",racecourseCode);
             String raceNumber = metaDa.get("raceNumber").toString();
+            log.info("What is in raceNumber , {}",raceNumber);
             String language = (String) metaDa.get("language");
+            log.info("What is in language , {}",language);
             String currentUrl="";
             String encodedNom = encodeChevalFromHashString(reques.getNomCheval());
             // https://online.turfinfo.api.pmu.fr/rest/client/61/program/PERSIA%20BELLA-PERSIA-LE%20HAVRE/performance-details?date=2025-07-08&racecourseCode=CHA&raceNumber=2&language=fr
@@ -443,7 +447,7 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
                     + "&racecourseCode=" + racecourseCode
                     + "&raceNumber=" + raceNumber
                     + "&language=" + language;;
-            System.out.println("FULL URL naw = " + currentUrl);;
+            log.info("What is in performanceUrl , {}",currentUrl);
 
 
             URL url = new URL(currentUrl);
