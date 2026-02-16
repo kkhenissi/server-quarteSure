@@ -28,6 +28,9 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -424,7 +427,9 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
             log.info("Inside signup {}",reques);
             Map<String, Object> metaDa = reques.getMetaDa();
 
-            String date = (String) metaDa.get("date");
+            long timestamp = Long.parseLong(metaDa.get("date").toString());
+            LocalDate date = Instant.ofEpochSecond(timestamp).atZone(ZoneId.systemDefault()).toLocalDate();
+            String formattedDate = date.toString(); // yyyy-MM-dd
             String racecourseCode = (String) metaDa.get("racecourseCode");
             Integer raceNumber = (Integer) metaDa.get("raceNumber");
             String language = (String) metaDa.get("language");
@@ -434,7 +439,7 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
             currentUrl = "https://online.turfinfo.api.pmu.fr/rest/client/1/program/"
                     + encodedNom
                     + "/performance-details?"
-                    + "date=" + date
+                    + "date=" + formattedDate
                     + "&racecourseCode=" + racecourseCode
                     + "&raceNumber=" + raceNumber
                     + "&language=" + language;;
