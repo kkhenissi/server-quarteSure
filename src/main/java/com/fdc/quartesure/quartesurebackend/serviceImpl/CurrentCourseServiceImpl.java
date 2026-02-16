@@ -8,6 +8,7 @@ import com.fdc.quartesure.quartesurebackend.POJO.PerformanceStringFormat;
 import com.fdc.quartesure.quartesurebackend.dao.CurrentCourseStringFormatDao;
 import com.fdc.quartesure.quartesurebackend.dao.LightPerformanceStringFormatDao;
 import com.fdc.quartesure.quartesurebackend.dao.PerformanceStringFormatDao;
+import com.fdc.quartesure.quartesurebackend.dto.DetailPerfRequest;
 import com.fdc.quartesure.quartesurebackend.dto.LightPerfRequest;
 import com.fdc.quartesure.quartesurebackend.dto.RefCourse;
 import com.fdc.quartesure.quartesurebackend.service.CurrentCourseService;
@@ -415,6 +416,90 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
 
         String lightPerformanceStringFormatId = requestMap.get("nomCheval");
         return this.lightPerformanceStringFormatDao.findById(lightPerformanceStringFormatId);
+    }
+
+    @Override
+    public ResponseEntity<String> getDetailPerf(DetailPerfRequest reques) {
+        try {
+            log.info("Inside signup {}",reques);
+            Map<String, Object> metaDa = reques.getMetaDa();
+
+            String date = (String) metaDa.get("date");
+            String racecourseCode = (String) metaDa.get("racecourseCode");
+            Integer raceNumber = (Integer) metaDa.get("raceNumber");
+            String language = (String) metaDa.get("language");
+            String currentUrl="";
+            String encodedNom = encodeChevalFromHashString(reques.getNomCheval());
+            // https://online.turfinfo.api.pmu.fr/rest/client/61/program/PERSIA%20BELLA-PERSIA-LE%20HAVRE/performance-details?date=2025-07-08&racecourseCode=CHA&raceNumber=2&language=fr
+            currentUrl = "https://online.turfinfo.api.pmu.fr/rest/client/1/program/"
+                    + encodedNom
+                    + "/performance-details?"
+                    + "date=" + date
+                    + "&racecourseCode=" + racecourseCode
+                    + "&raceNumber=" + raceNumber
+                    + "&language=" + language;;
+            log.info("What is in performanceUrl , {}",currentUrl);
+
+
+            URL url = new URL(currentUrl);
+            log.info("CurrentUrl {}",url);
+            String detailPerformanceStringFormatId = encodedNom;
+
+            // https://online.turfinfo.api.pmu.fr/rest/client/1/programme/09052024/R1/C7/participants?specialisation=INTERNET
+            //   this.urlParticipants="/"+dateCourse.toISOString().split('-')[2].substring(0,2)+dateCourse.toISOString().split('-')[1]+dateCourse.toISOString().split('-')[0]+"/"+this.refCourse.R+"/"+this.refCourse.C+"/participants?specialisation=INTERNET"
+            // "https://online.turfinfo.api.pmu.fr/rest/client/61/programme/09022024/R7/C5/performances-detaillees/pretty"
+
+            // "https://online.turfinfo.api.pmu.fr/rest/client/61/programme/"+aujourdhui+"/"+requestMap.get("R")+"/"+requestMap.get("C")+"/performances-detaillees/pretty";
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.connect();
+
+            // Check if Connect is made
+            int responseCode = conn.getResponseCode();
+
+            // 200 Ok
+            if(responseCode != 200) {
+                throw new RuntimeException("HttpResponseCode:"+responseCode);
+            } else {
+                StringBuilder informationRetrived = new StringBuilder();
+                Scanner scanner = new Scanner(url.openStream());
+                while (scanner.hasNext()){
+                    informationRetrived.append(scanner.nextLine());
+                }
+                // close the scanner
+                scanner.close();
+
+                JsonObject dataObject = new JsonParser().parse((informationRetrived.toString())).getAsJsonObject();
+
+                JsonElement bruteParticipants = dataObject;
+                log.info("bruteParticipants {}",bruteParticipants);
+                Type listType = new TypeToken<List<Participant>>() {}.getType();
+                Type allureType = new TypeToken<String>() {}.getType();
+                // List<InfosParticipant> jsonParticipants = (List<InfosParticipant>) bruteParticipants;
+                String jsonAllure = new Gson().fromJson(dataObject.get("allure"),allureType);
+
+
+                //      JsonElement bruteParticipants = dataObject;
+//                LightPerfStringFormat lightPerfToSave = new LightPerfStringFormat();
+//                lightPerfToSave.setId(lightPerformanceStringFormatId);
+//                lightPerfToSave.setContent(bruteParticipants.toString());
+//                lightPerformanceStringFormatDao.save(lightPerfToSave);
+
+
+                Gson gson = new Gson();
+
+
+                //     log.info("What is in translateCurrentCourse {}",gson.toJson(translateCurrentCourse));
+
+                return new ResponseEntity<>(bruteParticipants.toString() ,HttpStatus.OK);
+                //   }
+            }
+
+
+        }catch(Exception ex) {
+            ex.printStackTrace();
+        }
+        return  QuarteSureUtils.getResponseEntity("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 

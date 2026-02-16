@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fdc.quartesure.quartesurebackend.POJO.CurrentCourseStringFormat;
 import com.fdc.quartesure.quartesurebackend.POJO.PerformanceStringFormat;
+import com.fdc.quartesure.quartesurebackend.dto.DetailPerfRequest;
 import com.fdc.quartesure.quartesurebackend.dto.LightPerfRequest;
 import com.fdc.quartesure.quartesurebackend.dto.RefCourse;
 import com.fdc.quartesure.quartesurebackend.rest.CurrentCourseRest;
@@ -114,25 +115,9 @@ public class CurrentCourseRestImpl implements CurrentCourseRest {
         return currentCourseService.getLightPerf(reques);
     }
 
+    @Override
+    public Object getDetailPerformances(DetailPerfRequest reques) {
+        return null;
+    }
 
-//    @Override
-//    public Object getResultatCourse(Map<String, String> requestMap) {
-//        try {
-//            // Appel à ton service existant
-//            String jsonResponse = (String) getResultatCourse(requestMap);
-//
-//            // Parser le JSON
-//            ObjectMapper mapper = new ObjectMapper();
-//            JsonNode root = mapper.readTree(jsonResponse);
-//
-//            // Extraire uniquement le tableau "courses"
-//            JsonNode courses = root.path("courses");
-//
-//            // Retourner le tableau (Jackson convertira automatiquement en JSON)
-//            return courses;
-//        }catch (Exception ex) {
-//            ex.printStackTrace();
-//        }
-//        return QuarteSureUtils.getResponseEntity("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
-//    }
 }

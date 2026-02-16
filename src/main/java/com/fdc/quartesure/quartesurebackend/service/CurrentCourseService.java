@@ -5,6 +5,7 @@ import com.fdc.quartesure.quartesurebackend.POJO.CurrentCourseStringFormat;
 import com.fdc.quartesure.quartesurebackend.POJO.LightPerfStringFormat;
 import com.fdc.quartesure.quartesurebackend.POJO.PerformanceStringFormat;
 import com.fdc.quartesure.quartesurebackend.dao.LightPerformanceStringFormatDao;
+import com.fdc.quartesure.quartesurebackend.dto.DetailPerfRequest;
 import com.fdc.quartesure.quartesurebackend.dto.LightPerfRequest;
 import com.fdc.quartesure.quartesurebackend.dto.RefCourse;
 import org.springframework.http.ResponseEntity;
@@ -32,4 +33,6 @@ public interface CurrentCourseService {
     ResponseEntity<String> getLightPerf(LightPerfRequest reques);
 
     Optional<LightPerfStringFormat> getLightPerfFromLocalDB(Map<String, String> requestMap) throws IOException;
+
+    ResponseEntity<String> getDetailPerf(DetailPerfRequest reques);
 }
