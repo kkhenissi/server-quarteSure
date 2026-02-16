@@ -116,8 +116,8 @@ public class CurrentCourseRestImpl implements CurrentCourseRest {
     }
 
     @Override
-    public Object getDetailPerformances(DetailPerfRequest reques) {
-        return null;
+    public Object getDetailPerformances(DetailPerfRequest request) {
+        return currentCourseService.getDetailPerf(request);
     }
 
 }
