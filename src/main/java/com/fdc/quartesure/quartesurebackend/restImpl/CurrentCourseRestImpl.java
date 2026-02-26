@@ -102,17 +102,17 @@ public class CurrentCourseRestImpl implements CurrentCourseRest {
     }
 
     @Override
-    public Object getLightPerformances(LightPerfRequest reques) {
+    public Object getLightPerformances(LightPerfRequest request) {
 
-        String nomCheval = reques.getNomCheval();
+        String nomCheval = request.getNomCheval();
 
         // refCourse n’est pas un String → il faut le récupérer comme un sous-objet
-        Object refCourseObj = reques.getRefCourse();
+        Object refCourseObj = request.getRefCourse();
 
         // convertir refCourse → RefCourse
         RefCourse refCourse = new ObjectMapper().convertValue(refCourseObj, RefCourse.class);
 
-        return currentCourseService.getLightPerf(reques);
+        return currentCourseService.getLightPerf(request);
     }
 
     @Override

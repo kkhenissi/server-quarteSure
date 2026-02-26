@@ -2,6 +2,7 @@ package com.fdc.quartesure.quartesurebackend.restImpl;
 
 import com.fdc.quartesure.quartesurebackend.constants.QuarteSureConstants;
 import com.fdc.quartesure.quartesurebackend.rest.ChangePasswordRequest;
+import com.fdc.quartesure.quartesurebackend.rest.ResetPasswordRequest;
 import com.fdc.quartesure.quartesurebackend.rest.UserRest;
 import com.fdc.quartesure.quartesurebackend.service.UserService;
 import com.fdc.quartesure.quartesurebackend.utils.QuarteSureUtils;
@@ -159,12 +160,9 @@ public class UserRestImpl implements UserRest {
 
     // ===================== RESET PASSWORD =====================
     @Override
-    public ResponseEntity<String> resetPassword(
-            @RequestParam String token,
-            @RequestParam String password
-    ) {
+    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordRequest request) {
         try {
-            return userService.resetPassword(token, password);
+            return userService.resetPassword(request.getToken(), request.getPassword());
         } catch (Exception ex) {
             ex.printStackTrace();
             return QuarteSureUtils.getResponseEntity(

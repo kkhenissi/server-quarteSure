@@ -44,8 +44,5 @@ public interface UserRest {
     ResponseEntity<String> forgotPassword(@RequestParam String email);
 
     @PostMapping(path = "/reset-password")
-    ResponseEntity<String> resetPassword(
-            @RequestParam String token,
-            @RequestParam String password
-    );
+    ResponseEntity<String> resetPassword(@RequestBody ResetPasswordRequest request);
 }
