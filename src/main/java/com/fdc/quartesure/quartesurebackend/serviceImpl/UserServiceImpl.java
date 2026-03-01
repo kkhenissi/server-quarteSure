@@ -308,16 +308,22 @@ public class UserServiceImpl implements UserService {
     }
 
     private void sendValidationEmail(User user) {
-        var newToken = generateAndSaveActivationToken(user);
-        String activationUrlWithToken = activationUrl + "?token=" + newToken;
-        emailService.sendEmail(
-                user.getEmail(),
-                user.fullName(),
-                EmailTemplateName.ACTIVATE_ACCOUNT,
-                activationUrlWithToken,
-                newToken,
-                "Account activation"
-        );
+       try {
+           var newToken = generateAndSaveActivationToken(user);
+           String activationUrlWithToken = activationUrl + "?token=" + newToken;
+           emailService.sendEmail(
+                   user.getEmail(),
+                   user.fullName(),
+                   EmailTemplateName.ACTIVATE_ACCOUNT,
+                   activationUrlWithToken,
+                   newToken,
+                   "Account activation"
+           );
+           log.info("✅ Email envoyé avec succès à {}", user.getEmail());
+
+       } catch (Exception e) {
+           log.error("❌ Echec envoi email à {} : {}", user.getEmail(), e.getMessage(), e);
+       }
     }
 
 
