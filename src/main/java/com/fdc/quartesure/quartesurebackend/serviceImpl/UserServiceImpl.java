@@ -309,11 +309,12 @@ public class UserServiceImpl implements UserService {
 
     private void sendValidationEmail(User user) {
         var newToken = generateAndSaveActivationToken(user);
+        String activationUrlWithToken = activationUrl + "?token=" + newToken;
         emailService.sendEmail(
                 user.getEmail(),
                 user.fullName(),
                 EmailTemplateName.ACTIVATE_ACCOUNT,
-                activationUrl,
+                activationUrlWithToken,
                 newToken,
                 "Account activation"
         );
