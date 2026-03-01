@@ -256,7 +256,7 @@ public class UserServiceImpl implements UserService {
     }
 
     /* ======================================================
-       🧰 UTILITAIRES MÉTIER
+        UTILITAIRES MÉTIER
        ====================================================== */
 
     private void sendMailToAllAdmin(

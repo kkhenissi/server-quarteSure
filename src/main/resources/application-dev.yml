@@ -35,7 +35,7 @@ spring:
 brevo:
   api-key: "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"
   sender-email: "lineyatech@yahoo.com"
-  sender-name: "triturf"
+  sender-name: "SafeTurf"
 #  mail:
 #    host: smtp.gmail.com
 #    # smtp.gmail.com ${EMAIL_HOSTNAME}
