@@ -70,7 +70,7 @@ public class StripeController {
             case 10 ->  "price_1S7HtnFzoKzk6dX5TviPkGbj";  // "price_small";
             case 20 ->  "price_1S7HtyFzoKzk6dX579FGDq4f";  // "price_premium";
             case 30 ->  "price_1S7JeNFzoKzk6dX5V1SOMr3w"; // "price_platinum";
-            default -> throw new IllegalArgumentException("Montant invalide");
+            default -> throw new IllegalArgumentException("Montant invalide"); // cooment
         };
 
         SessionCreateParams params =
