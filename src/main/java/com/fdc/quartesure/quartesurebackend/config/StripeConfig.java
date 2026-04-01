@@ -27,6 +27,7 @@ public class StripeConfig {
         Stripe.apiKey = stripeSecretKey;
 
         System.out.println("Stripe API key loaded successfully");
+        //  Stripe API key loaded successfully fot test
     }
 }
 
