@@ -67,9 +67,9 @@ public class StripeController {
         Integer amount = req.getAmount();
 
         String priceId = switch (amount) {
-            case 10 ->  "prod_T3OhzekUhtP4CZ";  // "price_small";
-            case 20 ->  "prod_T3OhLgSJR3vFpi";  // "price_premium";
-            case 30 ->  "prod_T3QVDDlESYnXOz"; // "price_platinum";
+            case 10 ->  "price_1S7HtnFzoKzk6dX5TviPkGbj";  // "price_small";
+            case 20 ->  "price_1S7HtyFzoKzk6dX579FGDq4f";  // "price_premium";
+            case 30 ->  "price_1S7JeNFzoKzk6dX5V1SOMr3w"; // "price_platinum";
             default -> throw new IllegalArgumentException("Montant invalide");
         };
 
