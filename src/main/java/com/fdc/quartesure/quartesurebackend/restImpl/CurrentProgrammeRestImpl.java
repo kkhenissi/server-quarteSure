@@ -19,29 +19,23 @@ public class CurrentProgrammeRestImpl implements CurrentProgrammeRest {
     @Override
     public Object getTodayProgramme(Map<String, String> requestMap) {
         try {
-            Optional<CurrentProgrammeStringFormat> currentProgramme = currentProgrammeService.getTodayProgrammeFromLocalDB(requestMap);
-            if(!currentProgramme.isEmpty()) {
-                System.out.println("8888888888888888888888888888888888");
-                System.out.println(requestMap);
-                System.out.println("8888888888888888888888888888888888");
-                String refinedString = currentProgramme.toString().substring(60);
-                System.out.println("What is in refinedString"+refinedString.substring(3, refinedString.length()-2));
-               // if(requestMap.get("C").length()<3) {
-                    return refinedString.substring(3, refinedString.length()-2);
-             //   }else {
-             //       return refinedString.substring(3, refinedString.length()-2);
-             //   }
+            Optional<CurrentProgrammeStringFormat> currentProgramme =
+                    currentProgrammeService.getTodayProgrammeFromLocalDB(requestMap);
 
+            if (currentProgramme.isPresent()) {
+                return currentProgramme.get(); // ✅ retourne un objet, pas une string
             }
-            System.out.println("uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu");
-            System.out.println(requestMap);
 
-            return  currentProgrammeService.getTodayProgramme(requestMap);
+            return currentProgrammeService.getTodayProgramme(requestMap);
 
-        }catch (Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return QuarteSureUtils.getResponseEntity("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+
+        return QuarteSureUtils.getResponseEntity(
+                "Something went wrong",
+                HttpStatus.INTERNAL_SERVER_ERROR
+        );
     }
 
     @Override
