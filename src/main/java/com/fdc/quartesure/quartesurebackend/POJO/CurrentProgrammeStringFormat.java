@@ -7,6 +7,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -20,6 +21,7 @@ import javax.persistence.Id;
 public class CurrentProgrammeStringFormat {
    @Id
    private String id;
+   private LocalDateTime createdAt = LocalDateTime.now();
    @Column(columnDefinition = "TEXT")
    private String content;
 }
