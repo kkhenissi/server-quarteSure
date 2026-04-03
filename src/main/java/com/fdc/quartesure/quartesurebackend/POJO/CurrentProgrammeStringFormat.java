@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 public class CurrentProgrammeStringFormat {
    @Id
    private String id;
-   private LocalDateTime createdAt = LocalDateTime.now();
+ //  private LocalDateTime createdAt = LocalDateTime.now();
    @Column(columnDefinition = "TEXT")
    private String content;
 }
