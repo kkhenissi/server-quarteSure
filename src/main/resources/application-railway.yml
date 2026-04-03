@@ -8,8 +8,7 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: update
-    properties:
+      ddl-auto: create
       hibernate:
         hbm2ddl:
           auto: update
