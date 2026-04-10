@@ -52,7 +52,7 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
         try {
             log.info("Inside signup {}",requestMap);
             if(validateRefCourse(requestMap)) {
-                String aujourdhui = new SimpleDateFormat("ddMMyyyy").format(new Date());
+                String aujourdhui = new SimpleDateFormat("ddMMyyyy").format(new Date(System.currentTimeMillis() - 24L * 60 * 60 * 1000));
                 // "07/07/2024"
                 String currentUrl="";
                 currentUrl = "https://online.turfinfo.api.pmu.fr/rest/client/1/programme/"+requestMap.get("date")+"/"+requestMap.get("R")+"/"+requestMap.get("C")+"/participants?specialisation=INTERNET";
@@ -116,7 +116,7 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
 
     @Override
     public Optional<CurrentCourseStringFormat> getCourseFromLocalDB(Map<String, String> requestMap) throws IOException {
-        String aujourdhui = new SimpleDateFormat("ddMMyyyy").format(new Date());
+        String aujourdhui = new SimpleDateFormat("ddMMyyyy").format(new Date(System.currentTimeMillis() - 24L * 60 * 60 * 1000));
         String currentCurseStringFormatId = requestMap.get("date")+"-"+requestMap.get("R")+"-"+requestMap.get("C");
 
 /*        Optional strinTolog = this.currentCourseStringFormatDao.findById(o);
@@ -129,7 +129,7 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
         try {
             log.info("Inside signup {}",requestMap);
             if(validateRefCourse(requestMap)) {
-                String aujourdhui = new SimpleDateFormat("ddMMyyyy").format(new Date());
+                String aujourdhui = new SimpleDateFormat("ddMMyyyy").format(new Date(System.currentTimeMillis() - 24L * 60 * 60 * 1000));
                 // "07/05/2024"
                 String currentUrl="";
                 currentUrl = "https://online.turfinfo.api.pmu.fr/rest/client/1/programme/"+requestMap.get("date")+"/"+requestMap.get("R")+"/"+requestMap.get("C");
@@ -197,7 +197,7 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
 
     @Override
     public Optional<PerformanceStringFormat> getPerformanceFromLocalDB(Map<String, String> requestMap) throws IOException {
-        String aujourdhui = new SimpleDateFormat("ddMMyyyy").format(new Date());
+        String aujourdhui = new SimpleDateFormat("ddMMyyyy").format(new Date(System.currentTimeMillis() - 24L * 60 * 60 * 1000));
         String performanceStringFrmatId = requestMap.get("date")+"-"+requestMap.get("R")+"-"+requestMap.get("C");
         return this.performanceStringFormatDao.findById(performanceStringFrmatId);
     }
@@ -207,7 +207,7 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
         try {
             log.info("Inside signup {}",requestMap);
             if(validateRefCourse(requestMap)) {
-                String aujourdhui = new SimpleDateFormat("ddMMyyyy").format(new Date());
+                String aujourdhui = new SimpleDateFormat("ddMMyyyy").format(new Date(System.currentTimeMillis() - 24L * 60 * 60 * 1000));
                 // "07/05/2024"
                 String currentUrl="";
                 currentUrl = "https://online.turfinfo.api.pmu.fr/rest/client/1/programme/"+requestMap.get("date")+"/"+requestMap.get("R")+"/"+"?specialisation=INTERNET";
@@ -346,7 +346,7 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
         try {
             log.info("Inside signup {}",reques);
         //    if(validateRefCourse(requestMap)) {
-               // String aujourdhui = new SimpleDateFormat("ddMMyyyy").format(new Date());
+               // String aujourdhui = new SimpleDateFormat("ddMMyyyy").format(new Date(System.currentTimeMillis() - 24L * 60 * 60 * 1000););
                 // "07/05/2024"
                 String currentUrl="";
                 String encodedNom = encodeChevalFromHashString(reques.getNomCheval());

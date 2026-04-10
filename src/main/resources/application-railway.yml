@@ -26,7 +26,7 @@ spring:
         registration-url: ${FRONTEND_REGISTRATION_URL}#/register
         reset-link-url: ${FRONTEND_RESET_LINK_URL}#/register
 
-# 👉 CONFIG BREVO API UNIQUEMENT
+#  CONFIG BREVO API UNIQUEMENT
 brevo:
   api-key: ${BREVO_API_KEY}
   sender-email: ${BREVO_SENDER_EMAIL}
