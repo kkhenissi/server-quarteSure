@@ -33,7 +33,7 @@ public class EmailServiceImpl implements EmailService {
     @Value("${brevo.sender-name}")
     private String senderName;
 
-    private static final String BREVO_URL = "https://api.sendinblue.com/v3/smtp/email";
+    private static final String BREVO_URL = "https://api.brevo.com/v3/smtp/email";
     public EmailServiceImpl(TemplateEngine templateEngine) {
         this.templateEngine = templateEngine;
     }
