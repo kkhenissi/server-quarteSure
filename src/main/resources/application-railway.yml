@@ -28,7 +28,7 @@ spring:
 
 #  CONFIG BREVO API UNIQUEMENT
 brevo:
-  api-key: ${BREVO_API_KEY}
+  api-key: ${BREVO_SMTP_KEY}
   sender-email: ${BREVO_SENDER_EMAIL}
   sender-name: ${BREVO_SENDER_NAME}
 
