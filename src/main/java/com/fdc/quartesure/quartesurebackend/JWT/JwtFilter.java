@@ -3,6 +3,7 @@ package com.fdc.quartesure.quartesurebackend.JWT;
 import com.fdc.quartesure.quartesurebackend.JWT.CustomerUsersDetailsService;
 import com.fdc.quartesure.quartesurebackend.JWT.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,9 +28,9 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            FilterChain filterChain
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
 
         String path = request.getServletPath();
@@ -73,11 +74,10 @@ public class JwtFilter extends OncePerRequestFilter {
                                 );
 
                         authToken.setDetails(
-                                new WebAuthenticationDetailsSource().buildDetails(request)
-                        );
-
-                        SecurityContextHolder.getContext().setAuthentication(authToken);
+                                new WebAuthenticationDetailsSource().buildDetails(request));
+                                SecurityContextHolder.getContext().setAuthentication(authToken);
                     }
+                    filterChain.doFilter(request, response);
                 }
             } catch (Exception ignored) {
                 // Ne jamais bloquer un JWT invalide
@@ -85,6 +85,6 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         // ➜ Toujours continuer
-        filterChain.doFilter(request, response);
+
     }
 }
