@@ -44,8 +44,8 @@ brevo:
 #    # 1025
 #    username: kkhenissi
 #    # kkhenissi ${EMAIL_USER_NAME}
-#    password: ybfv kklj sqkh hzxj
-#    # ybfv kklj sqkh hzxj ${EMAIL_PASSWORD}
+#    password:
+#    #  ${EMAIL_PASSWORD}
 #    properties:
 #      mail:
 #        smtp:
