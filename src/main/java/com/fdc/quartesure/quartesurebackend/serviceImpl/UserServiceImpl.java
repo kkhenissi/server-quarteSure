@@ -299,7 +299,7 @@ public class UserServiceImpl implements UserService {
         user.setEmail(requestMap.get("email"));
         user.setPassword(hashedPassword); // passwordEncode.encode();
         user.setStatus("false");
-        user.setCredit(15);
+        user.setCredit(0);
         user.setSelectedOptions(requestMap.get("selectedOptions"));
         user.setLastConnexion(Instant.now().toString().substring(5,10));
         user.setSubscribeDate(Instant.now().toString().substring(0,10));
