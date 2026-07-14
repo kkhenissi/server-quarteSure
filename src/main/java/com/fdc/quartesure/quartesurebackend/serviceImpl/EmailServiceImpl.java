@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -151,7 +152,16 @@ public class EmailServiceImpl implements EmailService {
         HttpEntity<Map<String, Object>> request =
                 new HttpEntity<>(body, headers);
 
-        restTemplate.postForObject(BREVO_URL, request, String.class);
+       // restTemplate.postForObject(BREVO_URL, request, String.class);
+
+        try {
+            restTemplate.postForObject(BREVO_URL, request, String.class);
+            log.info("Email Brevo envoyé");
+        } catch (HttpClientErrorException e) {
+            log.error("Code Brevo : {}", e.getStatusCode());
+            log.error("Réponse Brevo : {}", e.getResponseBodyAsString());
+            throw e;
+        }
 
         log.info("Email envoyé avec succès à {}", to);
     }
