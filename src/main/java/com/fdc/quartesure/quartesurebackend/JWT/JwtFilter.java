@@ -77,7 +77,6 @@ public class JwtFilter extends OncePerRequestFilter {
                                 new WebAuthenticationDetailsSource().buildDetails(request));
                                 SecurityContextHolder.getContext().setAuthentication(authToken);
                     }
-                    filterChain.doFilter(request, response);
                 }
             } catch (Exception ignored) {
                 // Ne jamais bloquer un JWT invalide
@@ -85,6 +84,6 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         // ➜ Toujours continuer
-
+        filterChain.doFilter(request, response);
     }
 }
