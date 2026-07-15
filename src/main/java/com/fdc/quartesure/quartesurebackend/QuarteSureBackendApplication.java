@@ -22,7 +22,6 @@ public class QuarteSureBackendApplication {
 		System.out.println("PGDATABASE=" + System.getenv("PGDATABASE"));
 		System.out.println("PGUSER=" + System.getenv("PGUSER"));
 		System.out.println("PGPASSWORD=" + System.getenv("PGPASSWORD"));
-		System.out.println("========== START VERSION 2026-07-15 ==========");
 
 		SpringApplication.run(QuarteSureBackendApplication.class, args);
 /*
