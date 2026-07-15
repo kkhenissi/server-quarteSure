@@ -85,6 +85,7 @@ public class UserRestImpl implements UserRest {
 
     @Override
     public ResponseEntity<String> confirm(@RequestParam String token) {
+        System.out.println("VERSION ACTIVATION 2026-07-15");
         try {
             userService.activateAccount(token);
             return QuarteSureUtils.getResponseEntity(
