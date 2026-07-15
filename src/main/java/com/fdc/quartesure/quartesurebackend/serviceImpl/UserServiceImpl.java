@@ -582,9 +582,13 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public ResponseEntity<String> activateAccount(String token) {
 
+        log.info("🔵 SERVICE activateAccount appelé avec token={}", token);
+
         TokenTable savedToken = tokenDao.findByToken(token)
                 .orElseThrow(() -> new RuntimeException("Invalid token"));
-        log.info("🔵 Activation demandée avec token : {}", token);
+
+        log.info("🟢 Token trouvé pour user={}",
+                savedToken.getUser().getEmail());
 
         if (LocalDateTime.now().isAfter(savedToken.getExpiresAt())) {
             sendValidationEmail(savedToken.getUser());
