@@ -584,6 +584,7 @@ public class UserServiceImpl implements UserService {
 
         TokenTable savedToken = tokenDao.findByToken(token)
                 .orElseThrow(() -> new RuntimeException("Invalid token"));
+        log.info("🔵 Activation demandée avec token : {}", token);
 
         if (LocalDateTime.now().isAfter(savedToken.getExpiresAt())) {
             sendValidationEmail(savedToken.getUser());
