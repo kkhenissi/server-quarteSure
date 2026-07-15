@@ -5,6 +5,9 @@ import com.fdc.quartesure.quartesurebackend.JWT.JwtUtil;
 import com.fdc.quartesure.quartesurebackend.POJO.*;
 import com.fdc.quartesure.quartesurebackend.constants.QuarteSureConstants;
 import com.fdc.quartesure.quartesurebackend.dao.*;
+import com.fdc.quartesure.quartesurebackend.exception.InvalidTokenException;
+import com.fdc.quartesure.quartesurebackend.exception.TokenAlreadyUsedException;
+import com.fdc.quartesure.quartesurebackend.exception.TokenExpiredException;
 import com.fdc.quartesure.quartesurebackend.rest.ChangePasswordRequest;
 import com.fdc.quartesure.quartesurebackend.service.EmailService;
 import com.fdc.quartesure.quartesurebackend.service.UserService;
@@ -58,6 +61,9 @@ public class UserServiceImpl implements UserService {
 
     @Value("${spring.application.mailing.frontend.reset-link-url}")
     private String resetLinkUrl;
+
+    @Value("${spring.application.mailing.activation-token.expiration-minutes:15}")
+    private long activationTokenExpirationMinutes;
     private final ConcurrentHashMap<String, Boolean> processedPayments = new ConcurrentHashMap<>();
 
     /* ======================================================
@@ -206,10 +212,9 @@ public class UserServiceImpl implements UserService {
         var token = TokenTable.builder()
                 .token(generetedToken)
                 .createdAt(LocalDateTime.now())
-                .expiresAt(LocalDateTime.now().plusMinutes(15))
+                .expiresAt(LocalDateTime.now().plusMinutes(activationTokenExpirationMinutes))
                 .user(user)
                 .build();
-        log.info("What is in  token inside == {}",token.toString());
         tokenDao.save(token);
         return generetedToken;
 
@@ -582,17 +587,16 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public ResponseEntity<String> activateAccount(String token) {
 
-        log.info("🔵 SERVICE activateAccount appelé avec token={}", token);
-
         TokenTable savedToken = tokenDao.findByToken(token)
-                .orElseThrow(() -> new RuntimeException("Invalid token"));
+                .orElseThrow(() -> new InvalidTokenException("Activation token is invalid"));
 
-        log.info("🟢 Token trouvé pour user={}",
-                savedToken.getUser().getEmail());
+        if (savedToken.getValidatedAt() != null) {
+            throw new TokenAlreadyUsedException("Activation token has already been used");
+        }
 
         if (LocalDateTime.now().isAfter(savedToken.getExpiresAt())) {
             sendValidationEmail(savedToken.getUser());
-            throw new RuntimeException(
+            throw new TokenExpiredException(
                     "Activation token has expired, a new token has been sent"
             );
         }

@@ -1,6 +1,9 @@
 package com.fdc.quartesure.quartesurebackend.restImpl;
 
 import com.fdc.quartesure.quartesurebackend.constants.QuarteSureConstants;
+import com.fdc.quartesure.quartesurebackend.exception.InvalidTokenException;
+import com.fdc.quartesure.quartesurebackend.exception.TokenAlreadyUsedException;
+import com.fdc.quartesure.quartesurebackend.exception.TokenExpiredException;
 import com.fdc.quartesure.quartesurebackend.rest.ChangePasswordRequest;
 import com.fdc.quartesure.quartesurebackend.rest.ResetPasswordRequest;
 import com.fdc.quartesure.quartesurebackend.rest.UserRest;
@@ -85,13 +88,14 @@ public class UserRestImpl implements UserRest {
 
     @Override
     public ResponseEntity<String> confirm(@RequestParam String token) {
-        System.out.println("VERSION ACTIVATION 2026-07-15");
         try {
-            userService.activateAccount(token);
-            return QuarteSureUtils.getResponseEntity(
-                    "User status update successfully",
-                    HttpStatus.OK
-            );
+            return userService.activateAccount(token);
+        } catch (InvalidTokenException ex) {
+            return QuarteSureUtils.getResponseEntity(ex.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (TokenExpiredException ex) {
+            return QuarteSureUtils.getResponseEntity(ex.getMessage(), HttpStatus.GONE);
+        } catch (TokenAlreadyUsedException ex) {
+            return QuarteSureUtils.getResponseEntity(ex.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
