@@ -63,8 +63,8 @@ cors:
 application:
   mailing:
     frontend:
-      activation-url: ${FRONTEND_ACTIVATION_URL}#/activate-account
-      registration-url: ${FRONTEND_REGISTRATION_URL}#/register
+      activation-url: ${FRONTEND_ACTIVATION_URL}/#/activate-account
+      registration-url: ${FRONTEND_REGISTRATION_URL}/#/register
 
 #paypal:
 #  client-id: ${PAYPAL_CLIENT_ID}

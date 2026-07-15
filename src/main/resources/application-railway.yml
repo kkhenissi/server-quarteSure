@@ -22,9 +22,9 @@ spring:
   application:
     mailing:
       frontend:
-        activation-url: ${FRONTEND_ACTIVATION_URL}#/activate-account
-        registration-url: ${FRONTEND_REGISTRATION_URL}#/register
-        reset-link-url: ${FRONTEND_RESET_LINK_URL}#/register
+        activation-url: ${FRONTEND_ACTIVATION_URL}/#/activate-account
+        registration-url: ${FRONTEND_REGISTRATION_URL}/#/register
+        reset-link-url: ${FRONTEND_RESET_LINK_URL}/#/register
 
 #  CONFIG BREVO API UNIQUEMENT
 brevo:
