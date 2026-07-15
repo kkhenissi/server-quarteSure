@@ -34,7 +34,7 @@
             run:
               ./mvnw clean compile
       unit-tests:
-        runs_on: ubuntu-latest
+        runs-on: ubuntu-latest
         # self-hosted
         name: Unit tests
         steps:
@@ -54,7 +54,7 @@
               ./mvnw clean test
 
       build:
-        runs_on: ubuntu-latest
+        runs-on: ubuntu-latest
         # self-hosted
         name: Build Backend
         needs: [compile, unit-tests]
@@ -75,7 +75,7 @@
               ./mvnw clean package
       build-image:
         name: Build Docker image
-        runs_on: ubuntu-latest
+        runs-on: ubuntu-latest
         # self-hosted
         needs: [build]
         if: ${{ github.event_name == 'push' && github.ref_name == 'main'}}
