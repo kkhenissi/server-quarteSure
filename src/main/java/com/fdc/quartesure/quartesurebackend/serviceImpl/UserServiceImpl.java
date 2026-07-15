@@ -579,7 +579,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     public ResponseEntity<String> activateAccount(String token) {
 
         log.info("🔵 SERVICE activateAccount appelé avec token={}", token);
