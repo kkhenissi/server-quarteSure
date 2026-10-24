@@ -29,4 +29,19 @@ public interface EmailService {
             String confirmationUrl,
             String subject
     );
+
+    /**
+     * Envoie à un filleul sa part de combinaisons. Synchrone (contrairement aux autres envois) : l'appelant a besoin
+     * de savoir si l'e-mail est parti.
+     *
+     * @return true si l'e-mail a été accepté par Brevo
+     */
+    boolean sendCombinations(
+            String to,
+            String filleulName,
+            String parrainName,
+            String courseLabel,
+            java.util.List<String> tickets,
+            java.util.List<String> combinations
+    );
 }

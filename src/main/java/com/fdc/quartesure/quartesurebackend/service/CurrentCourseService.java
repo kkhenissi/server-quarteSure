@@ -30,9 +30,9 @@ public interface CurrentCourseService {
 
     ResponseEntity<String> getOrdreArriveeByNumOrdre(Map<String, String> requestMap, int numOrdreTarget);
 
-    ResponseEntity<String> getLightPerf(LightPerfRequest reques);
+    ResponseEntity<String> getLightPerf(LightPerfRequest request);
 
     Optional<LightPerfStringFormat> getLightPerfFromLocalDB(Map<String, String> requestMap) throws IOException;
 
-    ResponseEntity<String> getDetailPerf(DetailPerfRequest reques);
+    ResponseEntity<String> getDetailPerf(DetailPerfRequest request);
 }

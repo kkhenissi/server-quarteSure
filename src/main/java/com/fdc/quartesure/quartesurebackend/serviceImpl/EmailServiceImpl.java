@@ -125,6 +125,59 @@ public class EmailServiceImpl implements EmailService {
     }
 
     /* =========================
+       EMAIL COMBINAISONS (filleuls)
+       ========================= */
+
+    @Override
+    public boolean sendCombinations(
+            String to,
+            String filleulName,
+            String parrainName,
+            String courseLabel,
+            List<String> tickets,
+            List<String> combinations
+    ) {
+        try {
+            // Tout ce qui vient du client est échappé : jamais de HTML brut dans l'e-mail
+            StringBuilder html = new StringBuilder();
+            html.append("<div style=\"font-family:Arial,Helvetica,sans-serif;color:#32325d;max-width:560px\">");
+            html.append("<p>Bonjour ").append(esc(filleulName)).append(",</p>");
+            html.append("<p>").append(esc(parrainName))
+                    .append(" vous confie votre part de combinaisons pour la course <b>")
+                    .append(esc(courseLabel)).append("</b>.</p>");
+
+            if (tickets != null && !tickets.isEmpty()) {
+                html.append("<h3 style=\"margin-bottom:4px\">Vos tickets</h3><ul>");
+                for (String t : tickets) {
+                    html.append("<li>").append(esc(t)).append("</li>");
+                }
+                html.append("</ul>");
+            }
+
+            int count = combinations == null ? 0 : combinations.size();
+            html.append("<h3 style=\"margin-bottom:4px\">Vos ").append(count)
+                    .append(" combinaison").append(count > 1 ? "s" : "").append("</h3>");
+            html.append("<p style=\"line-height:1.9;font-family:monospace;font-size:15px\">");
+            if (combinations != null) {
+                for (String c : combinations) {
+                    html.append(esc(c)).append("<br>");
+                }
+            }
+            html.append("</p><p>Bonne chance !</p></div>");
+
+            sendViaBrevo(to, "Vos combinaisons — " + courseLabel, html.toString());
+            return true;
+        } catch (Exception e) {
+            log.error("Erreur envoi combinaisons vers {}", to, e);
+            return false;
+        }
+    }
+
+    private String esc(String value) {
+        return org.springframework.web.util.HtmlUtils.htmlEscape(value == null ? "" : value);
+    }
+
+    /* =========================
        OUTILS
        ========================= */
     private String buildTemplate(String templateName, Map<String, Object> variables) {

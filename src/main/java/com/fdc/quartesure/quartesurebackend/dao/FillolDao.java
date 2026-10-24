@@ -18,6 +18,9 @@ public interface FillolDao extends JpaRepository<Fillol,Integer> {
 
     Fillol findByEmail(@Param("email") String email);
 
+    /** Tous les filleuls (invités) d'un parrain */
+    List<Fillol> findByUser(User user);
+
   //  List<Fillol> getAllFillol();
     @Transactional
     @Modifying
