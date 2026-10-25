@@ -8,6 +8,7 @@ import com.fdc.quartesure.quartesurebackend.dto.FilleulDto;
 import com.fdc.quartesure.quartesurebackend.dto.SendCombinationsRequest;
 import com.fdc.quartesure.quartesurebackend.dto.SendCombinationsResult;
 import com.fdc.quartesure.quartesurebackend.service.EmailService;
+import com.fdc.quartesure.quartesurebackend.serviceImpl.JeuFilleulService;
 import com.fdc.quartesure.quartesurebackend.utils.PhoneUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,9 @@ public class FilleulController {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private JeuFilleulService jeuFilleulService;
+
     /** Liste des filleuls du parrain connecté : nom, téléphone et e-mail. */
     @GetMapping
     public ResponseEntity<List<FilleulDto>> list() {
@@ -69,6 +73,7 @@ public class FilleulController {
                     .email(fillol.getEmail())
                     .status(fillol.getStatus())
                     .inscrit(account != null)
+                    .disponible(fillol.isDisponibleOuNonRenseigne())
                     .build());
         }
         return ResponseEntity.ok(result);
@@ -94,7 +99,7 @@ public class FilleulController {
 
         List<SendCombinationsResult> results = new ArrayList<>();
         for (SendCombinationsRequest.Share share : request.getShares()) {
-            results.add(sendOne(parrain, course, share));
+            results.add(sendOne(parrain, course, request.getDepartMs(), share));
         }
 
         long sent = results.stream().filter(r -> "SENT".equals(r.getStatus())).count();
@@ -102,7 +107,7 @@ public class FilleulController {
         return ResponseEntity.ok(results);
     }
 
-    private SendCombinationsResult sendOne(User parrain, String course, SendCombinationsRequest.Share share) {
+    private SendCombinationsResult sendOne(User parrain, String course, Long departMs, SendCombinationsRequest.Share share) {
         Integer id = share == null ? null : share.getFilleulId();
         if (id == null) {
             return new SendCombinationsResult(null, null, "REFUSED", "Filleul manquant.");
@@ -128,8 +133,23 @@ public class FilleulController {
             return new SendCombinationsResult(id, nom, "SKIPPED", "Aucune combinaison à envoyer.");
         }
 
+        // Disponibilité revérifiée ici (lue en base à l'instant) : le filleul a pu la retirer depuis la répartition
+        if (!fillol.isDisponibleOuNonRenseigne()) {
+            return new SendCombinationsResult(id, nom, "UNAVAILABLE", "Ce filleul s'est déclaré indisponible : rien envoyé.");
+        }
+
+        // 1) On enregistre d'abord la part : le filleul la retrouve dans son compte quoi qu'il arrive à l'e-mail
+        try {
+            jeuFilleulService.enregistrer(fillol, course, departMs, tickets, combinations);
+        } catch (Exception e) {
+            log.error("Enregistrement de la part du filleul {} impossible", id, e);
+            return new SendCombinationsResult(id, nom, "FAILED", "Enregistrement impossible : rien n'a été envoyé.");
+        }
+
+        // 2) Puis l'e-mail (simple notification)
         boolean ok = emailService.sendCombinations(fillol.getEmail(), nom, parrain.fullName(), course, tickets, combinations);
-        return new SendCombinationsResult(id, nom, ok ? "SENT" : "FAILED", ok ? "E-mail envoyé." : "Échec de l'envoi.");
+        return new SendCombinationsResult(id, nom, ok ? "SENT" : "FAILED",
+                ok ? "E-mail envoyé." : "E-mail non envoyé, mais les combinaisons sont visibles dans le compte du filleul.");
     }
 
     /** Parrain connecté, d'après le JWT (jamais d'après un paramètre de la requête). */

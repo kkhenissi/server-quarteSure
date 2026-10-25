@@ -6,6 +6,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.NamedQuery;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 @NamedQuery(name = "Fillol.findByEmail",query = "select f from Fillol f where f.email =:email")
 @NamedQuery(name = "Fillol.findById",query = "select f from Fillol f where f.id =:id")
 // @NamedQuery(name = "Fillol.getAllFillol", query = "select new com.fdc.quartesure.quartesurebackend.POJO.Fillol(f.id,f.email,f.status) from Fillol")
@@ -33,4 +34,18 @@ public class Fillol {
 
     @ManyToOne
     private User user;
+
+    /**
+     * Le filleul peut se déclarer indisponible depuis son compte : le parrain ne peut alors plus lui attribuer de
+     * combinaisons. null = anciennes lignes, considérées comme disponibles (valeur par défaut true en base).
+     */
+    @Column(name = "disponible", columnDefinition = "boolean default true")
+    private Boolean disponible;
+
+    @Column(name = "disponible_depuis")
+    private LocalDateTime disponibleDepuis;
+
+    public boolean isDisponibleOuNonRenseigne() {
+        return disponible == null || disponible;
+    }
 }

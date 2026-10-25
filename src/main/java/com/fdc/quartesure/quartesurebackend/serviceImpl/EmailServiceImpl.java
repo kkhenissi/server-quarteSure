@@ -163,7 +163,8 @@ public class EmailServiceImpl implements EmailService {
                     html.append(esc(c)).append("<br>");
                 }
             }
-            html.append("</p><p>Bonne chance !</p></div>");
+            html.append("</p><p>Retrouvez aussi ces combinaisons dans votre compte SafeTurf, rubrique « Mes jeux ».</p>");
+            html.append("<p>Bonne chance !</p></div>");
 
             sendViaBrevo(to, "Vos combinaisons — " + courseLabel, html.toString());
             return true;
@@ -205,7 +206,7 @@ public class EmailServiceImpl implements EmailService {
         HttpEntity<Map<String, Object>> request =
                 new HttpEntity<>(body, headers);
 
-       // restTemplate.postForObject(BREVO_URL, request, String.class);
+        // restTemplate.postForObject(BREVO_URL, request, String.class);
 
         try {
             restTemplate.postForObject(BREVO_URL, request, String.class);

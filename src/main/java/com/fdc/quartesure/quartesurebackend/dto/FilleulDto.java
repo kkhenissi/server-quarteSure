@@ -24,4 +24,6 @@ public class FilleulDto {
     private String status;
     /** true si le filleul a créé un compte */
     private boolean inscrit;
+    /** Disponibilité choisie par le filleul : seuls les disponibles peuvent recevoir une part */
+    private boolean disponible;
 }

@@ -13,6 +13,8 @@ public class SendCombinationsRequest {
 
     /** Libellé de la course, ex. « R4C1 · LONGCHAMP · 14:35 » */
     private String course;
+    /** Heure de départ de la course (epoch ms), optionnelle : affichée au filleul dans « Mes jeux » */
+    private Long departMs;
     private List<Share> shares;
 
     @Data

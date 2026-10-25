@@ -18,10 +18,13 @@ public interface FillolDao extends JpaRepository<Fillol,Integer> {
 
     Fillol findByEmail(@Param("email") String email);
 
+    /** Ligne fillol d'un compte, sans tenir compte de la casse de l'e-mail */
+    Fillol findFirstByEmailIgnoreCase(String email);
+
     /** Tous les filleuls (invités) d'un parrain */
     List<Fillol> findByUser(User user);
 
-  //  List<Fillol> getAllFillol();
+    //  List<Fillol> getAllFillol();
     @Transactional
     @Modifying
     Integer updateStatus(@Param("status") String status, @Param("id") Integer id);
