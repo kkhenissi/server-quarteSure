@@ -206,7 +206,7 @@ public class EmailServiceImpl implements EmailService {
         HttpEntity<Map<String, Object>> request =
                 new HttpEntity<>(body, headers);
 
-        // restTemplate.postForObject(BREVO_URL, request, String.class);
+       // restTemplate.postForObject(BREVO_URL, request, String.class);
 
         try {
             restTemplate.postForObject(BREVO_URL, request, String.class);

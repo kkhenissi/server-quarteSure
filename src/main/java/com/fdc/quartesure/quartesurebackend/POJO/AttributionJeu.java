@@ -47,9 +47,20 @@ public class AttributionJeu {
     @Column(name = "tickets", columnDefinition = "text")
     private String tickets;
 
+    /** Le filleul a cliqué « J'ai fini de jouer » : sa part est validée et n'est plus modifiable. */
+    @Column(name = "terminee", columnDefinition = "boolean default false")
+    private Boolean terminee;
+
+    @Column(name = "terminee_le")
+    private LocalDateTime termineeLe;
+
     @OneToMany(mappedBy = "attribution", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("ordre ASC")
     private List<CombinaisonJeu> combinaisons = new ArrayList<>();
+
+    public boolean estTerminee() {
+        return Boolean.TRUE.equals(terminee);
+    }
 
     public void addCombinaison(CombinaisonJeu combinaison) {
         combinaison.setAttribution(this);

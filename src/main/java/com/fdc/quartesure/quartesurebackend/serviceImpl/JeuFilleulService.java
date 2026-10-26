@@ -10,18 +10,23 @@ import com.fdc.quartesure.quartesurebackend.dao.FillolDao;
 import com.fdc.quartesure.quartesurebackend.dto.AttributionJeuDto;
 import com.fdc.quartesure.quartesurebackend.dto.CombinaisonJeuDto;
 import com.fdc.quartesure.quartesurebackend.dto.DisponibiliteDto;
+import com.fdc.quartesure.quartesurebackend.dto.FilleulJeuStatutDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -35,7 +40,9 @@ public class JeuFilleulService {
 
     public static final int MAX_IDS = 1000;
 
-    public enum MarquerResult { OK, INVALID, NOT_FILLEUL, NOT_FOUND }
+    public enum MarquerResult { OK, INVALID, NOT_FILLEUL, NOT_FOUND, LOCKED }
+
+    public enum TerminerResult { OK, NOT_FOUND, INCOMPLETE }
 
     @Autowired
     private FillolDao fillolDao;
@@ -89,6 +96,7 @@ public class JeuFilleulService {
         attribution.setCourse(course);
         attribution.setDepartMs(departMs != null && departMs > 0 ? departMs : null);
         attribution.setDateEnvoi(LocalDateTime.now());
+        attribution.setTerminee(false);
         attribution.setTickets(tickets == null || tickets.isEmpty() ? null : String.join("\n", tickets));
 
         int ordre = 0;
@@ -121,7 +129,7 @@ public class JeuFilleulService {
                     ? Collections.<String>emptyList()
                     : Arrays.asList(a.getTickets().split("\n"));
             result.add(new AttributionJeuDto(a.getId(), a.getCourse(), a.getDepartMs(), parrainNom,
-                    iso(a.getDateEnvoi()), tickets, combinaisons));
+                    iso(a.getDateEnvoi()), a.estTerminee(), iso(a.getTermineeLe()), tickets, combinaisons));
         }
         return result;
     }
@@ -154,12 +162,85 @@ public class JeuFilleulService {
             return MarquerResult.NOT_FOUND;
         }
         for (CombinaisonJeu c : owned) {
+            if (c.getAttribution().estTerminee()) {
+                return MarquerResult.LOCKED; // jeu déjà validé : plus modifiable
+            }
+        }
+        for (CombinaisonJeu c : owned) {
             if (!c.isVerrouillee()) {
                 c.setStatut(statut);
             }
         }
         combinaisonJeuDao.saveAll(owned);
         return MarquerResult.OK;
+    }
+
+    // ── « J'ai fini de jouer » ──────────────────────────────────────────────────────────────────
+    /**
+     * Le filleul valide sa part : toutes ses combinaisons doivent être cochées. Idempotent (revalider ne change rien).
+     * Après validation, la part n'est plus modifiable et le parrain la voit comme entièrement cochée.
+     */
+    @Transactional
+    public TerminerResult terminer(User me, Long attributionId) {
+        Fillol fillol = findFillol(me);
+        if (fillol == null || attributionId == null) {
+            return TerminerResult.NOT_FOUND;
+        }
+        AttributionJeu attribution = attributionJeuDao.findById(attributionId).orElse(null);
+        if (attribution == null || attribution.getFillol() == null
+                || !Objects.equals(attribution.getFillol().getId(), fillol.getId())) {
+            return TerminerResult.NOT_FOUND; // pas la sienne : même réponse qu'une part inexistante
+        }
+        if (attribution.estTerminee()) {
+            return TerminerResult.OK;
+        }
+        for (CombinaisonJeu c : attribution.getCombinaisons()) {
+            if (CombinaisonJeu.A_JOUER.equals(c.getStatut())) {
+                return TerminerResult.INCOMPLETE;
+            }
+        }
+        attribution.setTerminee(true);
+        attribution.setTermineeLe(LocalDateTime.now());
+        attributionJeuDao.save(attribution);
+        log.info("Filleul {} : part {} terminée", fillol.getEmail(), attribution.getId());
+        return TerminerResult.OK;
+    }
+
+    // ── Vue du parrain ──────────────────────────────────────────────────────────────────────────
+    /**
+     * Avancement des parts que ce parrain a envoyées pour une course : une ligne par filleul (l'envoi le plus récent).
+     * La course est identifiée par son heure de départ ; à défaut, par son libellé et la journée en cours.
+     */
+    @Transactional(readOnly = true)
+    public List<FilleulJeuStatutDto> statutsPourParrain(User parrain, Long departMs, String course) {
+        List<AttributionJeu> attributions;
+        if (departMs != null && departMs > 0) {
+            attributions = attributionJeuDao.findByParrainAndDepart(parrain, departMs);
+        } else if (course != null && !course.trim().isEmpty()) {
+            attributions = attributionJeuDao.findByParrainAndCourseSince(parrain, course.trim(), LocalDate.now().atStartOfDay());
+        } else {
+            return Collections.emptyList();
+        }
+
+        Map<Integer, FilleulJeuStatutDto> parFilleul = new LinkedHashMap<>();
+        for (AttributionJeu a : attributions) { // les plus récentes d'abord : on garde la première par filleul
+            Integer filleulId = a.getFillol().getId();
+            if (parFilleul.containsKey(filleulId)) {
+                continue;
+            }
+            int jouees = 0;
+            List<String> numeros = new ArrayList<>();
+            for (CombinaisonJeu c : a.getCombinaisons()) {
+                if (!CombinaisonJeu.A_JOUER.equals(c.getStatut())) {
+                    jouees++;
+                }
+                numeros.add(c.getNumeros());
+            }
+            boolean terminee = a.estTerminee();
+            parFilleul.put(filleulId, new FilleulJeuStatutDto(filleulId, a.getId(), a.getCombinaisons().size(), jouees,
+                    terminee, terminee ? numeros : Collections.<String>emptyList()));
+        }
+        return new ArrayList<>(parFilleul.values());
     }
 
     private static String iso(LocalDateTime date) {

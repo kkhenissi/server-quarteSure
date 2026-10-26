@@ -5,10 +5,11 @@ import com.fdc.quartesure.quartesurebackend.POJO.User;
 import com.fdc.quartesure.quartesurebackend.dao.FillolDao;
 import com.fdc.quartesure.quartesurebackend.dao.UserDao;
 import com.fdc.quartesure.quartesurebackend.dto.FilleulDto;
+import com.fdc.quartesure.quartesurebackend.dto.FilleulJeuStatutDto;
 import com.fdc.quartesure.quartesurebackend.dto.SendCombinationsRequest;
 import com.fdc.quartesure.quartesurebackend.dto.SendCombinationsResult;
 import com.fdc.quartesure.quartesurebackend.service.EmailService;
-import com.fdc.quartesure.quartesurebackend.serviceImpl.JeuFilleulService;
+import com.fdc.quartesure.quartesurebackend.service.JeuFilleulService;
 import com.fdc.quartesure.quartesurebackend.utils.PhoneUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -77,6 +79,20 @@ public class FilleulController {
                     .build());
         }
         return ResponseEntity.ok(result);
+    }
+
+    /**
+     * Avancement des parts envoyées par le parrain connecté pour une course (identifiée par son heure de départ, à défaut
+     * par son libellé) : le front coche automatiquement la part d'un filleul quand celui-ci a validé son jeu.
+     */
+    @GetMapping("/jeux/statuts")
+    public ResponseEntity<List<FilleulJeuStatutDto>> statuts(@RequestParam(value = "departMs", required = false) Long departMs,
+                                                             @RequestParam(value = "course", required = false) String course) {
+        User parrain = currentUser();
+        if (parrain == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.ok(jeuFilleulService.statutsPourParrain(parrain, departMs, course));
     }
 
     /** Envoi collectif par e-mail : à chaque filleul sa part. */

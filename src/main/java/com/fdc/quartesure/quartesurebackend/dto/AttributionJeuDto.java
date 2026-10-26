@@ -17,6 +17,9 @@ public class AttributionJeuDto {
     private String parrainNom;
     /** Date ISO de l'envoi */
     private String dateEnvoi;
+    /** true : le filleul a validé « J'ai fini de jouer » */
+    private boolean terminee;
+    private String termineeLe;
     /** Lignes « champ réduit », telles que reçues par e-mail */
     private List<String> tickets;
     private List<CombinaisonJeuDto> combinaisons;

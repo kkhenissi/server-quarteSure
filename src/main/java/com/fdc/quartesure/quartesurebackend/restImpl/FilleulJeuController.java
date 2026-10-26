@@ -6,7 +6,7 @@ import com.fdc.quartesure.quartesurebackend.dto.AttributionJeuDto;
 import com.fdc.quartesure.quartesurebackend.dto.DisponibiliteDto;
 import com.fdc.quartesure.quartesurebackend.dto.DisponibiliteRequest;
 import com.fdc.quartesure.quartesurebackend.dto.MarquerCombinaisonsRequest;
-import com.fdc.quartesure.quartesurebackend.serviceImpl.JeuFilleulService;
+import com.fdc.quartesure.quartesurebackend.service.JeuFilleulService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +15,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -87,9 +89,28 @@ public class FilleulJeuController {
                 return ResponseEntity.noContent().build();
             case INVALID:
                 return ResponseEntity.badRequest().body("Requête invalide.");
+            case LOCKED:
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Jeu déjà validé : il n'est plus modifiable.");
             default:
                 // NOT_FILLEUL ou combinaison qui n'est pas la vôtre : même réponse, on ne révèle rien
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Combinaison introuvable.");
+        }
+    }
+
+    /** Le filleul valide sa part (« J'ai fini de jouer ») : toutes les combinaisons doivent être cochées. */
+    @PostMapping("/jeux/{id}/terminer")
+    public ResponseEntity<?> terminer(@PathVariable("id") Long id) {
+        User me = currentUser();
+        if (me == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        switch (jeuFilleulService.terminer(me, id)) {
+            case OK:
+                return ResponseEntity.noContent().build();
+            case INCOMPLETE:
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Il reste des combinaisons à cocher.");
+            default:
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Jeu introuvable.");
         }
     }
 
