@@ -74,7 +74,7 @@ public class FilleulJeuController {
         return ResponseEntity.ok(jeuFilleulService.lister(me));
     }
 
-    @PatchMapping("/jeux/combinaisons")
+    @PostMapping("/jeux/combinaisons")
     public ResponseEntity<?> marquer(@RequestBody MarquerCombinaisonsRequest request) {
         User me = currentUser();
         if (me == null) {
