@@ -6,7 +6,7 @@ import com.fdc.quartesure.quartesurebackend.dto.AttributionJeuDto;
 import com.fdc.quartesure.quartesurebackend.dto.DisponibiliteDto;
 import com.fdc.quartesure.quartesurebackend.dto.DisponibiliteRequest;
 import com.fdc.quartesure.quartesurebackend.dto.MarquerCombinaisonsRequest;
-import com.fdc.quartesure.quartesurebackend.service.JeuFilleulService;
+import com.fdc.quartesure.quartesurebackend.serviceImpl.JeuFilleulService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

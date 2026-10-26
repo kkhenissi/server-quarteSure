@@ -9,7 +9,7 @@ import com.fdc.quartesure.quartesurebackend.dto.FilleulJeuStatutDto;
 import com.fdc.quartesure.quartesurebackend.dto.SendCombinationsRequest;
 import com.fdc.quartesure.quartesurebackend.dto.SendCombinationsResult;
 import com.fdc.quartesure.quartesurebackend.service.EmailService;
-import com.fdc.quartesure.quartesurebackend.service.JeuFilleulService;
+import com.fdc.quartesure.quartesurebackend.serviceImpl.JeuFilleulService;
 import com.fdc.quartesure.quartesurebackend.utils.PhoneUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
