@@ -25,6 +25,11 @@ public interface CurrentCourseRest {
     public Object getOrdreArrivee(@PathVariable int numOrdre,
                                   @RequestBody(required = true) Map<String, String> requestMap);
 
+    /** Rapports définitifs PMU de la course (gain des paris), au JSON brut de PMU. */
+    @PostMapping(path = "/rapports/{numOrdre}")
+    public Object getRapportsDefinitifs(@PathVariable int numOrdre,
+                                        @RequestBody(required = true) Map<String, String> requestMap);
+
     @PostMapping(path = "/participants/lightperf")
     public Object getLightPerformances(@RequestBody(required = true) LightPerfRequest reques);
 

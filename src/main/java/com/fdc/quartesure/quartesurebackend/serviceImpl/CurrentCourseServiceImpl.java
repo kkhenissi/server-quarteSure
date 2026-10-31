@@ -342,6 +342,35 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
     }
 
     @Override
+    public ResponseEntity<String> getRapportsDefinitifs(Map<String, String> requestMap, int numOrdre) {
+        try {
+            if (validateRefCourse(requestMap)) {
+                String url = String.format(
+                        "https://online.turfinfo.api.pmu.fr/rest/client/1/programme/%s/%s/C%d/rapports-definitifs?specialisation=INTERNET",
+                        requestMap.get("date"), requestMap.get("R"), numOrdre);
+                log.info("🌍 Rapports définitifs, URL appelée: {}", url);
+
+                HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+                conn.setRequestMethod("GET");
+                conn.connect();
+                if (conn.getResponseCode() != 200) {
+                    // pas de rapports tant que la course n'est pas officielle : le front réessaiera plus tard
+                    log.info("Rapports indisponibles (HTTP {})", conn.getResponseCode());
+                    return new ResponseEntity<>("[]", HttpStatus.OK);
+                }
+                StringBuilder response = new StringBuilder();
+                try (Scanner scanner = new Scanner(conn.getInputStream(), "UTF-8")) {
+                    while (scanner.hasNext()) response.append(scanner.nextLine());
+                }
+                return new ResponseEntity<>(response.toString(), HttpStatus.OK);
+            }
+        } catch (Exception ex) {
+            log.error("❌ Erreur lors de la récupération des rapports (numOrdre={})", numOrdre, ex);
+        }
+        return QuarteSureUtils.getResponseEntity("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @Override
     public ResponseEntity<String> getLightPerf(LightPerfRequest reques) {
         try {
             log.info("Inside signup {}",reques);
