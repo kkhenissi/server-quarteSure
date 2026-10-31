@@ -346,7 +346,7 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
         try {
             if (validateRefCourse(requestMap)) {
                 String url = String.format(
-                        "https://online.turfinfo.api.pmu.fr/rest/client/1/programme/%s/%s/C%d/rapports-definitifs?specialisation=INTERNET",
+                        "https://online.turfinfo.api.pmu.fr/rest/client/1/programme/%s/%s/C%d/rapports-definitifs?specialisation=INTERNET&combinaisonEnTableau=true",
                         requestMap.get("date"), requestMap.get("R"), numOrdre);
                 log.info("🌍 Rapports définitifs, URL appelée: {}", url);
 
