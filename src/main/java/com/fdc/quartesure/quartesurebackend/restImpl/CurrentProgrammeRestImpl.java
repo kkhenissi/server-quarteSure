@@ -16,6 +16,12 @@ public class CurrentProgrammeRestImpl implements CurrentProgrammeRest {
 
     @Autowired
     CurrentProgrammeService currentProgrammeService;
+
+    @Override
+    public Object getPenetrometre(Map<String, String> requestMap) {
+        return currentProgrammeService.getPenetrometre(requestMap);
+    }
+
     @Override
     public Object getTodayProgramme(Map<String, String> requestMap) {
         try {

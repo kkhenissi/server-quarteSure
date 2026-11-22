@@ -14,5 +14,7 @@ public interface CurrentProgrammeService {
 
     ResponseEntity<String> getYesterdayProgramme(Map<String, String> requestMap);
 
+    ResponseEntity<String> getPenetrometre(Map<String, String> requestMap);
+
     Optional<CurrentProgrammeStringFormat> getYesterdayProgrammeFromLocalDB(Map<String, String> requestMap) throws IOException;
 }

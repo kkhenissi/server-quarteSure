@@ -28,6 +28,48 @@ public class CurrentProgrammeServiceImpl implements CurrentProgrammeService {
 
     @Autowired
     CurrentProgrammeStringFormatDao currentProgrammeStringFormatDao;
+
+    /**
+     * Pénétromètre (état du terrain) de la réunion. Le front ne peut pas appeler PMU directement (« Invalid CORS request »),
+     * il passe par ici. Renvoie {} tant que la mesure n'est pas renseignée.
+     */
+    @Override
+    public ResponseEntity<String> getPenetrometre(Map<String, String> requestMap) {
+        try {
+            String date = requestMap.get("date");
+            String reunion = requestMap.get("R");
+            if (date == null || reunion == null || !date.matches("\\d{8}") || !reunion.matches("R\\d{1,2}")) {
+                return new ResponseEntity<>("{}", HttpStatus.BAD_REQUEST);
+            }
+            String currentUrl = "https://online.turfinfo.api.pmu.fr/rest/client/1/programme/" + date + "/" + reunion + "?specialisation=INTERNET";
+            HttpURLConnection conn = (HttpURLConnection) new URL(currentUrl).openConnection();
+            conn.setRequestMethod("GET");
+            conn.connect();
+            if (conn.getResponseCode() != 200) {
+                return new ResponseEntity<>("{}", HttpStatus.OK);
+            }
+            StringBuilder response = new StringBuilder();
+            try (Scanner scanner = new Scanner(conn.getInputStream(), "UTF-8")) {
+                while (scanner.hasNext()) response.append(scanner.nextLine());
+            }
+            JsonElement pene = JsonParser.parseString(response.toString()).getAsJsonObject().get("penetrometre");
+            if (pene == null || !pene.isJsonObject()) {
+                return new ResponseEntity<>("{}", HttpStatus.OK);
+            }
+            JsonObject out = new JsonObject();
+            for (String key : new String[]{"intitule", "valeurMesure", "heureMesure"}) {
+                JsonElement value = pene.getAsJsonObject().get(key);
+                if (value != null && !value.isJsonNull()) {
+                    out.addProperty(key, value.getAsString());
+                }
+            }
+            return new ResponseEntity<>(out.toString(), HttpStatus.OK);
+        } catch (Exception ex) {
+            log.error("Pénétromètre indisponible", ex);
+        }
+        return new ResponseEntity<>("{}", HttpStatus.OK);
+    }
+
     @Override
     public ResponseEntity<String> getTodayProgramme(Map<String, String> requestMap) throws IOException {
 

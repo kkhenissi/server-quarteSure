@@ -14,6 +14,10 @@ public interface CurrentProgrammeRest {
     public Object getTodayProgramme(@RequestBody(required = true) Map<String, String> requestMap);
 
 
+    /** Pénétromètre (état du terrain) d'une réunion : {"intitule":"Lourd","valeurMesure":"4,6",…} ou {} s'il n'est pas renseigné */
+    @PostMapping(path = "/penetrometre")
+    public Object getPenetrometre(@RequestBody(required = true) Map<String, String> requestMap);
+
     @PostMapping(path = "/yesterday")
     public Object getYesterdayProgramme(@RequestBody(required = true) Map<String, String> requestMap);
 
