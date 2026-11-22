@@ -5,6 +5,7 @@ import com.fdc.quartesure.quartesurebackend.dao.CurrentProgrammeStringFormatDao;
 import com.fdc.quartesure.quartesurebackend.service.CurrentProgrammeService;
 import com.fdc.quartesure.quartesurebackend.utils.QuarteSureUtils;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -30,6 +31,31 @@ public class CurrentProgrammeServiceImpl implements CurrentProgrammeService {
     CurrentProgrammeStringFormatDao currentProgrammeStringFormatDao;
 
     /**
+     * Pénétromètre dans la réponse PMU d'une réunion : il est porté par chaque course (courses[n].penetrometre). On prend celui
+     * de la course demandée (numOrdre ou numExterne = numéro de C), sinon celui de la première course qui en a un, sinon
+     * un éventuel pénétromètre à la racine.
+     */
+    private static JsonElement findPenetrometre(JsonObject reunion, String courseRef) {
+        int wanted = (courseRef != null && courseRef.matches("C\\d{1,2}")) ? Integer.parseInt(courseRef.substring(1)) : -1;
+        JsonElement fallback = null;
+        if (reunion.has("courses") && reunion.get("courses").isJsonArray()) {
+            JsonArray courses = reunion.getAsJsonArray("courses");
+            for (JsonElement element : courses) {
+                if (!element.isJsonObject()) continue;
+                JsonObject course = element.getAsJsonObject();
+                JsonElement pene = course.get("penetrometre");
+                if (pene == null || !pene.isJsonObject()) continue;
+                if (fallback == null) fallback = pene;
+                int ordre = course.has("numOrdre") && !course.get("numOrdre").isJsonNull() ? course.get("numOrdre").getAsInt() : -1;
+                int externe = course.has("numExterne") && !course.get("numExterne").isJsonNull() ? course.get("numExterne").getAsInt() : -1;
+                if (ordre == wanted || externe == wanted) return pene;
+            }
+        }
+        if (fallback != null) return fallback;
+        return reunion.has("penetrometre") ? reunion.get("penetrometre") : null;
+    }
+
+    /**
      * Pénétromètre (état du terrain) de la réunion. Le front ne peut pas appeler PMU directement (« Invalid CORS request »),
      * il passe par ici. Renvoie {} tant que la mesure n'est pas renseignée.
      */
@@ -52,7 +78,7 @@ public class CurrentProgrammeServiceImpl implements CurrentProgrammeService {
             try (Scanner scanner = new Scanner(conn.getInputStream(), "UTF-8")) {
                 while (scanner.hasNext()) response.append(scanner.nextLine());
             }
-            JsonElement pene = JsonParser.parseString(response.toString()).getAsJsonObject().get("penetrometre");
+            JsonElement pene = findPenetrometre(JsonParser.parseString(response.toString()).getAsJsonObject(), requestMap.get("C"));
             if (pene == null || !pene.isJsonObject()) {
                 return new ResponseEntity<>("{}", HttpStatus.OK);
             }
