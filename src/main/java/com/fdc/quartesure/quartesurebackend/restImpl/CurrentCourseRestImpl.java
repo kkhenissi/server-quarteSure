@@ -107,6 +107,11 @@ public class CurrentCourseRestImpl implements CurrentCourseRest {
     }
 
     @Override
+    public Object getRapportsPlace(int numOrdre, Map<String, String> requestMap) {
+        return currentCourseService.getRapportsPlace(requestMap, numOrdre);
+    }
+
+    @Override
     public Object getLightPerformances(LightPerfRequest request) {
 
         String nomCheval = request.getNomCheval();

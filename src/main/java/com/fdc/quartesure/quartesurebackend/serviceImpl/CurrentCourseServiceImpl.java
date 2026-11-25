@@ -341,6 +341,32 @@ public class CurrentCourseServiceImpl implements CurrentCourseService {
         return QuarteSureUtils.getResponseEntity("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    /** Rapports probables du simple placé : le front ne peut pas appeler PMU directement (CORS). {} si indisponible. */
+    @Override
+    public ResponseEntity<String> getRapportsPlace(Map<String, String> requestMap, int numOrdre) {
+        try {
+            if (validateRefCourse(requestMap)) {
+                String url = String.format(
+                        "https://online.turfinfo.api.pmu.fr/rest/client/61/programme/%s/%s/C%d/rapports/E_SIMPLE_PLACE",
+                        requestMap.get("date"), requestMap.get("R"), numOrdre);
+                HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+                conn.setRequestMethod("GET");
+                conn.connect();
+                if (conn.getResponseCode() != 200) {
+                    return new ResponseEntity<>("{}", HttpStatus.OK);
+                }
+                StringBuilder response = new StringBuilder();
+                try (Scanner scanner = new Scanner(conn.getInputStream(), "UTF-8")) {
+                    while (scanner.hasNext()) response.append(scanner.nextLine());
+                }
+                return new ResponseEntity<>(response.toString(), HttpStatus.OK);
+            }
+        } catch (Exception ex) {
+            log.error("Rapports du simple placé indisponibles (numOrdre={})", numOrdre, ex);
+        }
+        return new ResponseEntity<>("{}", HttpStatus.OK);
+    }
+
     @Override
     public ResponseEntity<String> getRapportsDefinitifs(Map<String, String> requestMap, int numOrdre) {
         try {

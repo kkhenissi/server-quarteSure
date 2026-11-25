@@ -32,6 +32,8 @@ public interface CurrentCourseService {
 
     ResponseEntity<String> getRapportsDefinitifs(Map<String, String> requestMap, int numOrdre);
 
+    ResponseEntity<String> getRapportsPlace(Map<String, String> requestMap, int numOrdre);
+
     ResponseEntity<String> getLightPerf(LightPerfRequest request);
 
     Optional<LightPerfStringFormat> getLightPerfFromLocalDB(Map<String, String> requestMap) throws IOException;

@@ -30,6 +30,11 @@ public interface CurrentCourseRest {
     public Object getRapportsDefinitifs(@PathVariable int numOrdre,
                                         @RequestBody(required = true) Map<String, String> requestMap);
 
+    /** Rapports probables du simple placé (min / max par cheval), JSON brut de PMU : {"rapportsParticipant":[{"numPmu":3,"minRapportProbable":3.0,…}]} */
+    @PostMapping(path = "/rapportsPlace/{numOrdre}")
+    public Object getRapportsPlace(@PathVariable int numOrdre,
+                                   @RequestBody(required = true) Map<String, String> requestMap);
+
     @PostMapping(path = "/participants/lightperf")
     public Object getLightPerformances(@RequestBody(required = true) LightPerfRequest reques);
 
